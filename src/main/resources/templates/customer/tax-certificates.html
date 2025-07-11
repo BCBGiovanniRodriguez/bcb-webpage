@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+    <head th:replace="~{customer/fragments/common :: head}"></head>
+
+    <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+        <div class="app-wrapper">
+            <nav th:replace="~{customer/fragments/common :: nav}"></nav>
+
+            <aside th:replace="~{customer/fragments/common :: aside}"></aside>
+
+            <main class="app-main">
+                <div class="app-content-header">
+                    <div class="container-fluid">
+                    </div>
+                </div>
+
+                <div class="app-content">
+                    <div class="container-fluid">
+                        
+                        <div class="card card-primary card-outline">
+                            <div class="card-header">
+                                <h5 class="card-title text-primary">
+                                    <strong>CONSTANCIAS FISCALES</strong>
+                                </h5>
+                            </div>
+                            <div class="card-body">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <footer th:replace="~{customer/fragments/common :: footer}"></footer>
+        </div>
+
+        <div th:replace="~{customer/fragments/common :: jsDependencies}"></div>
+    </body>
+</html>

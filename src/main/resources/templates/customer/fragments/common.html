@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+    <head th:fragment="head">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Portal Cliente</title>
+        <link rel="icon" th:href="@{/public/img/favicon.ico}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/2.11.0/styles/overlayscrollbars.min.css" integrity="sha512-PBzouFB1XtDMHX9kVQ3rh7MDwvHFyD5FflRNcuMk7Q9BR9v8DgwjZWu++yrIxOjsdW3j+sj9KnnY59Jjzx5hWQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" integrity="sha512-dPXYcDub/aeb08c63jRq/k6GaKccl256JQy/AnOq7CAnEZ9FzSL9wSbcZkMp4R26vBsMLFYH4kQ67/bbV8XaCQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="stylesheet" type="text/css" th:href="@{/public/adminlte/css/adminlte.min.css}" />
+        <script>
+            const baseUrl = '/';
+        </script>
+    </head>
+
+    <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+        <nav th:fragment="nav" class="app-header navbar navbar-expand bg-primary-subtle" data-bs-theme="dark">
+            <div class="container-fluid">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-lte-toggle="sidebar" role="button">
+                            <i class="bi bi-list"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item d-none d-md-block">
+                        <a href="#" class="nav-link">Nombre Cliente :: # Contrato: <strong>101272</strong></a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa fa-list"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
+                            <a href="#" class="dropdown-item">
+                                <div class="d-flex">
+                                    <div class="flex-grow-1">
+                                        <h3 class="dropdown-item-title">
+                                            # Contrato: 101272
+                                        </h3>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <aside th:fragment="aside" class="app-sidebar bg-primary-subtle shadow" data-bs-theme="dark">
+            <!-- Sidebar Brand-->
+             <div class="sidebar-brand">
+                <a th:href="@{/}" class="brand-link">
+                    <img th:src="@{/public/img/BCB-logo-whitev2.svg}" alt="Logo Admin" class="brand-image opacity-100 shadow" style="width: 100%; height: 100%;" />
+                </a>
+             </div>
+            <!-- Sidebar Brand -->
+            <!-- Sidebar Wrapper -->
+             <div class="sidebar-wrapper">
+                <div class="mt-2">
+                    <!-- Sidebar Menu -->
+                    <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
+                        <li class="nav-item">
+                            <a th:href="@{/portal-clientes/dashboard}" class="nav-link">
+                                <i class="nav-icon fa fa-dashboard"></i>
+                                <p>DASHBOARD</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/portal-clientes/detalle}" class="nav-link">
+                                <i class="nav-icon fa fa-circle-user"></i>
+                                <p>INFORMACIÓN DEL CLIENTE</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a th:href="@{/portal-clientes/posicion}" class="nav-link">
+                                <i class="nav-icon fa fa-file-lines"></i>
+                                <p>POSICIÓN ACTUAL</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a th:href="@{/portal-clientes/movimientos}" class="nav-link">
+                                <i class="nav-icon fa fa-list-ol"></i>
+                                <p>MOVIMIENTOS</p>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a th:href="@{/portal-clientes/resultados}" class="nav-link">
+                                <i class="nav-icon fa fa-chart-line"></i>
+                                <p>INFORME DE RESULTADOS</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a th:href="@{/portal-clientes/estados-cuenta}" class="nav-link">
+                                <i class="nav-icon fa fa-file-invoice"></i>
+                                <p>ESTADOS DE CUENTA</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a th:href="@{/portal-clientes/constancia-fiscal}" class="nav-link">
+                                <i class="nav-icon fa fa-file-pdf"></i>
+                                <p>CONSTANCIAS FISCALES</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <!-- Sidebar Menu -->
+                </div>
+             </div>
+            <!-- Sidebar Wrapper-->
+        </aside>
+
+        <footer th:fragment="footer" class="app-footer">
+            <span>
+                Entorno: <b>Development</b>
+            </span>
+
+            <div class="float-end d-none d-sm-inline">
+                <strong>
+                    Copyright &copy; 2025 &nbsp;
+                    BCB CASA DE BOLSA TODOS LOS DERECHOS RESERVADOS
+                </strong>
+            </div>
+        </footer>
+
+        <div th:fragment="jsDependencies">
+            <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.min.js" integrity="sha512-L0Shl7nXXzIlBSUUPpxrokqq4ojqgZFQczTYlGjzONGTDAcLremjwaWv5A+EDLnxhQzY5xUZPWLOLqYRkY0Cbw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            <script th:src="@{/public/adminlte/plugins/jquery/jquery-3.7.1.min.js}"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/js/all.min.js" integrity="sha512-b+nQTCdtTBIRIbraqNEwsjB6UvL3UEMkXnhzd8awtCYh0Kcsjl9uEgwVFVbhoj3uu1DO1ZMacNvLoyJJiNfcvg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js" integrity="sha512-TPh2Oxlg1zp+kz3nFA0C5vVC6leG/6mm1z9+mA81MI5eaUVqasPLO8Cuk4gMF4gUfP5etR73rgU/8PNMsSesoQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            <script th:src="@{/public/thirdparty/bootstrap/js/bootstrap.min.js}"></script>
+            <script th:src="@{/public/adminlte/js/adminlte.min.js}"></script>
+        </div>
+        
+    </body>
+</html>

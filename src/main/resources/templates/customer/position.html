@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+    <head th:replace="~{customer/fragments/common :: head}"></head>
+
+    <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+        <div class="app-wrapper">
+            <nav th:replace="~{customer/fragments/common :: nav}"></nav>
+
+            <aside th:replace="~{customer/fragments/common :: aside}"></aside>
+
+            <main class="app-main">
+                <div class="app-content-header">
+                    <div class="container-fluid">
+                    </div>
+                </div>
+
+                <div class="app-content">
+                    <div class="container-fluid">
+                        <h5 class="card-header"><strong>POSICIÓN ACTUAL CLIENTE</strong></h5>
+
+                        <div class="container-fluid">
+                            <ul class="nav nav-tabs mb-3" id="positionTab" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="detail-tab" data-bs-toggle="tab" data-bs-target="#detail-tab-pane" 
+                                    type="button" role="tab" aria-controls="detail-tab-pane" aria-selected="true" tabindex="0">
+                                        <strong>TOTAL INVERSIÓN</strong>
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="money-market-tab" data-bs-toggle="tab" data-bs-target="#money-market-tab-pane" 
+                                    type="button" role="tab" aria-controls="money-market-tab-pane" aria-selected="false" tabindex="-1">
+                                        <strong>MERCADO DE DINERO</strong>
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="stock-market-tab" data-bs-toggle="tab" data-bs-target="#stock-market-tab-pane" 
+                                    type="button" role="tab" aria-controls="stock-market-tab-pane" aria-selected="false" tabindex="-1">
+                                        <strong>MERCADO DE CAPITALES</strong>
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation" hidden>
+                                    <button class="nav-link" id="investment-funds-tab" data-bs-toggle="tab" data-bs-target="#investment-funds-tab-pane" 
+                                    type="button" role="tab" aria-controls="investment-funds-tab-pane" aria-selected="false" tabindex="-1">
+                                        <strong>FONDOS DE INVERSION</strong>
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="cash-tab" data-bs-toggle="tab" data-bs-target="#cash-tab-pane" 
+                                    type="button" role="tab" aria-controls="cash-tab-pane" aria-selected="false" tabindex="-1">
+                                        <strong>SALDO MN</strong>
+                                    </button>
+                                </li>
+                                
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane fade" id="detail-tab-pane" role="tabpanel" aria-labelledby="detail-tab" tabindex="0">
+                                    <div class="text-right">
+                                        <button class="btn btn-sm btn-primary">
+                                            <i class="fa fa-file-pdf"></i> Generar Reporte
+                                        </button>
+                                    </div>
+                                    <hr>
+                                    <div class="table-responsive">
+
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade active show" id="money-market-tab-pane" role="tabpanel" aria-labelledby="money-market-tab" tabindex="1">
+                                    <div class="text-right">
+                                        <button class="btn btn-sm btn-primary">
+                                            <i class="fa fa-file-pdf"></i> Generar Reporte
+                                        </button>
+                                    </div>
+                                    <hr>
+                                    <div class="table-responsive">
+                                        <table class="table table-sm table-hover">
+                                            <thead>
+                                                <th>FECHA</th>
+                                                <th>EMISORA</th>
+                                                <th>SERIE</th>
+                                                <th>PLAZO</th>
+                                                <th>TASA</th>
+                                                <th>TITULOS</th>
+                                                <th>COSTO PROMEDIO</th>
+                                                <th>VALOR ACTUAL</th>
+                                                <th>VALOR MERCADO</th>
+                                                <th>PLUSVALÍA / MINUSVALÍA</th>
+                                            </thead>
+                                            <tbody>
+                                                <tr th:each="posicion : ${positionMoneyList}">
+                                                    <td th:text="${today}"></td>
+                                                    <td th:text="${posicion.emisora}"></td>
+                                                    <td th:text="${posicion.serie}"></td>
+                                                    <td th:text="${posicion.plazo}"></td>
+                                                    <td th:text="${posicion.tasa}"></td>
+                                                    <td th:text="${posicion.titulos}"></td>
+                                                    <td th:text="${posicion.costoPromedio}"></td>
+                                                    <td th:text="${posicion.costoXTitulos}"></td>
+                                                    <td th:text="${posicion.valorMercado}"></td>
+                                                    <td th:text="${posicion.plusMinusvalia}"></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="stock-market-tab-pane" role="tabpanel" aria-labelledby="stock-market-tab" tabindex="2">
+                                    <div class="text-right">
+                                        <button class="btn btn-sm btn-primary">
+                                            <i class="fa fa-file-pdf"></i> Generar Reporte
+                                        </button>
+                                    </div>
+                                    <hr>
+                                    <div class="table-responsive">
+                                        <table class="table table-sm table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>FECHA</th>
+                                                    <th>EMISORA</th>
+                                                    <th>SERIE</th>
+                                                    <th>TÍTULOS</th>
+                                                    <th>COSTO POR TÍTULOS</th>
+                                                    <th>COSTO PROMEDIO</th>
+                                                    <th>VALOR MERCADO</th>
+                                                    <th>PLUSVALÍA/MINUSVALÍA</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr th:each="posicion : ${positionStockList}">
+                                                    <td th:text="${today}"></td>
+                                                    <td th:text="${posicion.emisora}"></td>
+                                                    <td th:text="${posicion.serie}"></td>
+                                                    <td th:text="${posicion.titulos}"></td>
+                                                    <td th:text="${posicion.costoXTitulos}"></td>
+                                                    <td th:text="${posicion.costoPromedio}"></td>
+                                                    <td th:text="${posicion.valorMercado}"></td>
+                                                    <td th:text="${posicion.plusMinusvalia}"></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="tab-pane fade" id="cash-tab-pane" role="tabpanel" aria-labelledby="cash-tab" tabindex="3">
+                                    <div class="text-right">
+                                        <button class="btn btn-sm btn-primary">
+                                            <i class="fa fa-file-pdf"></i> Generar Reporte
+                                        </button>
+                                    </div>
+                                    <hr>
+                                    <div class="table-responsive">
+                                        <table class="table table-sm table-hover">
+                                            <thead>
+                                                <th>MONEDA</th>
+                                                <th>SALDO ACTUAL</th>
+                                                <th>SALDO POR LIQUIDAR</th>
+                                            </thead>
+                                            <tbody>
+                                                <tr th:each="saldo : ${customerPositionResponse.saldo}">
+                                                    <td th:text="${saldo.cveDivisa}"></td>
+                                                    <td th:text="${saldo.saldoActual}"></td>
+                                                    <td th:text="${saldo.saldoXLiquidar}"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td>
+                                                        SUBTOTAL 
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div hidden class="tab-pane fade" id="investment-funds-tab-pane" role="tabpanel" aria-labelledby="investment-funds-tab" tabindex="4">
+                                    <div class="text-right">
+                                        <button class="btn btn-sm btn-primary">
+                                        <i class="fa fa-file-pdf"></i> Generar Reporte
+                                    </button>
+                                    </div>
+                                    <hr>
+                                    <div class="table-responsive">
+                                        <table class="table table-sm table-hover">
+                                            <thead>
+                                                <th>FECHA</th>
+                                                <th>EMISORA</th>
+                                                <th>SERIE</th>
+                                                <th>TITULOS</th>
+                                                <th>PRECIO X TITULOS</th>
+                                                <th>COSTO PROMEDIO</th>
+                                                <th>VALOR MERCADO</th>
+                                                <th>PLUSVALÍA / MINUSVALÍA</th>
+                                            </thead>
+                                            <tbody>
+                                                <tr th:each="posicion : ${positionFundsList}">
+                                                    <td th:text="${saldo.cveDivisa}"></td>
+                                                    <td th:text="${saldo.saldoActual}"></td>
+                                                    <td th:text="${saldo.saldoXLiquidar}"></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <footer th:replace="~{customer/fragments/common :: footer}"></footer>
+        </div>
+
+        <div th:replace="~{customer/fragments/common :: jsDependencies}"></div>
+    </body>
+</html>

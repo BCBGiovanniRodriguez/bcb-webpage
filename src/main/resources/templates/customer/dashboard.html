@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+    <head th:replace="~{customer/fragments/common :: head}"></head>
+
+    <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+        <div class="app-wrapper">
+            <nav th:replace="~{customer/fragments/common :: nav}"></nav>
+
+            <aside th:replace="~{customer/fragments/common :: aside}"></aside>
+
+            <main class="app-main">
+                <div class="app-content-header">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-2">
+                                <img th:src="@{/public/img/logo-gestion-inversiones-a.svg}" alt="BCB LOGO" 
+                                class="brand-image opacity-100 shadow" style="width: 70%; height: 70%;" />
+                            </div>
+                            <div class="col-10">
+                                <h4>Bienvenido <span th:unless="${customerDetailResponse == null && customerDetailResponse.nombre == null}" th:text="${customerDetailResponse.nombre}"></span> </h4>
+                                <h3></h3>
+                                <hr>
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <h5>Inicio de Sesión Actual</h5>
+                                            <span th:text="${currentSessionDateStr}"></span> | <span th:text="${currentSessionTimeStr}"></span>
+                                        </div>
+                                        <div class="col-8">
+                                            <h5>Último Inicio de Sesión</h5>
+                                            <span th:text="${lastSessionDateStr}"></span> | <span th:text="${lastSessionTimeStr}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="app-content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card card-outline card-primary">
+                                    <div class="card-header">
+                                        <h3 class="card-title"><strong>RESUMEN DE SU SALDO</strong></h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover">
+                                                <thead>
+                                                    <tr hidden>
+                                                        <th style="width: 20%;"></th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td style="width: 20%;">
+                                                            <strong>MERCADO DE DINERO</strong>
+                                                        </td>
+                                                        <td style="width: 20%;">
+                                                            <span th:unless="${positionDetail == null && positionDetail.subtotalDin == null}" th:text="${positionDetail.subtotalDin}"></span>
+                                                        </td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width: 20%;">
+                                                            <strong>MERCADO DE CAPITALES</strong>
+                                                        </td>
+                                                        <td style="width: 20%;">
+                                                            <span th:unless="${positionDetail == null && positionDetail.subtotalCap == null}" th:text="${positionDetail.subtotalCap}"></span>
+                                                        </td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr hidden>
+                                                        <td style="width: 20%;">
+                                                            <strong>FONDOS DE INVERSIÓN</strong>
+                                                        </td>
+                                                        <td style="width: 20%;">
+                                                            <span th:unless="${positionDetail == null && positionDetail.subtotalFon == null}" th:text="${positionDetail.subtotalFon}"></span>
+                                                        </td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width: 20%;">
+                                                            <strong>SALDO MN</strong>
+                                                        </td>
+                                                        <td style="width: 20%;">
+
+                                                        </td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width: 20%;">
+                                                            <strong>TOTAL INVERSIÓN</strong>
+                                                        </td>
+                                                        <td style="width: 20%;">
+                                                            <span th:unless="${positionDetail == null && customerMovementPositionResponse.total == null}" th:text="${customerMovementPositionResponse.total}"></span>
+                                                        </td>
+                                                        <td></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <footer th:replace="~{customer/fragments/common :: footer}"></footer>
+        </div>
+
+        <div th:replace="~{customer/fragments/common :: jsDependencies}"></div>
+    </body>
+</html>

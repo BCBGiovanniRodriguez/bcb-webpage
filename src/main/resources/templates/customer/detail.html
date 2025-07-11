@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+
+    <head th:replace="~{customer/fragments/common :: head}"></head>
+
+    <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+
+        <div class="app-wrapper">
+            <nav th:replace="~{customer/fragments/common :: nav}"></nav>
+
+            <aside th:replace="~{customer/fragments/common :: aside}"></aside>
+
+            <main class="app-main">
+                <div class="app-content-header">
+                    <div class="container-fluid">
+                    </div>
+                </div>
+
+                <div class="app-content">
+                    <div class="container-fluid">
+                        <div class="card card-primary">
+                            <div class="card-header">
+                                <h5 class="card-title"><strong>DATOS DEL CLIENTE</strong></h5>
+                            </div>
+                            <div>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-hover">
+                                        <tbody>
+                                            <tr>
+                                                <td><strong>NOMBRE</strong></td>
+                                                <td><span th:unless="${customerDetailResponse == null}" th:text="${customerDetailResponse.nombre}"></span></td>
+                                            </tr>
+                                            
+                                            <tr>
+                                                <td><strong>BENEFICIARIOS</strong></td>
+                                                <td></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td><strong>EMAIL</strong></td>
+                                                <td><span th:unless="${customerDetailResponse == null}" th:text="${customerDetailResponse.email}"></span></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td><strong>DIRECCIÓN</strong></td>
+                                                <td><span th:unless="${customerDetailResponse == null}" th:text="${customerDetailResponse.direccion}"></span></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td><strong>TELEFONOS CONTACTO</strong></td>
+                                                <td>
+                                                    <ul>
+                                                        <li>Teléfono Domicilio: <span th:unless="${customerDetailResponse == null}" th:text="${customerDetailResponse.telDom}"></span></li>
+                                                        <li>Teléfono Oficina: <span th:unless="${customerDetailResponse == null}" th:text="${customerDetailResponse.telOfi}"></span></li>
+                                                        <li>Teléfono Móvil: <span th:unless="${customerDetailResponse == null}" th:text="${customerDetailResponse.telCel}"></span></li>
+                                                    </ul>
+                                                    
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td><strong>CUENTAS BANCARIAS</strong></td>
+                                                <td></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td><strong>RFC</strong></td>
+                                                <td><span th:unless="${customerDetailResponse == null}" th:text="${customerDetailResponse.rFC}"></span></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td><strong>CURP</strong></td>
+                                                <td><span th:unless="${customerDetailResponse == null}" th:text="${customerDetailResponse.cURP}"></span></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td><strong>TIPO DE SERVICIO</strong></td>
+                                                <td><span th:unless="${customerDetailResponse == null}" th:text="${customerDetailResponse.servicio}"></span></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td><strong>PERFIL DE INVERSIÓN</strong></td>
+                                                <td><span th:unless="${customerDetailResponse == null}" th:text="${customerDetailResponse.perfil}"></span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            
+            <footer th:replace="~{customer/fragments/common :: footer}"></footer>
+        </div>
+
+        <div th:replace="~{customer/fragments/common :: jsDependencies}"></div>
+    </body>
+</html>

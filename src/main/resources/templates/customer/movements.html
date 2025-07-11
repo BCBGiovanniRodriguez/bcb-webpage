@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://thymeleaf.org">
+    <head th:replace="~{customer/fragments/common :: head}"></head>
+
+    <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+        <div class="app-wrapper">
+            <nav th:replace="~{customer/fragments/common :: nav}"></nav>
+
+            <aside th:replace="~{customer/fragments/common :: aside}"></aside>
+
+            <main class="app-main">
+                <div class="app-content-header">
+                    <div class="container-fluid">
+                    </div>
+                </div>
+
+                <div class="app-content">
+                    <div class="container-fluid">
+                        <form th:action="@{/portal-clientes/movimientos}" method="post" enctype="application/x-www-form-urlencoded">
+                            
+                            <div class="card card-info card-outline collapsed">
+                                <div class="card-header">
+                                    <h5 class="card-title text-primary">
+                                        <strong>CONSULTA DE MOVIMIENTOS</strong>
+                                    </h5>
+                                </div>
+                                
+                                <div class="card-body">                                
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <label for="startDate" class="form-label"><strong>Fecha Inicial</strong></label>
+                                            <input type="date" id="startDate" th:name="startDate" th:value="${startDate}" th:max="${today}" data-date-format="dd/mm/yyyy" class="form-control" required>
+                                        </div>
+
+                                        <div class="col-3">
+                                            <label for="endDate" class="form-label"><strong>Fecha Final</strong></label>
+                                            <input type="date" id="endDate" th:name="endDate" th:value="${endDate}" data-date-format="dd/mm/yyyy" class="form-control" required>
+                                        </div>
+
+                                        <div class="col-3">
+                                            <label for="form-label text-white"></label>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer text-center">
+                                    <button class="btn btn-sm btn-primary" type="submit">
+                                        <i class="fa fa-search"></i> Consultar
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                        <br />
+
+                        <div th:if="${movementsList != null}" class="table-responsive">
+                            <div th:if="${movementsList.size() > 0}" class="card card-primary card-outline">
+                                <div class="card-header">
+                                    <h5 class="card-title text-primary">
+                                        Movimientos del <strong><span th:text="${startDate}"></span></strong> al <strong><span th:text="${endDate}"></span></strong>
+                                    </h5>
+
+                                    <div class="card-tools">
+                                        <button class="btn btn-sm btn-primary">
+                                            <i class="fa fa-file-pdf"></i> Exportar
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table table-sm table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th><strong>FECHA</strong></th>
+                                                <th><strong>CONCEPTO</strong></th>
+                                                <th><strong>EMISORA</strong></th>
+                                                <th><strong>SERIE</strong></th>
+                                                <th><strong>PLAZO</strong></th>
+                                                <th><strong>TASA</strong></th>
+                                                <th><strong>PRECIO</strong></th>
+                                                <th><strong>TÍTULOS</strong></th>
+                                                <th><strong>IMPORTE BRUTO</strong></th>
+                                                <th><strong>COMISIÓN</strong></th>
+                                                <th><strong>IVA</strong></th>
+                                                <th><strong>ISR</strong></th>
+                                                <th><strong>IMPORTE NETO</strong></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:each="movement : ${movementsList}">
+                                                <td th:text="${movement.fecOperacion}"></td>
+                                                <td th:text="${movement.descripcion}"></td>
+                                                <td th:text="${movement.emisora}"></td>
+                                                <td th:text="${movement.serie}"></td>
+                                                <td th:text="${movement.plazo}"></td>
+                                                <td th:text="${movement.tasa}"></td>
+                                                <td th:text="${movement.precio}"></td>
+                                                <td th:text="${movement.titulos}"></td>
+                                                <td th:text="${movement.importeBruto}"></td>
+                                                <td th:text="${movement.comision}"></td>
+                                                <td th:text="${movement.iva}"></td>
+                                                <td th:text="${movement.isr}"></td>
+                                                <td th:text="${movement.importeNeto}"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div th:unless="${movementsList.size() > 0}" class="text-center">
+                                <h5 class="text-primary">No se encontraron movimientos</h5>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </main>
+
+            <footer th:replace="~{customer/fragments/common :: footer}"></footer>
+        </div>
+
+        <div th:replace="~{customer/fragments/common :: jsDependencies}"></div>
+    </body>
+</html>
