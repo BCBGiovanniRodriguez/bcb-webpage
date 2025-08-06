@@ -1,51 +1,51 @@
-spring.application.name="Página Web"
-
+spring.application.name="Webpage"
 spring.security.user.name=username
 spring.security.user.password=password
-
 # Must match with Dockerfile and docker-compose.yml files
-server.port=10200 
-
+server.port=20000 
 server.error.whitelabel.enabled=false
 spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.web.ErrorMvcAutoConfiguration
 server.error.path=/error
 
 # JPA Configurations
+spring.jpa.open-in-view=false
 spring.jpa.show-sql=true
 spring.jpa.hibernate.ddlAuto=update
+# Webpage database
+# Docker: webpage.datasource.jdbc-url=jdbc:mysql://webpage_db:53300/webpage?createDatabaseIfNotExist=true
+# Local: webpage.datasource.jakarta.persistence.jdbc-url=jdbc:mysql://localhost:3306/webpage?createDatabaseIfNotExist=true
+webpage.datasource.jdbc-url=jdbc:mysql://localhost:3306/webpage?createDatabaseIfNotExist=true
+webpage.datasource.username=
+webpage.datasource.password=
+webpage.datasource.driverClassName=com.mysql.cj.jdbc.Driver
+webpage.datasource.spring.jpa.hibernate.dialect=org.hibernate.dialect.MySQLDialect
 
-# Backend database
-# Docker: backend.datasource.jdbc-url=jdbc:mysql://webpage_db:53307/webpage?createDatabaseIfNotExist=true
-# Local: 
-backend.datasource.jdbc-url=jdbc:mysql://localhost:3306/webpage?createDatabaseIfNotExist=true
-backend.datasource.username=
-backend.datasource.password=
-backend.datasource.driverClassName=com.mysql.cj.jdbc.Driver
-backend.datasource.hibernate.dialect=org.hibernate.dialect.MySQLDialect
-backend.datasource.hikari.minimum-idle=5
-backend.datasource.hikari.maximum-pool-size=10
-backend.datasource.hikari.connectionTimeout=30000
-backend.datasource.hikari.idleTimeout=600000
-backend.datasource.hikari.maxLifetime=1800000
-backend.datasource.hikari.validation-timeout=5000
-backend.datasource.hikari.connection-test-query=SELECT 1
+webpage.datasource.hikari.minimum-idle=5
+webpage.datasource.hikari.maximum-pool-size=10
+webpage.datasource.hikari.connectionTimeout=30000
+webpage.datasource.hikari.idleTimeout=600000
+webpage.datasource.hikari.maxLifetime=1800000
+#webpage.datasource.hikari.validation-timeout=5000
+#webpage.datasource.hikari.connection-test-query=SELECT 1
 
 # SisBur
-# PROD: sisbur.datasource.jdbc-url=jdbc:oracle:thin:@10.20.50.200:1525:BMTKSIS
-# QA: sisbur.datasource.jdbc-url=jdbc:oracle:thin:@10.20.50.200:1525:BMTKSIS
+# PROD: sisbur.datasource.jdbc-url=jdbc:oracle:thin:@10.20.50.200:1525/BMTKSIS
+# QA: 
+sisbur.datasource.jdbc-url=jdbc:oracle:thin:@10.20.50.200:1525/BMTKSIS
 sisbur.datasource.username=
 sisbur.datasource.password=
 sisbur.datasource.driverClassName=oracle.jdbc.OracleDriver
+
 sisbur.datasource.hikari.minimum-idle=5
 sisbur.datasource.hikari.maximum-pool-size=10
 sisbur.datasource.hikari.connectionTimeout=30000
 sisbur.datasource.hikari.idleTimeout=600000
 sisbur.datasource.hikari.maxLifetime=1800000
 sisbur.datasource.hikari.validation-timeout=5000
-sisbur.datasource.hikari.connection-test-query=SELECT 1
+sisbur.datasource.hikari.connection-test-query=SELECT 1 FROM DUAL
 
 # Endpoints
-# Local: sisbur.backend.host=http://localhost:8027
-# QA: sisbur.backend.host=http://10.20.50.6
-# Prod: sisbur.backend.host=http://10.10.50.28
-sisbur.backend.endpoint=/api
+# Local: sisbur.webpage.host=http://localhost:59174
+# QA: sisbur.webpage.host=http://10.20.50.6/bursa
+# Prod: sisbur.webpage.host=http://10.10.50.28/bursa
+sisbur.webpage.endpoint=/api
