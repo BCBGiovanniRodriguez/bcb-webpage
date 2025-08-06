@@ -45,8 +45,13 @@
                                     <div class="card-header">
                                         <h3 class="card-title"><strong>RESUMEN DE SU SALDO</strong></h3>
                                     </div>
-                                    <div class="card-body">
-                                        <div class="table-responsive">
+                                    <div class="card-body row">
+                                        <div class="col-3">
+                                            <canvas id="myChart">
+                                            </canvas>
+                                        </div>
+
+                                        <div class="col-9 table-responsive">
                                             <table class="table table-hover">
                                                 <thead>
                                                     <tr hidden>
@@ -60,7 +65,7 @@
                                                             <strong>MERCADO DE DINERO</strong>
                                                         </td>
                                                         <td style="width: 20%;">
-                                                            <span th:unless="${positionDetail == null && positionDetail.subtotalDin == null}" th:text="${positionDetail.subtotalDin}"></span>
+                                                            <span th:unless="${totalBalanceMoneyMarket == null}" th:text="${totalBalanceMoneyMarket}"></span>
                                                         </td>
                                                         <td></td>
                                                     </tr>
@@ -69,7 +74,7 @@
                                                             <strong>MERCADO DE CAPITALES</strong>
                                                         </td>
                                                         <td style="width: 20%;">
-                                                            <span th:unless="${positionDetail == null && positionDetail.subtotalCap == null}" th:text="${positionDetail.subtotalCap}"></span>
+                                                            <span th:unless="${totalBalanceStockMarket == null}" th:text="${totalBalanceStockMarket}"></span>
                                                         </td>
                                                         <td></td>
                                                     </tr>
@@ -87,7 +92,7 @@
                                                             <strong>SALDO MN</strong>
                                                         </td>
                                                         <td style="width: 20%;">
-
+                                                            <span th:unless="${totalBalanceMN == null}" th:text="${totalBalanceMN}"></span>
                                                         </td>
                                                         <td></td>
                                                     </tr>
@@ -115,5 +120,32 @@
         </div>
 
         <div th:replace="~{customer/fragments/common :: jsDependencies}"></div>
+
+        <script th:inline="javascript">
+            let totalBalanceMN = [[${totalBalanceMN}]];
+            let totalBalanceMoneyMarket = [[${totalBalanceMoneyMarket}]];
+            let totalBalanceStockMarket = [[${totalBalanceStockMarket}]];
+
+            const ctx = document.getElementById('myChart');
+
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                labels: ['Mercado de Dinero', 'Mercado de Capitales', 'Saldo MN'],
+                datasets: [{
+                    label: 'Monto MN',
+                    data: [totalBalanceMoneyMarket, totalBalanceStockMarket, totalBalanceMN],
+                    borderWidth: 1
+                }]
+                },
+                options: {
+                scales: {
+                    y: {
+                    beginAtZero: true
+                    }
+                }
+                }
+            });
+        </script>
     </body>
 </html>

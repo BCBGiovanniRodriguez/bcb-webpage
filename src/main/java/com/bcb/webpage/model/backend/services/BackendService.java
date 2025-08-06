@@ -6,24 +6,24 @@ import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.web.client.RestClientSsl;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
-import com.bcb.webpage.dto.request.AbstractRequestInterface;
 import com.bcb.webpage.dto.request.CustomerDetailRequest;
 import com.bcb.webpage.dto.request.CustomerMovementPositionRequest;
 import com.bcb.webpage.dto.request.CustomerStatementAccountRequest;
+import com.bcb.webpage.dto.request.CustomerTaxCertificateRequest;
 import com.bcb.webpage.dto.request.Login;
-import com.bcb.webpage.dto.request.SisburRequest;
 import com.bcb.webpage.dto.response.LoginResponse;
 import com.bcb.webpage.dto.response.customer.CustomerDetailResponse;
 import com.bcb.webpage.dto.response.position.CustomerMovementPositionResponse;
 import com.bcb.webpage.dto.response.statement.CustomerStatementAccountResponse;
 import com.bcb.webpage.dto.response.statement.CustomerStatementFileResponse;
+import com.bcb.webpage.dto.response.taxcertificate.CustomerTaxCertificateDetailResponse;
+import com.bcb.webpage.dto.response.taxcertificate.CustomerTaxCertificateResponse;
 import com.bcb.webpage.model.backend.entity.CustomerData;
 import com.bcb.webpage.model.backend.repository.CustomerDataRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -54,8 +54,11 @@ public class BackendService {
 
     private final String ENDPOINT_STATEMENTS_INFO = "/estadocuentadatos";
 
+    private final String ENDPOINT_TAX_CERTIFICATE_FILE = "/constancia";
+
+    private final String ENDPOINT_TAX_CERTIFICATE_PERIODS = "/constanciadetalle";
+
     public String getBaseEndpoint() {
-        //System.out.println("Url: " + host + endpoint);
         return host + endpoint;
     }
     
@@ -115,7 +118,7 @@ public class BackendService {
             customerData.setCreated(new Date());
             customerData.setCustomerNumber(customerNumber);
             customerData.setData(json);
-            customerData.setMd5String(md5);
+            customerData.setHash(md5);
             customerData.setRequestType(requestType);
 
             customerDataRepository.saveAndFlush(customerData);
@@ -133,23 +136,7 @@ public class BackendService {
 
         try {
             json = getJson(mapper, customerDetailRequest, ENDPOINT_CONTRACT_DETAIL);
-
-            // Get md5sum
-            String md5sumResponse = getMd5(json);
-            // Get previous data
-            Long customerNumber = Long.parseLong(customerDetailRequest.getContrato());
-            CustomerData customerData = customerDataRepository.findTopByCustomerNumberAndRequestType(customerNumber, CustomerData.REQUEST_CUSTOMER_DETAIL);
-
-            // If data exist compare md5's
-            if (customerData != null) {// existing record, compare and save
-                if (customerData.getMd5String().equals(md5sumResponse)) { // Same content, do not persist to db
-                    // Ideality use the information from the database, dispose the data from request
-                } else {// Data is different from previous, save new data
-                    createCustomerData(customerNumber, json, md5sumResponse, CustomerData.REQUEST_CUSTOMER_DETAIL);
-                }
-            } else { // no exists, add new record to db
-                createCustomerData(customerNumber, json, md5sumResponse, CustomerData.REQUEST_CUSTOMER_DETAIL);
-            }
+            json = saveResponse(customerDetailRequest.getContrato(), json, CustomerData.REQUEST_CUSTOMER_DETAIL);
             
         } catch (Exception e) {
             System.out.println("Error on BackendService::customerDetail " + e.getLocalizedMessage());
@@ -171,8 +158,12 @@ public class BackendService {
         String json = null;
 
         try {
-            json = getJson(mapper, positionRequest, ENDPOINT_MOVEMENT_AND_POSITION);
+            //json = getJson(mapper, positionRequest, ENDPOINT_MOVEMENT_AND_POSITION);
 
+            json = saveResponse(positionRequest.getContrato(), 
+                getJson(mapper, positionRequest, this.ENDPOINT_MOVEMENT_AND_POSITION), 
+                CustomerData.REQUEST_CUSTOMER_POSITION_BALANCE);
+            /*
             // Get md5sum
             String md5sumResponse = getMd5(json);
             // Get previous data
@@ -181,7 +172,7 @@ public class BackendService {
 
             // If data exist compare md5's
             if (customerData != null) {// existing record, compare and save
-                if (customerData.getMd5String().equals(md5sumResponse)) { // Same content, do not persist to db
+                if (customerData.getHash().equals(md5sumResponse)) { // Same content, do not persist to db
                     // Ideality use the information from the database, dispose the data from request
                 } else {// Data is different from previous, save new data
                     createCustomerData(customerNumber, json, md5sumResponse, CustomerData.REQUEST_CUSTOMER_POSITION_BALANCE);
@@ -189,6 +180,7 @@ public class BackendService {
             } else { // no exists, add new record to db
                 createCustomerData(customerNumber, json, md5sumResponse, CustomerData.REQUEST_CUSTOMER_POSITION_BALANCE);
             }
+            */
 
             customerPositionResponse = mapper.readValue(json, CustomerMovementPositionResponse.class);
 
@@ -224,7 +216,7 @@ public class BackendService {
 
             // If data exist compare md5's
             if (customerData != null) { // existing record, compare and save
-                if (customerData.getMd5String().equals(md5sumResponse)) { // Same content, do not persist to db
+                if (customerData.getHash().equals(md5sumResponse)) { // Same content, do not persist to db
                     // Ideality use the information from the database, dispose the data from request
                 } else {// Data is different from previous, save new data
                     createCustomerData(customerNumber, json, md5sumResponse, CustomerData.REQUEST_CUSTOMER_MOVEMENTS);
@@ -317,7 +309,7 @@ public class BackendService {
 
             // If data exist compare md5's
             if (customerData != null) { // existing record, compare and save
-                if (customerData.getMd5String().equals(md5sumResponse)) { // Same content, do not persist to db
+                if (customerData.getHash().equals(md5sumResponse)) { // Same content, do not persist to db
                     // Ideality use the information from the database, dispose the data from request
                 } else {// Data is different from previous, save new data
                     createCustomerData(customerNumber, json, md5sumResponse, CustomerData.REQUEST_CUSTOMER_STATEMENTS_DATA);
@@ -350,7 +342,7 @@ public class BackendService {
 
             // If data exist compare md5's
             if (customerData != null) { // existing record, compare and save
-                if (customerData.getMd5String().equals(md5sumResponse)) { // Same content, do not persist to db
+                if (customerData.getHash().equals(md5sumResponse)) { // Same content, do not persist to db
                     // Ideality use the information from the database, dispose the data from request
                 } else {// Data is different from previous, save new data
                     createCustomerData(customerNumber, json, md5sumResponse, CustomerData.REQUEST_CUSTOMER_STATEMENTS_FILE);
@@ -366,6 +358,90 @@ public class BackendService {
         }
 
         return statementFileResponse;
+    }
+
+    public CustomerTaxCertificateDetailResponse getTaxCertificatesDetail(CustomerTaxCertificateRequest taxCertificateRequest) {
+        CustomerTaxCertificateDetailResponse taxCertificateDetailResponse = null;
+        ObjectMapper mapper = new ObjectMapper();
+        String json = null;
+
+        try {
+            json = getJson(mapper, taxCertificateRequest, ENDPOINT_TAX_CERTIFICATE_PERIODS);
+            // Get md5sum
+            String md5sumResponse = getMd5(json);
+            // Get previous data
+            Long customerNumber = Long.parseLong(taxCertificateRequest.getContrato());
+            CustomerData customerData = customerDataRepository.findTopByCustomerNumberAndRequestType(customerNumber, CustomerData.REQUEST_CUSTOMER_TAX_CERTIFICATES_DATA);
+
+            if (customerData != null) { // existing record, compare and save
+                if (customerData.getHash().equals(md5sumResponse)) { // Same content, do not persist to db
+                    // Ideality use the information from the database, dispose the data from request
+                } else {// Data is different from previous, save new data
+                    createCustomerData(customerNumber, json, md5sumResponse, CustomerData.REQUEST_CUSTOMER_TAX_CERTIFICATES_DATA);
+                }
+            } else { // no exists, add new record to db
+                createCustomerData(customerNumber, json, md5sumResponse, CustomerData.REQUEST_CUSTOMER_TAX_CERTIFICATES_DATA);
+            }
+
+            taxCertificateDetailResponse = mapper.readValue(json, CustomerTaxCertificateDetailResponse.class);
+
+        } catch (Exception e) {
+            System.out.println("Error on BackendService::getTaxCertificatesDetail: " + e.getLocalizedMessage());
+        }
+
+        return taxCertificateDetailResponse;
+    }
+
+    public CustomerTaxCertificateResponse getTaxCertificateFile(CustomerTaxCertificateRequest taxCertificateRequest) {
+        CustomerTaxCertificateResponse taxCertificateResponse = null;
+        ObjectMapper mapper = new ObjectMapper();
+        String json = null;
+
+        try {
+            json = getJson(mapper, taxCertificateRequest, ENDPOINT_TAX_CERTIFICATE_FILE);
+            // Get md5sum
+            String md5sumResponse = getMd5(json);
+            // Get previous data
+            Long customerNumber = Long.parseLong(taxCertificateRequest.getContrato());
+            CustomerData customerData = customerDataRepository.findTopByCustomerNumberAndRequestType(customerNumber, CustomerData.REQUEST_CUSTOMER_TAX_CERTIFICATES_FILE);
+
+            if (customerData != null) { // existing record, compare and save
+                if (customerData.getHash().equals(md5sumResponse)) { // Same content, do not persist to db
+                    // Ideality use the information from the database, dispose the data from request
+                } else {// Data is different from previous, save new data
+                    createCustomerData(customerNumber, json, md5sumResponse, CustomerData.REQUEST_CUSTOMER_TAX_CERTIFICATES_FILE);
+                }
+            } else { // no exists, add new record to db
+                createCustomerData(customerNumber, json, md5sumResponse, CustomerData.REQUEST_CUSTOMER_TAX_CERTIFICATES_FILE);
+            }
+
+            taxCertificateResponse = mapper.readValue(json, CustomerTaxCertificateResponse.class);
+        } catch (Exception e) {
+            System.out.println("Error on BackendService::getTaxCertificatesInfo: " + e.getLocalizedMessage());
+        }
+
+        return taxCertificateResponse;
+    }
+
+    private String saveResponse(String customerNumber, String json, Integer requestType) {
+        String jsonHash;
+        Long customerNumberLong;
+
+        try {
+            customerNumberLong = Long.parseLong(customerNumber);
+            jsonHash = getHashString(json);
+
+            CustomerData customerData = customerDataRepository.findTopByCustomerNumberAndRequestTypeAndHash(customerNumberLong, requestType, jsonHash);
+            if (customerData == null) {
+                createCustomerData(customerNumberLong, json, jsonHash, requestType);
+            } else {
+                json = customerData.getData();
+            }
+        } catch (Exception e) {
+            System.out.println("Error on BackendService::saveResponse: " + e.getLocalizedMessage());
+        }
+
+        return json;
     }
 
     
@@ -387,6 +463,28 @@ public class BackendService {
         }
 
         return buffer.toString();
+    }
+
+    /**
+     * 
+     * @param jsonString
+     * @return
+     * @throws NoSuchAlgorithmException
+     */
+    public String getHashString(String jsonString) throws NoSuchAlgorithmException {
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        byte[] hashBytes = digest.digest(jsonString.getBytes());
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (byte b : hashBytes) {
+            String hex = Integer.toHexString(0xff & b);
+            if (hex.length() == 1) {
+                stringBuilder.append('0');
+            }
+            stringBuilder.append(hex);
+        }
+
+        return stringBuilder.toString();
     }
     
 }

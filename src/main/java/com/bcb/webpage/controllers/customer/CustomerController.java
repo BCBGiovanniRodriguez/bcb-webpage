@@ -6,13 +6,9 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-//import java.net.http.HttpHeaders;
-import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -22,9 +18,6 @@ import java.util.TreeSet;
 
 import org.apache.commons.text.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureOrder;
-import org.springframework.boot.autoconfigure.web.ServerProperties.Tomcat.Resource;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.PathResource;
 import org.springframework.http.CacheControl;
 import org.springframework.http.ContentDisposition;
@@ -35,42 +28,46 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bcb.webpage.dto.request.CustomerDetailRequest;
 import com.bcb.webpage.dto.request.CustomerMovementPositionRequest;
 import com.bcb.webpage.dto.request.CustomerStatementAccountRequest;
-import com.bcb.webpage.dto.request.Login;
-import com.bcb.webpage.dto.response.LoginResponse;
+import com.bcb.webpage.dto.request.CustomerTaxCertificateRequest;
 import com.bcb.webpage.dto.response.customer.CustomerDetailResponse;
+import com.bcb.webpage.dto.response.customer.ListaBeneficiaro;
+import com.bcb.webpage.dto.response.customer.ListaCuentum;
 import com.bcb.webpage.dto.response.position.CustomerMovementPositionResponse;
 import com.bcb.webpage.dto.response.position.Movimiento;
 import com.bcb.webpage.dto.response.position.Posicion;
+import com.bcb.webpage.dto.response.position.Saldo;
 import com.bcb.webpage.dto.response.statement.CustomerStatementAccountResponse;
 import com.bcb.webpage.dto.response.statement.CustomerStatementFileResponse;
 import com.bcb.webpage.dto.response.statement.StatementAccount;
+import com.bcb.webpage.dto.response.taxcertificate.CustomerTaxCertificateDetailResponse;
+import com.bcb.webpage.dto.response.taxcertificate.CustomerTaxCertificatePeriodResponse;
+import com.bcb.webpage.dto.response.taxcertificate.CustomerTaxCertificateResponse;
+import com.bcb.webpage.dto.response.taxcertificate.TaxCertificate;
 import com.bcb.webpage.model.backend.entity.CustomerData;
 import com.bcb.webpage.model.backend.entity.CustomerSession;
 import com.bcb.webpage.model.backend.entity.customers.CustomerContract;
-import com.bcb.webpage.model.backend.entity.customers.CustomerCustomer;
 import com.bcb.webpage.model.backend.entity.customers.CustomerStatementAccount;
+import com.bcb.webpage.model.backend.entity.customers.CustomerTaxCertificate;
 import com.bcb.webpage.model.backend.repository.ContractRepository;
 import com.bcb.webpage.model.backend.repository.CustomerDataRepository;
 import com.bcb.webpage.model.backend.repository.CustomerRepository;
 import com.bcb.webpage.model.backend.repository.CustomerSessionRepository;
 import com.bcb.webpage.model.backend.repository.CustomerStatementAccountRepository;
+import com.bcb.webpage.model.backend.repository.CustomerTaxCertificateRepository;
 import com.bcb.webpage.model.backend.services.BackendService;
-import com.bcb.webpage.model.backend.services.CustomerService;
-import com.bcb.webpage.model.sisbur.service.MovementService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpServletResponse;
-
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 @RequestMapping("/portal-clientes")
@@ -102,6 +99,9 @@ public class CustomerController {
     private CustomerSessionRepository customerSessionRepository;
 
     @Autowired
+    private CustomerTaxCertificateRepository customerTaxCertificateRepository;
+
+    @Autowired
     private CustomerStatementAccountRepository customerStatementAccountRepository;
 
     private DateTimeFormatter mexFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -112,16 +112,27 @@ public class CustomerController {
 
     private LocalDateTime todayTime = LocalDateTime.now();
 
+    private CustomerContract currentContract;
+
     @GetMapping("/dashboard")
     public String dashboard(Authentication authentication, Model model) {
+        String contractNumber = null;
         String currentSessionDateStr = "N/A";
         String currentSessionTimeStr = "N/A";
         String lastSessionDateStr = "N/A";
         String lastSessionTimeStr = "N/A";
+        CustomerDetailResponse customerDetailResponse = null;
+        CustomerMovementPositionResponse customerMovementPositionResponse = null;
+        Double totalBalanceMN = 0D;
+        Double totalBalanceMoneyMarket = 0D;
+        Double totalBalanceStockMarket = 0D;
 
         try {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            contractNumber = userDetails.getUsername();
             CustomerContract contract = contractRepository.findOneByContractNumber(userDetails.getUsername()).get();
+            
+            // Get session detail
             List<CustomerSession> sessionList = contract.getCustomer().getSessions();
             CustomerSession currentSession = sessionList.stream()
                 .filter(cs -> cs.isCurrent())
@@ -137,32 +148,41 @@ public class CustomerController {
             System.out.println("CurrentSession" + currentSession.getTimestamp().toString());
             System.out.println("LastSession" + lastSession.getTimestamp().toString());
 
-            String contractNumber = contract.getContractNumber();
-            CustomerDetailResponse customerDetailResponse = null;
-            CustomerDetailRequest customerDetailRequest = new CustomerDetailRequest();
-            customerDetailRequest.setContrato(contractNumber);
-
-            CustomerMovementPositionResponse customerMovementPositionResponse = null;
-            CustomerMovementPositionRequest customerMovementPositionRequest = new CustomerMovementPositionRequest();
-            customerMovementPositionRequest.setContrato(contractNumber);
-            customerMovementPositionRequest.setTipo("2");
-
             currentSessionDateStr = WordUtils.capitalizeFully(DateTimeFormatter.ofPattern("EEEE, MMMM dd yyyy").format(currentSession.getTimestamp()));
             currentSessionTimeStr = DateTimeFormatter.ofPattern("HH:mm:ss").format(currentSession.getTimestamp());
             lastSessionDateStr = WordUtils.capitalizeFully(DateTimeFormatter.ofPattern("EEEE, MMMM dd yyyy").format(lastSession.getTimestamp()));
             lastSessionTimeStr = DateTimeFormatter.ofPattern("HH:mm:ss").format(lastSession.getTimestamp());
+
+            CustomerDetailRequest customerDetailRequest = new CustomerDetailRequest();
+            customerDetailRequest.setContrato(contractNumber);
+
+            // Get balance detail
+            CustomerMovementPositionRequest customerMovementPositionRequest = new CustomerMovementPositionRequest();
+            customerMovementPositionRequest.setContrato(contractNumber);
+            customerMovementPositionRequest.setTipo("2");
             
             customerDetailResponse = backendService.customerDetail(customerDetailRequest);
-            //System.out.println("CustomerDetail: " + customerDetailResponse.toString());
 
             Posicion positionDetail = new Posicion();
             customerMovementPositionResponse = backendService.customerMovements(customerMovementPositionRequest);
-            //System.out.println("CustomerPosition: " + customerMovementPositionResponse.toString());
-
+            
             ArrayList<Posicion> listPositions = customerMovementPositionResponse.getPosicion();
             if (listPositions != null && listPositions.size() > 0) {
                 positionDetail = listPositions.getLast();
             }
+            ArrayList<Saldo> listBalance = customerMovementPositionResponse.getSaldo();
+
+            totalBalanceMoneyMarket = Double.parseDouble(positionDetail.getSubtotalDin().replace(",", ""));
+            totalBalanceStockMarket = Double.parseDouble(positionDetail.getSubtotalCap().replace(",", ""));
+            
+            if (listBalance.size() > 0) {
+                for (Saldo saldo : listBalance) {
+                    if (saldo.getCveDivisa() != "Por Asignar Indeval") {
+                        totalBalanceMN += Double.parseDouble(saldo.getSubTotal().replace(",", "")); 
+                    }
+                }
+            }
+
             
             model.addAttribute("customerDetailResponse", customerDetailResponse);
             model.addAttribute("positionDetail", positionDetail);
@@ -176,39 +196,57 @@ public class CustomerController {
         model.addAttribute("lastSessionDateStr", lastSessionDateStr);
         model.addAttribute("lastSessionTimeStr", lastSessionTimeStr);
 
+        model.addAttribute("totalBalanceMN", totalBalanceMN);
+        model.addAttribute("totalBalanceMoneyMarket", totalBalanceMoneyMarket);
+        model.addAttribute("totalBalanceStockMarket", totalBalanceStockMarket);
+
         return "customer/dashboard";
     }
     
     @GetMapping("/detalle")
-    public String customerDetail(Model model) {
+    public String customerDetail(Authentication authentication, Model model) {
         CustomerDetailResponse customerDetailResponse = null;
         CustomerDetailRequest customerDetailRequest = new CustomerDetailRequest();
         customerDetailRequest.setContrato("101272");
+        String contractNumber = null;
+        ArrayList<ListaBeneficiaro> listaBeneficiaros = null;
+        ArrayList<ListaCuentum> listaCuenta = null;
 
         try {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            contractNumber = userDetails.getUsername();
+
             customerDetailResponse = backendService.customerDetail(customerDetailRequest);
+            System.out.println(customerDetailResponse);
+
+            listaBeneficiaros = customerDetailResponse.getBeneficiarios().getListaBeneficiaros();
+            listaCuenta = customerDetailResponse.getCuenta().getListaCuenta();
         } catch (Exception e) {
             System.out.println("Error on CustomerController::customerDetail " + e.getLocalizedMessage());
         }
 
         model.addAttribute("customerDetailResponse", customerDetailResponse);
+        model.addAttribute("listaBeneficiaros", listaBeneficiaros);
+        model.addAttribute("listaCuenta", listaCuenta);
         
         return "customer/detail";
     }
 
     @GetMapping("/posicion")
     public String customerPosition(Model model) {
+        ObjectMapper mapper = new ObjectMapper();
         ArrayList<Posicion> positionStockList = new ArrayList<Posicion>();
         ArrayList<Posicion> positionMoneyList = new ArrayList<Posicion>();
         ArrayList<Posicion> positionFundsList = new ArrayList<Posicion>();
 
+        String stockMarketJson = null;
+        String moneyMarketJson = null;
+        String cashJson = null;
         CustomerMovementPositionResponse customerPositionResponse = null;
+
         CustomerMovementPositionRequest customerPositionRequest = new CustomerMovementPositionRequest();
         customerPositionRequest.setContrato("101272");
-        // 1: Movimientos - 2: - Posición
-        customerPositionRequest.setTipo("2");
-        //movementPositionRequest.setFechaIni(null);
-        //movementPositionRequest.setFechaFin(null);
+        customerPositionRequest.setTipo("2"); // 1: Movimientos - 2: - Posición
 
         try {
             customerPositionResponse = backendService.customerPosition(customerPositionRequest);
@@ -220,7 +258,8 @@ public class CustomerController {
                 if (posicion.isFundsMarket()) positionFundsList.add(posicion);
             }
 
-            
+            stockMarketJson = mapper.writeValueAsString(positionStockList);
+            moneyMarketJson = mapper.writeValueAsString(positionMoneyList);
 
         } catch (Exception e) {
             System.out.println("Error on CustomerController::customerPosition " + e.getLocalizedMessage());
@@ -232,12 +271,23 @@ public class CustomerController {
         model.addAttribute("positionFundsList", positionFundsList);
         model.addAttribute("customerPositionResponse", customerPositionResponse);
 
+        model.addAttribute("stockMarketJson", stockMarketJson);
+        model.addAttribute("moneyMarketJson", moneyMarketJson);
+
         // Obtener # de contrato
         // Obtener # de cliente
         // Obtener posición del contrato
 
         return "customer/position";
     }
+
+    @PostMapping("/posicion")
+    public String postMethodName(@RequestBody String entity) {
+        System.out.println("data");
+        
+        return entity;
+    }
+    
 
     @GetMapping("/movimientos")
     public String customerMovements(
@@ -362,7 +412,7 @@ public class CustomerController {
         model.addAttribute("currentStatementAccount", currentStatementAccount);
         model.addAttribute("last12StatementAccounts", last12StatementAccounts);
         model.addAttribute("statementYearsSet", statementYearList);
-        //model.addAttribute("lastStatementAccounts", lastStatementAccounts);
+        //model.addAttribute("lastStatementAccounts", lastStatementAccounts);redd
         model.addAttribute("lastStatementAccountsJson", lastStatementAccountsJson);
 
         return "customer/statements";
@@ -484,6 +534,7 @@ public class CustomerController {
         return "customer/statement-search-xml";
     }
 
+    // function to get file identifier
     private String getStatementAccountFileIdentifier(String contractNumber, int positionList, int type) {
         ObjectMapper mapper = new ObjectMapper();
         String extensionFile;
@@ -556,7 +607,7 @@ public class CustomerController {
             System.out.println("Error on customerStatementsQuery:: " + e.getLocalizedMessage());
         }
 
-        model.addAttribute("statementAccountId", statementAccountId);
+        //model.addAttribute("statementAccountId", statementAccountId);
 
         return "customer/statement-search";
     }
@@ -571,13 +622,194 @@ public class CustomerController {
 
 
     @GetMapping("/constancia-fiscal")
-    public String customerTaxCertificates() {
+    public String customerTaxCertificates(Authentication authentication, Model model) {
+        CustomerTaxCertificateDetailResponse taxCertificateDetailResponse = null;
+        List<TaxCertificate> taxCertificateList = new ArrayList<>();
+        Set<String> yearSet = new TreeSet<>();
+        String taxCertificatesJson = null;
+        ObjectMapper mapper = new ObjectMapper();
+
+        try {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            CustomerTaxCertificateRequest taxCertificateRequest = new CustomerTaxCertificateRequest();
+            taxCertificateRequest.setContrato(userDetails.getUsername());
+            taxCertificateDetailResponse = backendService.getTaxCertificatesDetail(taxCertificateRequest);
+            taxCertificateList = taxCertificateDetailResponse.getListaConstancias();
+            
+            for (TaxCertificate taxCertificate : taxCertificateList) {
+                yearSet.add(taxCertificate.getPeriodo());
+            }
+
+            taxCertificatesJson = mapper.writeValueAsString(taxCertificateList);
+
+        } catch (Exception e) {
+            System.out.println("Error on CustomerController: " + e.getLocalizedMessage());
+        }
+
+        model.addAttribute("yearSet", yearSet);
+        model.addAttribute("taxCertificatesList", taxCertificateList);
+        model.addAttribute("taxCertificatesJson", taxCertificatesJson);
+
         return "customer/tax-certificates";
     }
 
+    @GetMapping("/constancia-fiscal/consultarpdf")
+    public String customerTaxCertificateViewPdf(@RequestParam Integer year, @RequestParam Integer type, Authentication authentication, Model model) {
+        // Si no existe el archivo previamente, se descarga
+        // Se guarda el detalle de la descarga en la base de datos
+        // Se guarda registro de la constancia fiscal
+        String contractNumber = null;
+        CustomerContract customerContract = null;
+        CustomerTaxCertificate customerTaxCertificate = null;
+        Long customerTaxCertificateId = null;
+        System.out.println("Anio:" + year);
+        System.out.println("Tipo:" + type);
+
+
+        try {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            contractNumber = userDetails.getUsername();
+            customerContract = contractRepository.findOneByContractNumber(contractNumber).get();
+
+            Optional<CustomerTaxCertificate> result = customerTaxCertificateRepository.findByYearAndTypeAndCustomerContract(year.toString(), type.toString(), customerContract);
+
+            if (result.isPresent()) { // Already downloaded, get and send taxCertificateId
+                customerTaxCertificate = result.get();
+                customerTaxCertificateId = customerTaxCertificate.getTaxCertificateId();
+            } else {
+                String taxCertificateFilePath = null;
+                String taxCertificateFileName = null;
+                customerTaxCertificate = new CustomerTaxCertificate();
+                customerTaxCertificate.setType(type.toString());
+
+                CustomerTaxCertificateRequest taxCertificateRequest = new CustomerTaxCertificateRequest();
+                CustomerTaxCertificateResponse taxCertificateResponse = null;
+                taxCertificateRequest.setContrato(contractNumber);
+                taxCertificateRequest.setPdf("1");
+                taxCertificateRequest.setConstanciaTipo(type.toString());
+                taxCertificateRequest.setAnoconsulta(year.toString());
+
+                taxCertificateResponse = backendService.getTaxCertificateFile(taxCertificateRequest);
+
+                if (taxCertificateResponse.getRespuesta() != "Error") {
+                    // Save downloaded file
+                    taxCertificateFilePath = "contracts/" + contractNumber  + "/tax_certificates/";
+                    taxCertificateFileName = contractNumber + "_" + year.toString() + "_" + customerTaxCertificate.getTypeAsString() + ".pdf";
+
+                    // Save file and record
+                    Path path = Paths.get(taxCertificateFilePath);
+                    Files.createDirectories(path);
+                    // Decode from Base64 to binary
+                    byte[] byteArray = Base64.getDecoder().decode(taxCertificateResponse.getConstancia());
+                    // Save the binary file
+                    OutputStream outputStream = new FileOutputStream(taxCertificateFilePath + taxCertificateFileName);
+                    outputStream.write(byteArray);
+                    outputStream.close();
+
+                    // Fill project
+                    LocalDateTime now = LocalDateTime.now();
+                    customerTaxCertificate.setCustomerContract(customerContract);
+                    customerTaxCertificate.setDownloadedDate(now);
+                    customerTaxCertificate.setFilename(taxCertificateFileName);
+                    customerTaxCertificate.setYear(year.toString());
+                    customerTaxCertificate.setPath(taxCertificateFilePath);
+
+                    customerTaxCertificateRepository.saveAndFlush(customerTaxCertificate);
+                    customerTaxCertificateId = customerTaxCertificate.getTaxCertificateId();
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error on CustomerController::customerTaxCertificateViewPdf: " + e.getLocalizedMessage());
+        }
+
+        model.addAttribute("customerTaxCertificateId", customerTaxCertificateId);
+
+        return "customer/tax-certificate-view";
+    }
+
+    @GetMapping("/constancia-fiscal/descargarpdf")
+    public String customerTaxCertificateDownloadPdf() {
+        return "customer/tax-certificate-view";
+    }
+
+    @GetMapping("/constancia-fiscal/descargarxml")
+    public String customerTaxCertificateDownloadXml() {
+        return "customer/tax-certificate-view";
+    }
+
+    @GetMapping("/constancia-fiscal/ver-pdf/{customerTaxCertificateId}")
+    public ResponseEntity<PathResource> showTaxCertificate(@PathVariable Integer customerTaxCertificateId, Authentication authentication) {
+        Optional<CustomerTaxCertificate> result;
+        CustomerTaxCertificate taxCertificate;
+        String customerTaxCertificateFileName = null;
+        String customerTaxCertificateFilePath = null;
+
+        try {
+            result = customerTaxCertificateRepository.findById(Long.valueOf(customerTaxCertificateId));
+
+            if (result.isPresent()) {
+                taxCertificate = result.get();
+                customerTaxCertificateFileName = taxCertificate.getFilename();
+                customerTaxCertificateFilePath = taxCertificate.getPath();
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error on CustomerController::showTaxCertificate: " + e.getLocalizedMessage());
+        }
+
+        PathResource res = new PathResource(customerTaxCertificateFilePath + customerTaxCertificateFileName);
+
+        HttpHeaders headers = new org.springframework.http.HttpHeaders();
+        headers.set("X-Frame-Options", "ALLOW-FROM origin");
+        headers.setAccessControlAllowOrigin("*");
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.inline().filename(customerTaxCertificateFileName).build());
+        headers.setCacheControl(CacheControl.noCache().getHeaderValue());
+
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .body(res);
+    }
+
+
+
+
+    @PostMapping("/constancia-fiscal")
+    public String customerTaxCertificatesSubmit(@RequestBody String year, Authentication authentication, Model model) {
+        
+        try {
+
+            
+            
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            CustomerTaxCertificateRequest taxCertificateRequest = new CustomerTaxCertificateRequest();
+            taxCertificateRequest.setContrato(userDetails.getUsername());
+            taxCertificateRequest.setAnoconsulta(year);
+            taxCertificateRequest.setPdf("1");
+            taxCertificateRequest.setConstanciaTipo("1");
+
+            CustomerTaxCertificatePeriodResponse taxCertificatePeriodResponse;
+
+
+        } catch (Exception e) {
+            System.out.println("Error on: customerTaxCertificatesSubmit " + e.getLocalizedMessage());
+        }
+
+        model.addAttribute("year", year);
+        
+        return "customer/tax-certificates";
+    }
     
+    @GetMapping("/cambiar-contrato")
+    public String getChangeContract(@RequestParam String contractNumber) {
+        // Verify if contract number in customer contracts
+
+
+        return "customer/change-contract";
+    }
 
     
-
-
+    
 }

@@ -1,0 +1,102 @@
+<!-- Created with Jaspersoft Studio version 7.0.2.final using JasperReports Library version 7.0.2-31532122640f516c6d17238ae0e41a08113d5ac0  -->
+<jasperReport name="MoneyMarket_Letter_Landscape" language="java" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3a35090a-98a9-41d1-a367-bc070e33511b">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+
+    <field name="emmiter" class="java.lang.String">
+	</field>
+    <field name="series" class="java.lang.String">
+	</field>
+    <field name="period" class="java.math.BigDecimal">
+	</field>
+    <field name="rate" class="java.math.BigDecimal">
+	</field>
+    <field name="position" class="java.math.BigDecimal">
+	</field>
+    <field name="amount" class="java.math.BigDecimal">
+	</field>
+    <field name="currentValue" class="java.math.BigDecimal">
+	</field>
+    <field name="marketValue" class="java.math.BigDecimal">
+	</field>
+    <field name="valuation" class="java.math.BigDecimal">
+	</field>
+
+	<query language="sql"><![CDATA[]]></query>
+	<background splitType="Stretch"/>
+	<title height="108" splitType="Stretch">
+		<element kind="image" uuid="c9467117-610e-4520-91e6-a05b417a10d9" x="0" y="0" width="251" height="50">
+			<expression><![CDATA["BCB-logo-blue.svg"]]></expression>
+		</element>
+		<element kind="staticText" uuid="ad221f22-fcf6-4d2d-8726-7ded3144c201" x="392" y="0" width="348" height="40" forecolor="#003B72" fontSize="25.0" hTextAlign="Right">
+			<text><![CDATA[REPORTE DE POSICIÓN]]></text>
+		</element>
+		<element kind="staticText" uuid="220e65bb-f011-4b34-9367-1ac86320c265" x="456" y="42" width="284" height="24" forecolor="#003B72" fontSize="16.0" bold="true" italic="true" hTextAlign="Right">
+			<text><![CDATA[RUBRO: MERCADO DE DINERO]]></text>
+		</element>
+		<element kind="staticText" uuid="87d34989-b90c-4c46-a2e4-fa0b75769c5e" x="490" y="71" width="126" height="14" forecolor="#003B72">
+			<text><![CDATA[FECHA DE CONSULTA:]]></text>
+		</element>
+		<element kind="textField" uuid="bebf6f53-6168-462c-9724-94e555190289" x="642" y="70" width="100" height="16">
+			<expression><![CDATA[$F{SEARCH_DATE}]]></expression>
+		</element>
+		<property name="com.jaspersoft.studio.unit.height" value="px"/>
+	</title>
+	<pageHeader height="35" splitType="Stretch"/>
+	<columnHeader height="30" splitType="Stretch">
+		<element kind="textField" uuid="3b06dc75-bf63-4b2d-b4b4-89cc79e82107" x="20" y="14" width="80" height="16" fontSize="8.0">
+			<expression><![CDATA[$F{emmiter}]]></expression>
+		</element>
+		<element kind="textField" uuid="2d23b5b4-ece5-476d-936c-800be77fec37" x="100" y="14" width="80" height="16" fontSize="8.0">
+			<expression><![CDATA[$F{series}]]></expression>
+		</element>
+		<element kind="staticText" uuid="58910d0f-bb8a-4544-bf0f-6ee6bfeb1646" x="20" y="0" width="80" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[EMISORA]]></text>
+		</element>
+		<element kind="staticText" uuid="692fc29b-dca7-41e3-910f-e1412d15b9ec" x="100" y="0" width="80" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[SERIE]]></text>
+		</element>
+		<element kind="staticText" uuid="68d6ef4f-225b-4215-8e14-a1a94547c1ad" x="180" y="0" width="80" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[PLAZO]]></text>
+		</element>
+		<element kind="staticText" uuid="b1ee15b9-479c-4dab-95cd-3a1c75ae4393" x="260" y="0" width="80" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[TASA]]></text>
+		</element>
+		<element kind="staticText" uuid="f55a634a-c00e-4bc9-a580-89032965ae92" x="340" y="0" width="80" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[TÍTULOS]]></text>
+		</element>
+		<element kind="staticText" uuid="51b59c80-22c8-4e28-93c2-de95388fc713" x="420" y="0" width="80" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[COSTO PROMEDIO]]></text>
+		</element>
+		<element kind="staticText" uuid="314c963d-f8bd-4e20-9d9c-d6c88c27bad8" x="500" y="0" width="80" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[VALOR ACTUAL]]></text>
+		</element>
+		<element kind="staticText" uuid="94eb7665-67a2-418b-a75c-1053aa5ab668" x="580" y="0" width="80" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[VALOR MERCADO]]></text>
+		</element>
+		<element kind="staticText" uuid="43845205-e88b-462f-8049-60db15ecc235" x="660" y="0" width="80" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[PLUS/MINUS VALÍA]]></text>
+		</element>
+		<element kind="textField" uuid="c19a809d-2af3-47e2-af9a-4ea1d9b10e96" x="180" y="14" width="80" height="16" fontSize="8.0">
+			<expression><![CDATA[$F{period}]]></expression>
+		</element>
+		<element kind="textField" uuid="0b7eb348-e157-42e1-a30d-26bb8814964e" x="260" y="14" width="80" height="16" fontSize="8.0">
+			<expression><![CDATA[$F{rate}]]></expression>
+		</element>
+		<element kind="textField" uuid="fe342811-e4f0-4268-adab-ff39df2d57e0" x="340" y="14" width="80" height="16" fontSize="8.0">
+			<expression><![CDATA[$F{position}]]></expression>
+		</element>
+		<element kind="textField" uuid="9bccdcb6-3ef0-4917-ac91-1d1f49f4f745" x="420" y="14" width="80" height="16" fontSize="8.0">
+			<expression><![CDATA[$F{amount}]]></expression>
+		</element>
+		<element kind="textField" uuid="4e05c415-5248-4520-af55-5ac8189cf739" x="500" y="14" width="80" height="16" fontSize="8.0">
+			<expression><![CDATA[$F{currentValue}]]></expression>
+		</element>
+		<element kind="textField" uuid="6bcc70a4-fc67-4fde-b972-c1c607982369" x="580" y="14" width="80" height="16" fontSize="8.0">
+			<expression><![CDATA[$F{marketValue}]]></expression>
+		</element>
+		<element kind="textField" uuid="95bcbae6-7edf-4c08-b02c-7c71344b726e" x="660" y="14" width="80" height="16" fontSize="8.0">
+			<expression><![CDATA[$F{valuation}]]></expression>
+		</element>
+	</columnHeader>
+	<pageFooter height="54" splitType="Stretch"/>
+</jasperReport>

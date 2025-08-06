@@ -2,7 +2,7 @@ package com.bcb.webpage.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class CustomerDetailRequest implements AbstractRequestInterface{
+public class CustomerDetailRequest implements AbstractRequestInterface {
 
     @JsonProperty("contrato")
     public String contrato;

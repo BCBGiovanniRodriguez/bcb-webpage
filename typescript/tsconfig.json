@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "target": "ES6",
+        "module": "CommonJS",
+        "sourceMap": false,
+        "rootDir": "./",
+        "outDir": "../src/main/resources/static/public/js",
+        "removeComments": true,
+        "strict": true,
+        "esModuleInterop": true
+    }
+}

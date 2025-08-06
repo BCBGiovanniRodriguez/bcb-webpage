@@ -22,7 +22,7 @@
                             <div class="card-header">
                                 <h5 class="card-title"><strong>DATOS DEL CLIENTE</strong></h5>
                             </div>
-                            <div>
+                            <div class="card-body">
                                 <div class="table-responsive">
                                     <table class="table table-sm table-hover">
                                         <tbody>
@@ -33,7 +33,13 @@
                                             
                                             <tr>
                                                 <td><strong>BENEFICIARIOS</strong></td>
-                                                <td></td>
+                                                <td>
+                                                    <div th:unless="${listaBeneficiaros == null}">
+                                                        <ul>
+                                                            <li th:each="beneficiario : ${listaBeneficiaros}" th:text="${beneficiario.nombre}"></li>
+                                                        </ul>
+                                                    </div>
+                                                </td>
                                             </tr>
 
                                             <tr>
@@ -60,7 +66,15 @@
 
                                             <tr>
                                                 <td><strong>CUENTAS BANCARIAS</strong></td>
-                                                <td></td>
+                                                <td>
+                                                    <div th:unless="${listaCuenta == null}">
+                                                        <ul>
+                                                            <li th:each="cuenta : ${listaCuenta}">
+                                                                [[${cuenta.clabe}]] - [[${cuenta.banco}]]
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </td>
                                             </tr>
 
                                             <tr>

@@ -28,7 +28,7 @@ public class CustomerData {
     private String data;
 
     @Column(nullable = false, columnDefinition = "MEDIUMTEXT")
-    private String md5String;
+    private String hash;
 
     @Column(nullable = false, columnDefinition = "timestamp default current_timestamp")
     private Date created;
@@ -49,7 +49,11 @@ public class CustomerData {
 
     public static int REQUEST_CUSTOMER_STATEMENTS_FILE = 8;
 
+    public static int REQUEST_CUSTOMER_TAX_CERTIFICATES_FILE = 9;
+
     public static int REQUEST_CUSTOMER_STATEMENTS_DATA = 10;
+
+    public static int REQUEST_CUSTOMER_TAX_CERTIFICATES_DATA = 11;
 
     public CustomerData() {
     }
@@ -86,12 +90,12 @@ public class CustomerData {
         this.data = data;
     }
 
-    public String getMd5String() {
-        return md5String;
+    public String getHash() {
+        return hash;
     }
 
-    public void setMd5String(String md5String) {
-        this.md5String = md5String;
+    public void setHash(String hash) {
+        this.hash = hash;
     }
 
     public Date getCreated() {

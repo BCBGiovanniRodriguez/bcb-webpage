@@ -61,45 +61,78 @@
                                     </div>
                                     <hr>
                                     <div class="table-responsive">
-
+                                        <table class="table table-sm table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Mercado</th>
+                                                    <th>Emisora</th>
+                                                    <th>Serie</th>
+                                                    <th>No Títulos</th>
+                                                    <th>Costo Promedio</th>
+                                                    <th>Precio</th>
+                                                    <th>Valor</th>
+                                                    <th>% Portafolio</th>
+                                                    <th>Minusvalía / Plusvalía</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <th>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                </th>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                                 <div class="tab-pane fade active show" id="money-market-tab-pane" role="tabpanel" aria-labelledby="money-market-tab" tabindex="1">
                                     <div class="text-right">
-                                        <button class="btn btn-sm btn-primary">
+                                        <button id="moneyMarketButton" class="btn btn-sm btn-primary">
                                             <i class="fa fa-file-pdf"></i> Generar Reporte
                                         </button>
                                     </div>
                                     <hr>
-                                    <div class="table-responsive">
-                                        <table class="table table-sm table-hover">
-                                            <thead>
-                                                <th>FECHA</th>
-                                                <th>EMISORA</th>
-                                                <th>SERIE</th>
-                                                <th>PLAZO</th>
-                                                <th>TASA</th>
-                                                <th>TITULOS</th>
-                                                <th>COSTO PROMEDIO</th>
-                                                <th>VALOR ACTUAL</th>
-                                                <th>VALOR MERCADO</th>
-                                                <th>PLUSVALÍA / MINUSVALÍA</th>
-                                            </thead>
-                                            <tbody>
-                                                <tr th:each="posicion : ${positionMoneyList}">
-                                                    <td th:text="${today}"></td>
-                                                    <td th:text="${posicion.emisora}"></td>
-                                                    <td th:text="${posicion.serie}"></td>
-                                                    <td th:text="${posicion.plazo}"></td>
-                                                    <td th:text="${posicion.tasa}"></td>
-                                                    <td th:text="${posicion.titulos}"></td>
-                                                    <td th:text="${posicion.costoPromedio}"></td>
-                                                    <td th:text="${posicion.costoXTitulos}"></td>
-                                                    <td th:text="${posicion.valorMercado}"></td>
-                                                    <td th:text="${posicion.plusMinusvalia}"></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <canvas id="chartMoneyMarket">
+                                            </canvas>
+                                        </div>
+                                        <div class="col-9 table-responsive">
+                                            <table class="table table-sm table-hover">
+                                                <thead>
+                                                    <th>FECHA</th>
+                                                    <th>EMISORA</th>
+                                                    <th>SERIE</th>
+                                                    <th>PLAZO</th>
+                                                    <th>TASA</th>
+                                                    <th>TITULOS</th>
+                                                    <th>COSTO PROMEDIO</th>
+                                                    <th>VALOR ACTUAL</th>
+                                                    <th>VALOR MERCADO</th>
+                                                    <th>PLUSVALÍA / MINUSVALÍA</th>
+                                                </thead>
+                                                <tbody>
+                                                    <tr th:each="posicion : ${positionMoneyList}">
+                                                        <td th:text="${today}"></td>
+                                                        <td th:text="${posicion.emisora}"></td>
+                                                        <td th:text="${posicion.serie}"></td>
+                                                        <td th:text="${posicion.plazo}"></td>
+                                                        <td th:text="${posicion.tasa}"></td>
+                                                        <td th:text="${posicion.titulos}"></td>
+                                                        <td th:text="${posicion.costoPromedio}"></td>
+                                                        <td th:text="${posicion.costoXTitulos}"></td>
+                                                        <td th:text="${posicion.valorMercado}"></td>
+                                                        <td th:text="${posicion.plusMinusvalia}"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="stock-market-tab-pane" role="tabpanel" aria-labelledby="stock-market-tab" tabindex="2">
@@ -109,33 +142,39 @@
                                         </button>
                                     </div>
                                     <hr>
-                                    <div class="table-responsive">
-                                        <table class="table table-sm table-hover">
-                                            <thead>
-                                                <tr>
-                                                    <th>FECHA</th>
-                                                    <th>EMISORA</th>
-                                                    <th>SERIE</th>
-                                                    <th>TÍTULOS</th>
-                                                    <th>COSTO POR TÍTULOS</th>
-                                                    <th>COSTO PROMEDIO</th>
-                                                    <th>VALOR MERCADO</th>
-                                                    <th>PLUSVALÍA/MINUSVALÍA</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr th:each="posicion : ${positionStockList}">
-                                                    <td th:text="${today}"></td>
-                                                    <td th:text="${posicion.emisora}"></td>
-                                                    <td th:text="${posicion.serie}"></td>
-                                                    <td th:text="${posicion.titulos}"></td>
-                                                    <td th:text="${posicion.costoXTitulos}"></td>
-                                                    <td th:text="${posicion.costoPromedio}"></td>
-                                                    <td th:text="${posicion.valorMercado}"></td>
-                                                    <td th:text="${posicion.plusMinusvalia}"></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <canvas id="chartStockMarket" width="250">
+                                            </canvas>
+                                        </div>
+                                        <div class="col-9 table-responsive">
+                                            <table class="table table-sm table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>FECHA</th>
+                                                        <th>EMISORA</th>
+                                                        <th>SERIE</th>
+                                                        <th>TÍTULOS</th>
+                                                        <th>COSTO POR TÍTULOS</th>
+                                                        <th>COSTO PROMEDIO</th>
+                                                        <th>VALOR MERCADO</th>
+                                                        <th>PLUSVALÍA/MINUSVALÍA</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr th:each="posicion : ${positionStockList}">
+                                                        <td th:text="${today}"></td>
+                                                        <td th:text="${posicion.emisora}"></td>
+                                                        <td th:text="${posicion.serie}"></td>
+                                                        <td th:text="${posicion.titulos}"></td>
+                                                        <td th:text="${posicion.costoXTitulos}"></td>
+                                                        <td th:text="${posicion.costoPromedio}"></td>
+                                                        <td th:text="${posicion.valorMercado}"></td>
+                                                        <td th:text="${posicion.plusMinusvalia}"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -150,20 +189,24 @@
                                         <table class="table table-sm table-hover">
                                             <thead>
                                                 <th>MONEDA</th>
-                                                <th>SALDO ACTUAL</th>
                                                 <th>SALDO POR LIQUIDAR</th>
+                                                <th>SALDO ACTUAL</th>
                                             </thead>
                                             <tbody>
                                                 <tr th:each="saldo : ${customerPositionResponse.saldo}">
                                                     <td th:text="${saldo.cveDivisa}"></td>
-                                                    <td th:text="${saldo.saldoActual}"></td>
                                                     <td th:text="${saldo.saldoXLiquidar}"></td>
+                                                    <td th:text="${saldo.saldoActual}"></td>
                                                 </tr>
                                                 <tr>
                                                     <td></td>
-                                                    <td></td>
                                                     <td>
                                                         SUBTOTAL 
+                                                    </td>
+                                                    <td>
+                                                        <strong>
+                                                            
+                                                        </strong>
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -211,5 +254,91 @@
         </div>
 
         <div th:replace="~{customer/fragments/common :: jsDependencies}"></div>
+
+        <script th:inline="javascript">
+            let stockMarketString = [[${stockMarketJson}]];
+            let moneyMarketString = [[${moneyMarketJson}]];
+            let stockMarketJson = JSON.parse(stockMarketString);
+            let moneyMarketJson = JSON.parse(moneyMarketString);
+
+            let stockMarketNamesArray = [];
+            let stockMarketAmountsArray = [];
+            let moneyMarketNamesArray = [];
+            let moneyMarketAmountsArray = [];
+
+            $.each(moneyMarketJson, function(i, item) {
+                let amount = item.VALORMERCADO.split(",").join("");
+
+                moneyMarketNamesArray.push(item.EMISORA + ' ' + item.SERIE);
+                moneyMarketAmountsArray.push(parseFloat(amount));
+            });
+
+            $.each(stockMarketJson, function(i, item) {
+                let amount = item.VALORMERCADO.split(",").join("");
+
+                stockMarketNamesArray.push(item.EMISORA + ' ' + item.SERIE);
+                stockMarketAmountsArray.push(parseFloat(amount));
+            });
+
+            const chartMoneyMarket = document.getElementById('chartMoneyMarket'),
+                chartStockMarket = document.getElementById('chartStockMarket'),
+                chartCash = document.getElementById('chartCash'),
+                chartGeneral = document.getElementById('chartGeneral');
+
+            let chartMoneyMarketObj = new Chart(chartMoneyMarket, {
+                type: 'pie',
+                data: {
+                labels: moneyMarketNamesArray,
+                datasets: [{
+                    label: 'Monto MN',
+                    data: moneyMarketAmountsArray,
+                    borderWidth: 1
+                }]
+                },
+                options: {
+                scales: {
+                    y: {
+                    beginAtZero: true
+                    }
+                }
+                }
+            });
+
+            
+
+            let chartStockMarketObj = new Chart(chartStockMarket, {
+                type: 'pie',
+                data: {
+                labels: stockMarketNamesArray,
+                datasets: [{
+                    label: 'Monto MN',
+                    data: stockMarketAmountsArray,
+                    borderWidth: 1
+                }]
+                },
+                options: {
+                scales: {
+                    y: {
+                    beginAtZero: true
+                    }
+                }
+                }
+            });
+
+            //console.log(chartMoneyMarketObj.toBase64Image());
+            $("#moneyMarketButton").on('click', function(){
+                $.ajax({
+                    method: 'POST',
+                    url: '/portal-clientes/posicion',
+                    data: {
+                        image: chartMoneyMarketObj.toBase64Image(),
+                        positionList: moneyMarketJson
+                    }
+                }).then((result, textStatus, jqXHR) => {
+                    console.log("result");
+                });
+            });
+        </script>
+
     </body>
 </html>

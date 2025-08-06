@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class IndexController {
     @GetMapping("/")
     public String index(Model model) {
-        model.addAttribute("homeVideoUrl", "/public/legacy/pages/common/video/HomeBCB220728.mp4");
+        model.addAttribute("homeVideoUrl", "/public/legacy/pages/home/video/HomeBCB220728.mp4");
         return "index";
     }
 

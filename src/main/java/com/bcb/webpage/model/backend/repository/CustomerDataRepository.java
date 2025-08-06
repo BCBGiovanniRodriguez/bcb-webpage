@@ -10,4 +10,6 @@ public interface CustomerDataRepository extends JpaRepository<CustomerData, Long
 
     CustomerData findTopByCustomerNumberAndRequestType(Long customerNumber, int requestType);
 
+    CustomerData findTopByCustomerNumberAndRequestTypeAndHash(Long customerNumber, int requestType, String hash);
+
 }
