@@ -12,13 +12,17 @@ spring.jpa.open-in-view=false
 spring.jpa.show-sql=true
 spring.jpa.hibernate.ddlAuto=update
 # Webpage database
-# Docker: webpage.datasource.jdbc-url=jdbc:mysql://webpage_db:53300/webpage?createDatabaseIfNotExist=true
-# Local: webpage.datasource.jakarta.persistence.jdbc-url=jdbc:mysql://localhost:3306/webpage?createDatabaseIfNotExist=true
+# Docker: webpage.datasource.jdbc-url=jdbc:mariadb://webpage_db:53300/webpage?createDatabaseIfNotExist=true
+# webpage.datasource.jakarta.persistence.jdbc-url=jdbc:mariadb://webpage:53300/webpage?createDatabaseIfNotExist=true
+# Local: 
+webpage.datasource.jakarta.persistence.jdbc-url=jdbc:mariadb://localhost:3306/webpage?createDatabaseIfNotExist=true
 webpage.datasource.jdbc-url=jdbc:mysql://localhost:3306/webpage?createDatabaseIfNotExist=true
 webpage.datasource.username=
 webpage.datasource.password=
 webpage.datasource.driverClassName=com.mysql.cj.jdbc.Driver
 webpage.datasource.spring.jpa.hibernate.dialect=org.hibernate.dialect.MySQLDialect
+webpage.datasource.spring.jakarta.persistence.jdbc.url=org.hibernate.dialect.MySQLDialect
+
 
 webpage.datasource.hikari.minimum-idle=5
 webpage.datasource.hikari.maximum-pool-size=10

@@ -3,27 +3,18 @@ services:
     build: .
     ports:
       - "20000:20000"
-    restart: always
     depends_on:
       - webpage_db
     networks:
       - network_webpage
   webpage_db:
-    image: mysql:latest
+    image: mariadb
     ports:
       - "53300:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: webpage
-      MYSQL_USER: webpage
-      MYSQL_PASSWORD: W3bp4g3_2O25/*+-%
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_DATABASE: webpage
     restart: always
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 1m30s
-      timeout: 10s
-      retries: 10
-      start_period: 10s
     volumes:
       - volume-db-webpage:/var/lib/mysql
     networks:
