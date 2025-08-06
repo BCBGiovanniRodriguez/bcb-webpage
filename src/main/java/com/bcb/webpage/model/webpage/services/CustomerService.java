@@ -1,9 +1,9 @@
-package com.bcb.webpage.model.backend.services;
+package com.bcb.webpage.model.webpage.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.bcb.webpage.model.backend.entity.customers.CustomerCustomer;
-import com.bcb.webpage.model.backend.repository.CustomerRepository;
+import com.bcb.webpage.model.webpage.entity.customers.CustomerCustomer;
+import com.bcb.webpage.model.webpage.repository.CustomerRepository;
 
 public class CustomerService {
 

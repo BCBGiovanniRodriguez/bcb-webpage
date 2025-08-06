@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.lang.Nullable;
 
-import com.bcb.webpage.model.backend.entity.customers.CustomerCustomer;
+import com.bcb.webpage.model.webpage.entity.customers.CustomerCustomer;
 
 public class CustomerMapper implements RowMapper<CustomerCustomer>{
 

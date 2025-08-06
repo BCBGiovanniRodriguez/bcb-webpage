@@ -1,4 +1,4 @@
-package com.bcb.webpage.model.backend.entity;
+package com.bcb.webpage.model.webpage.entity;
 
 import java.util.Date;
 

@@ -1,4 +1,4 @@
-package com.bcb.webpage.model.backend.services;
+package com.bcb.webpage.model.webpage.services;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -24,8 +24,8 @@ import com.bcb.webpage.dto.response.statement.CustomerStatementAccountResponse;
 import com.bcb.webpage.dto.response.statement.CustomerStatementFileResponse;
 import com.bcb.webpage.dto.response.taxcertificate.CustomerTaxCertificateDetailResponse;
 import com.bcb.webpage.dto.response.taxcertificate.CustomerTaxCertificateResponse;
-import com.bcb.webpage.model.backend.entity.CustomerData;
-import com.bcb.webpage.model.backend.repository.CustomerDataRepository;
+import com.bcb.webpage.model.webpage.entity.CustomerData;
+import com.bcb.webpage.model.webpage.repository.CustomerDataRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

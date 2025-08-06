@@ -24,50 +24,43 @@ import jakarta.persistence.EntityManagerFactory;
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(
-    entityManagerFactoryRef = "backendEntityManagerFactory",
-    transactionManagerRef = "backendTransactionManager",
+    entityManagerFactoryRef = "webpageEntityManagerFactory",
+    transactionManagerRef = "webpageTransactionManager",
     basePackages = {
-        "com.bcb.webpage.model.backend.*"
+        "com.bcb.webpage.model.webpage.*"
     }
 )
 public class DBConfig {
 
     @Primary
-    @Bean(name = "backendDatasource")
-    @ConfigurationProperties("backend.datasource")
-    public DataSource backendDataSource() {
+    @Bean(name = "webpageDatasource")
+    @ConfigurationProperties("webpage.datasource")
+    public DataSource webpageDataSource() {
         return DataSourceBuilder.create().build();
     }
 
     @Primary
-    @Bean(name = "backendEntityManagerFactory")
-    public LocalContainerEntityManagerFactoryBean backendEntityManagerFactory(EntityManagerFactoryBuilder builder,
-        @Qualifier("backendDatasource") DataSource backendDataSource) {
-        HashMap<String, Object> properties = new HashMap<>();
-        properties.put("hibernate.hbm2ddl.auto", "update");
-        //properties.put("hibernate.connection.username", "sisbur");
-        //properties.put("hibernate.connection.password", "Bur5ametric@");
-        //properties.put("jakarta.persistence.jdbc.url", "jdbc:oracle:thin:@10.20.50.200:1525:BMTKSIS");
-        //properties.put("jakarta.persistence.jdbc.driver", "oracle.jdbc.OracleDriver");
+    @Bean(name = "webpageEntityManagerFactory")
+    public LocalContainerEntityManagerFactoryBean webpageEntityManagerFactory(EntityManagerFactoryBuilder builder,
+        @Qualifier("webpageDatasource") DataSource webpageDataSource) {
 
-        return builder.dataSource(backendDataSource)
-            //.properties(properties)
-            .packages("com.bcb.webpage.model.backend.*")
-            .persistenceUnit("backend")
+        return builder.dataSource(webpageDataSource)
+            .packages("com.bcb.webpage.model.webpage.*")
+            .persistenceUnit("webpage")
             .build();
     }
 
     @Primary
-    @Bean(name = "backendTransactionManager")
+    @Bean(name = "webpageTransactionManager")
     public PlatformTransactionManager transactionManager(
-        @Qualifier("backendEntityManagerFactory") EntityManagerFactory entityManagerFactory) {
-            return new JpaTransactionManager(entityManagerFactory);
+        @Qualifier("webpageEntityManagerFactory") EntityManagerFactory webpageEntityManagerFactory) {
+            return new JpaTransactionManager(webpageEntityManagerFactory);
     }
 
     @Primary
-    @Bean(name = "backendNamedParameterJdbcTemplate")
-    @DependsOn("backendDatasource")
-    public NamedParameterJdbcTemplate sisburNamedParameterJdbcTemplate(@Qualifier("backendDatasource") DataSource backendDataSource) {
-        return new NamedParameterJdbcTemplate(backendDataSource);
+    @Bean(name = "webpageNamedParameterJdbcTemplate")
+    @DependsOn("webpageDatasource")
+    public NamedParameterJdbcTemplate webpageNamedParameterJdbcTemplate(@Qualifier("webpageDatasource") DataSource webpageDataSource) {
+        return new NamedParameterJdbcTemplate(webpageDataSource);
     }
 }

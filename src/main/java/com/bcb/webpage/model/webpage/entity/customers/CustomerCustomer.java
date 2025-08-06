@@ -1,9 +1,9 @@
-package com.bcb.webpage.model.backend.entity.customers;
+package com.bcb.webpage.model.webpage.entity.customers;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.bcb.webpage.model.backend.entity.CustomerSession;
+import com.bcb.webpage.model.webpage.entity.CustomerSession;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

@@ -11,13 +11,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.bcb.webpage.model.backend.entity.CustomerSession;
-import com.bcb.webpage.model.backend.entity.customers.CustomerAuthenticated;
-import com.bcb.webpage.model.backend.entity.customers.CustomerContract;
-import com.bcb.webpage.model.backend.entity.customers.CustomerCustomer;
-import com.bcb.webpage.model.backend.repository.ContractRepository;
-import com.bcb.webpage.model.backend.repository.CustomerRepository;
-import com.bcb.webpage.model.backend.repository.CustomerSessionRepository;
+import com.bcb.webpage.model.webpage.entity.CustomerSession;
+import com.bcb.webpage.model.webpage.entity.customers.CustomerAuthenticated;
+import com.bcb.webpage.model.webpage.entity.customers.CustomerContract;
+import com.bcb.webpage.model.webpage.entity.customers.CustomerCustomer;
+import com.bcb.webpage.model.webpage.repository.ContractRepository;
+import com.bcb.webpage.model.webpage.repository.CustomerRepository;
+import com.bcb.webpage.model.webpage.repository.CustomerSessionRepository;
 
 @Service
 public class DatabaseUserDetailsService implements UserDetailsService {

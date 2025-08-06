@@ -1,4 +1,4 @@
-package com.bcb.webpage.model.backend.entity.customers;
+package com.bcb.webpage.model.webpage.entity.customers;
 
 import java.util.Collection;
 import java.util.Collections;

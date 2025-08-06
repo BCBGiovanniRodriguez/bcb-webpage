@@ -11,8 +11,8 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import com.bcb.webpage.model.backend.entity.customers.CustomerCustomer;
 import com.bcb.webpage.model.sisbur.mapper.CustomerMapper;
+import com.bcb.webpage.model.webpage.entity.customers.CustomerCustomer;
 
 @Service
 public class MovementService {
