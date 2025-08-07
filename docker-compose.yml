@@ -8,6 +8,7 @@ services:
       MARIADB_DATABASE: webpage
       MARIADB_USER: testuser
       MARIADB_PASSWORD: password
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ai_ci"]
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       start_period: 10s
@@ -23,10 +24,9 @@ services:
     build: .
     ports:
       - "20000:20000"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mariadb://webpagedb:3306/webpage?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&useSSL=false&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true
-      SPRING_DATASOURCE_USERNAME: testuser
-      SPRING_DATASOURCE_PASSWORD: password
+    volumes:
+      - ./src/main/resources:/app/src/main/resources
+      - ./contracts:/app/contracts
     depends_on:
       webpagedb:
         condition: service_healthy
