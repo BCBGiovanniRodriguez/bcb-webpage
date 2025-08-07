@@ -8,7 +8,7 @@ services:
       MARIADB_DATABASE: webpage
       MARIADB_USER: testuser
       MARIADB_PASSWORD: password
-    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ai_ci"]
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       start_period: 10s
