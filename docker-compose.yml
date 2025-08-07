@@ -1,5 +1,5 @@
 services:
-  webpage_db:
+  webpagedb:
     image: mariadb:lts
     ports:
       - "53300:3306"
@@ -24,11 +24,11 @@ services:
     ports:
       - "20000:20000"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mariadb://webpage_db:53300/webpage?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&useSSL=false&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_DATASOURCE_URL: jdbc:mariadb://webpagedb:3306/webpage?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&useSSL=false&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: testuser
+      SPRING_DATASOURCE_PASSWORD: password
     depends_on:
-      webpage_db:
+      webpagedb:
         condition: service_healthy
     networks:
       - network_webpage
