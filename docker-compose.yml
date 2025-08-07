@@ -1,22 +1,35 @@
 services:
-  webpage:
-    build: .
-    ports:
-      - "20000:20000"
-    depends_on:
-      - webpage_db
-    networks:
-      - network_webpage
   webpage_db:
-    image: mariadb
+    image: mariadb:lts
     ports:
       - "53300:3306"
     environment:
       MARIADB_ROOT_PASSWORD: root
       MARIADB_DATABASE: webpage
+      MARIADB_USER: testuser
+      MARIADB_PASSWORD: password
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
     restart: always
     volumes:
       - volume-db-webpage:/var/lib/mysql
+    networks:
+      - network_webpage
+  webpage:
+    build: .
+    ports:
+      - "20000:20000"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mariadb://webpage_db:53300/webpage?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&useSSL=false&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+      webpage_db:
+        condition: service_healthy
     networks:
       - network_webpage
 volumes:

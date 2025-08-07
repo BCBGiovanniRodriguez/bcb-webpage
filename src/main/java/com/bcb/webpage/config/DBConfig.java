@@ -20,8 +20,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import jakarta.persistence.EntityManagerFactory;
-
-@Configuration
+/*@Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(
     entityManagerFactoryRef = "webpageEntityManagerFactory",
@@ -30,8 +29,9 @@ import jakarta.persistence.EntityManagerFactory;
         "com.bcb.webpage.model.webpage.*"
     }
 )
+*/
 public class DBConfig {
-
+/*
     @Primary
     @Bean(name = "webpageDatasource")
     @ConfigurationProperties("webpage.datasource")
@@ -63,4 +63,5 @@ public class DBConfig {
     public NamedParameterJdbcTemplate webpageNamedParameterJdbcTemplate(@Qualifier("webpageDatasource") DataSource webpageDataSource) {
         return new NamedParameterJdbcTemplate(webpageDataSource);
     }
+*/
 }

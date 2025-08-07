@@ -4,52 +4,38 @@ spring.security.user.password=password
 # Must match with Dockerfile and docker-compose.yml files
 server.port=20000 
 server.error.whitelabel.enabled=false
-spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.web.ErrorMvcAutoConfiguration
 server.error.path=/error
+spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.web.ErrorMvcAutoConfiguration
 
 # JPA Configurations
 spring.jpa.open-in-view=false
 spring.jpa.show-sql=true
 spring.jpa.hibernate.ddlAuto=update
-# Webpage database
-# Docker: webpage.datasource.jdbc-url=jdbc:mariadb://webpage_db:53300/webpage?createDatabaseIfNotExist=true
-# webpage.datasource.jakarta.persistence.jdbc-url=jdbc:mariadb://webpage:53300/webpage?createDatabaseIfNotExist=true
-# Local: 
-webpage.datasource.jakarta.persistence.jdbc-url=jdbc:mariadb://localhost:3306/webpage?createDatabaseIfNotExist=true
-webpage.datasource.jdbc-url=jdbc:mysql://localhost:3306/webpage?createDatabaseIfNotExist=true
-webpage.datasource.username=
-webpage.datasource.password=
-webpage.datasource.driverClassName=com.mysql.cj.jdbc.Driver
-webpage.datasource.spring.jpa.hibernate.dialect=org.hibernate.dialect.MySQLDialect
-webpage.datasource.spring.jakarta.persistence.jdbc.url=org.hibernate.dialect.MySQLDialect
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MariaDBDialect
+# Database
+# Docker: spring.datasource.url=jdbc:mariadb://webpage_db:53300/webpage?createDatabaseIfNotExist=true
+spring.datasource.url=jdbc:mariadb://localhost:3307/webpage?createDatabaseIfNotExist=true
+spring.datasource.username=root
+spring.datasource.password=root
+spring.datasource.driver-class-name=org.mariadb.jdbc.Driver
 
-
-webpage.datasource.hikari.minimum-idle=5
-webpage.datasource.hikari.maximum-pool-size=10
-webpage.datasource.hikari.connectionTimeout=30000
-webpage.datasource.hikari.idleTimeout=600000
-webpage.datasource.hikari.maxLifetime=1800000
-#webpage.datasource.hikari.validation-timeout=5000
-#webpage.datasource.hikari.connection-test-query=SELECT 1
-
-# SisBur
-# PROD: sisbur.datasource.jdbc-url=jdbc:oracle:thin:@10.20.50.200:1525/BMTKSIS
-# QA: 
-sisbur.datasource.jdbc-url=jdbc:oracle:thin:@10.20.50.200:1525/BMTKSIS
-sisbur.datasource.username=
-sisbur.datasource.password=
-sisbur.datasource.driverClassName=oracle.jdbc.OracleDriver
-
-sisbur.datasource.hikari.minimum-idle=5
-sisbur.datasource.hikari.maximum-pool-size=10
-sisbur.datasource.hikari.connectionTimeout=30000
-sisbur.datasource.hikari.idleTimeout=600000
-sisbur.datasource.hikari.maxLifetime=1800000
-sisbur.datasource.hikari.validation-timeout=5000
-sisbur.datasource.hikari.connection-test-query=SELECT 1 FROM DUAL
+# HikariCP Specific Properties
+spring.datasource.hikari.minimum-idle=5
+spring.datasource.hikari.maximum-pool-size=20
+# 5 minutes in milliseconds
+spring.datasource.hikari.idle-timeout=300000
+# 29 minutes in milliseconds (should be less than MariaDB's wait_timeout)
+spring.datasource.hikari.max-lifetime=1740000
+# 30 seconds in milliseconds
+spring.datasource.hikari.connection-timeout=30000
+spring.datasource.hikari.pool-name=MariaDBHikariCP
+spring.datasource.hikari.validation-timeout=5000
+spring.datasource.hikari.connection-test-query=SELECT 1
 
 # Endpoints
-# Local: sisbur.webpage.host=http://localhost:59174
-# QA: sisbur.webpage.host=http://10.20.50.6/bursa
-# Prod: sisbur.webpage.host=http://10.10.50.28/bursa
-sisbur.webpage.endpoint=/api
+# Local: 
+#sisbur.backend.host=http://localhost:59174
+# QA: sisbur.backend.host=http://10.20.50.6/bursa
+# Prod: 
+sisbur.backend.host=http://10.10.50.28/bursa
+sisbur.backend.endpoint=/api
