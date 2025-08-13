@@ -47,15 +47,16 @@ public class SecurityConfig {
                     .authenticated();
                 auth.requestMatchers("/", "/login", "/public/**", "/css/**", "/pages/**", "/inicio-de-sesion", "/portal-clientes/**")
                     .permitAll();
-            })/*
+            })
             .formLogin(frm -> frm
                 .loginPage("/inicio-de-sesion")
-                //.loginProcessingUrl("/login")
+                .loginProcessingUrl("/login")
                 .defaultSuccessUrl("/portal-clientes/dashboard", true)
                 .permitAll()
-            )*/
-            .formLogin(Customizer.withDefaults())
+            )
+            //.formLogin(Customizer.withDefaults())
             .logout(logout -> {
+                logout.logoutSuccessUrl("/inicio-de-sesion?logout");
                 logout.permitAll();
             })/*
             .sessionManagement(mgmt -> {

@@ -81,7 +81,6 @@ public class BackendService {
 
     public String getJson(ObjectMapper mapper, Object objectRequest, String endpoint) throws JsonProcessingException {
         String json = mapper.writeValueAsString(objectRequest);
-        //System.out.println("RequestJson: " + json);
         ResponseEntity<String> responseEntity = RestClient.create().post()
             .uri(getBaseEndpoint() + endpoint)
             .accept(MediaType.APPLICATION_JSON)

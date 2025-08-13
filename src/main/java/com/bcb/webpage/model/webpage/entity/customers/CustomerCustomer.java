@@ -165,4 +165,22 @@ public class CustomerCustomer {
                 + ", created=" + created + "]";
     }
 
+    public String getCustomerFullName() {
+        String fullName = "";
+
+        if (this.name != null) {
+            fullName = name;
+        }
+
+        if (this.lastName != null) {
+            fullName += " " + this.lastName;
+        }
+
+        if (this.secondLastName != null) {
+            fullName += " " + this.secondLastName;
+        }
+
+        return fullName;
+    }
+
 }

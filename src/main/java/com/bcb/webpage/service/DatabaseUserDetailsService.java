@@ -15,15 +15,15 @@ import com.bcb.webpage.model.webpage.entity.CustomerSession;
 import com.bcb.webpage.model.webpage.entity.customers.CustomerAuthenticated;
 import com.bcb.webpage.model.webpage.entity.customers.CustomerContract;
 import com.bcb.webpage.model.webpage.entity.customers.CustomerCustomer;
-import com.bcb.webpage.model.webpage.repository.ContractRepository;
-import com.bcb.webpage.model.webpage.repository.CustomerRepository;
+import com.bcb.webpage.model.webpage.repository.CustomerContractRepository;
+import com.bcb.webpage.model.webpage.repository.CustomerCustomerRepository;
 import com.bcb.webpage.model.webpage.repository.CustomerSessionRepository;
 
 @Service
 public class DatabaseUserDetailsService implements UserDetailsService {
 
     @Autowired
-    ContractRepository contractRepository;
+    CustomerContractRepository contractRepository;
 
     @Autowired
     CustomerSessionRepository customerSessionRepository;
@@ -41,7 +41,7 @@ public class DatabaseUserDetailsService implements UserDetailsService {
         } else {
             CustomerContract contract = result.get();
             CustomerCustomer customer = contract.getCustomer();
-
+            
             try {
                 // Invalidate last session
                 List<CustomerSession> customerSessionList = customer.getSessions();
@@ -62,9 +62,19 @@ public class DatabaseUserDetailsService implements UserDetailsService {
                 newCustomerSession.setCurrent(true);
                 newCustomerSession.setCustomer(customer);
                 newCustomerSession.setTimestamp(now);
-
-                customerSessionRepository.save(newCustomerSession);
+                // Save Session
+                customerSessionRepository.saveAndFlush(newCustomerSession);
                 customerSessionRepository.flush();
+                // Set contract as current, get all contracts
+                contract.setCurrent(CustomerContract.CURRENT_TRUE);
+                contractRepository.saveAndFlush(contract);
+
+                for(CustomerContract contractTmp : customer.getContracts()) {
+                    if (contract.getCustomerContractId() != contractTmp.getCustomerContractId()) {
+                        contractTmp.setCurrent(CustomerContract.CURRENT_FALSE);
+                        contractRepository.saveAndFlush(contractTmp);
+                    }
+                }
             } catch (Exception e) {
                 System.out.println("Error: " + e.getLocalizedMessage());
             }

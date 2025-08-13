@@ -3,23 +3,40 @@ package com.bcb.webpage.model.sisbur.service;
 import java.sql.Types;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import com.bcb.webpage.model.sisbur.mapper.CustomerMapper;
 import com.bcb.webpage.model.webpage.entity.customers.CustomerCustomer;
 
 @Service
 public class MovementService {
 
     @Autowired
-    //@Qualifier("sisburNamedParameterJdbcTemplate")
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    @Qualifier("sisburJdbcTemplate")
+    private JdbcTemplate jdbcTemplate;
+
+    
+
+    public List<Map<String, Object>> getResult(Integer contractNumber) {
+        List<Map<String, Object>> result = null;
+        
+        try {
+            String sql = "SELECT CVECLIENTE, CONTRATO, NOMCLIENTE, APEPATCLIENTE, APEMATCLIENTE, TELDOM, EMAIL, INICIAL, BLOQUEADO, PASSWORD ";
+            sql += "FROM CONTRATOS WHERE CONTRATO = '" + contractNumber + "'";
+
+            result = jdbcTemplate.queryForList(sql);
+        } catch (Exception e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+
+        return result;
+    }
 
     /**
      * 
@@ -27,15 +44,16 @@ public class MovementService {
      */
     public CustomerCustomer getCustomer(Integer contractNumber) {
         CustomerCustomer customer = null;
-        
+        List<Map<String, Object>> result = null;
         Map<String, Object> parameters = new HashMap<>();
         String sql;
 
         try {
             parameters.put("contractNumber", contractNumber);
-            sql = "select * from contratos where contrato = :contractNumber";
+            // CVECLIENTE, NOMCLIENTE, APEPATCLIENTE, APEMATCLIENTE, TELDOM, EMAIL, INICIAL, BLOQUEADO, PASSWORD
+            sql = "SELECT CVECLIENTE, NOMCLIENTE, APEPATCLIENTE, APEMATCLIENTE, TELDOM, EMAIL, INICIAL, BLOQUEADO, PASSWORD FROM CONTRATOS where CONTRATO = '" + contractNumber + "'";
 
-            customer = namedParameterJdbcTemplate.queryForObject(sql, parameters, new CustomerMapper());
+            //customer = jdbcTemplate.queryForObject(sql, parameters, new CustomerMapper());
         } catch (Exception e) {
             System.out.println("Error on MovementService::getCustomer[" + e.getMessage() + "]");
         }

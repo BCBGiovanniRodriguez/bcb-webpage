@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -12,6 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -20,7 +22,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import jakarta.persistence.EntityManagerFactory;
-/*@Configuration
+@Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(
     entityManagerFactoryRef = "webpageEntityManagerFactory",
@@ -29,12 +31,14 @@ import jakarta.persistence.EntityManagerFactory;
         "com.bcb.webpage.model.webpage.*"
     }
 )
-*/
 public class DBConfig {
-/*
+
+    @Autowired
+    private Environment environment;
+
     @Primary
     @Bean(name = "webpageDatasource")
-    @ConfigurationProperties("webpage.datasource")
+    @ConfigurationProperties("spring.datasource.webpage")
     public DataSource webpageDataSource() {
         return DataSourceBuilder.create().build();
     }
@@ -44,8 +48,13 @@ public class DBConfig {
     public LocalContainerEntityManagerFactoryBean webpageEntityManagerFactory(EntityManagerFactoryBuilder builder,
         @Qualifier("webpageDatasource") DataSource webpageDataSource) {
 
+        HashMap<String, Object> properties = new HashMap<>();
+        properties.put("hibernate.hbm2ddl.auto", environment.getProperty("hibernate.hbm2ddl.auto"));
+        properties.put("hibernate.dialect", environment.getProperty("hibernate.dialect"));
+
         return builder.dataSource(webpageDataSource)
             .packages("com.bcb.webpage.model.webpage.*")
+            //.properties(properties)
             .persistenceUnit("webpage")
             .build();
     }
@@ -63,5 +72,4 @@ public class DBConfig {
     public NamedParameterJdbcTemplate webpageNamedParameterJdbcTemplate(@Qualifier("webpageDatasource") DataSource webpageDataSource) {
         return new NamedParameterJdbcTemplate(webpageDataSource);
     }
-*/
 }

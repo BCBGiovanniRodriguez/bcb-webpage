@@ -9,7 +9,7 @@ import java.util.Optional;
 
 
 @Repository
-public interface CustomerRepository extends JpaRepository<CustomerCustomer, Long> {
+public interface CustomerCustomerRepository extends JpaRepository<CustomerCustomer, Long> {
 
     Optional<CustomerCustomer> findOneByCustomerKey(String customerKey);
     

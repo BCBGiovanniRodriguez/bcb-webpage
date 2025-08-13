@@ -3,6 +3,8 @@ package com.bcb.webpage.model.webpage.entity.customers;
 import java.time.LocalDateTime;
 import java.util.Set;
 
+import com.bcb.webpage.model.webpage.entity.CommonEntity;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,7 +17,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "customer_contracts")
-public class CustomerContract {
+public class CustomerContract extends CommonEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +29,8 @@ public class CustomerContract {
 
     private String contractNumber;
 
+    private Integer current;
+
     private Integer status;
 
     @Column(nullable = false, columnDefinition = "timestamp default current_timestamp")
@@ -34,6 +38,12 @@ public class CustomerContract {
 
     @OneToMany(mappedBy = "")
     private Set<CustomerStatementAccount> statementAccounts;
+
+    public static final Integer STATUS_ENABLED = 1;
+
+    public static final Integer STATUS_DISABLED = 2;
+
+    public static final String[] statuses = {"Seleccione Opción", "Habilitado", "Deshabilitado"};
 
     public CustomerContract() {
     }
@@ -82,6 +92,18 @@ public class CustomerContract {
     public String toString() {
         return "CustomerContract [ContractId=" + customerContractId + ", customer=" + customer.toString() + ", contractNumber="
                 + contractNumber + ", status=" + status + ", created=" + created + "]";
+    }
+
+    public Integer getCurrent() {
+        return current;
+    }
+
+    public void setCurrent(Integer current) {
+        this.current = current;
+    }
+
+    public boolean isCurrent() {
+        return CustomerContract.CURRENT_TRUE == this.current;
     }
 
 }

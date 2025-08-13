@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import jakarta.persistence.EntityManagerFactory;
 
-/*
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(
@@ -27,12 +26,11 @@ import jakarta.persistence.EntityManagerFactory;
     basePackages = {
         "com.bcb.webpage.model.sisbur.*"
     }
-)*/
-
+)
 public class SisburDBConfig {
 
     @Bean(name = "sisburDatasource")
-    @ConfigurationProperties("sisbur.datasource")
+    @ConfigurationProperties("spring.datasource.sisbur")
     public DataSource sisburDataSource() {
         return DataSourceBuilder.create().build();
     }
@@ -42,7 +40,7 @@ public class SisburDBConfig {
         @Qualifier("sisburDatasource") DataSource sisburDataSource) {
 
         return builder.dataSource(sisburDataSource)
-            .packages("com.bcb.webpage.model.sisbur.entity")
+            .packages("com.bcb.webpage.model.sisbur.*")
             .persistenceUnit("sisbur")
             .build();
     }
@@ -52,10 +50,18 @@ public class SisburDBConfig {
         @Qualifier("sisburEntityManagerFactory") EntityManagerFactory entityManagerFactory) {
             return new JpaTransactionManager(entityManagerFactory);
     }
+    
+    @Bean(name = "sisburJdbcTemplate")
+    @DependsOn("sisburDatasource")
+    public JdbcTemplate sisburJdbcTemplate(@Qualifier("sisburDatasource") DataSource sisburDataSource) {
+        return new JdbcTemplate(sisburDataSource);
+    }
 
+    /*
     @Bean(name = "sisburNamedParameterJdbcTemplate")
     @DependsOn("sisburDatasource")
     public NamedParameterJdbcTemplate sisburNamedParameterJdbcTemplate(@Qualifier("sisburDatasource") DataSource sisburDataSource) {
         return new NamedParameterJdbcTemplate(sisburDataSource);
     }
+    */
 }

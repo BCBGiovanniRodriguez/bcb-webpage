@@ -24,24 +24,25 @@
                         </a>
                     </li>
                     <li class="nav-item d-none d-md-block">
-                        <a href="#" class="nav-link">Nombre Cliente :: # Contrato: <strong>101272</strong></a>
+                        <a href="#" class="nav-link"><span th:text="${currentCustomerContract.customer.customerFullName}"></span> :: Contrato: <strong th:text="${currentCustomerContract.contractNumber}"></strong></a>
+
                     </li>
                 </ul>
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item dropdown">
-                        <a href="#" class="nav-link" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link" data-bs-toggle="dropdown" href="#">
                             <i class="fa fa-list"></i>
+                            <span class="navbar-badge badge text-bg-warning" th:text="${customerContractList.size()}">N</span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
-                            <a href="#" class="dropdown-item">
-                                <div class="d-flex">
-                                    <div class="flex-grow-1">
-                                        <h3 class="dropdown-item-title">
-                                            # Contrato: 101272
-                                        </h3>
-                                    </div>
-                                </div>
-                            </a>
+                            <span class="dropdown-item dropdown-header"><span th:text="${customerContractList.size()}"></span> Contratos</span>
+                            <div th:each="customerContract: ${customerContractList}">
+                                <div class="dropdown-divider"></div>
+                                <a th:href="@{/portal-clientes/dashboard/cambiar-contrato/} + ${customerContract.contractNumber}" class="dropdown-item">
+                                    <i class="bi bi-file-earmark-fill me-2"></i> Contrato: <span th:text="${customerContract.contractNumber}"></span>
+                                    <span class="float-end text-secondary fs-7"></span>
+                                </a>
+                            </div>
                         </div>
                     </li>
                 </ul>
@@ -129,11 +130,11 @@
         </footer>
 
         <div th:fragment="jsDependencies">
+            <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js" integrity="sha512-TPh2Oxlg1zp+kz3nFA0C5vVC6leG/6mm1z9+mA81MI5eaUVqasPLO8Cuk4gMF4gUfP5etR73rgU/8PNMsSesoQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
             <script th:src="@{/public/adminlte/plugins/jquery/jquery-3.7.1.min.js}"></script>
             <script th:src="@{/public/thirdparty/bootstrap/js/bootstrap.min.js}"></script>
             <script th:src="@{/public/adminlte/js/adminlte.min.js}"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/js/all.min.js" integrity="sha512-b+nQTCdtTBIRIbraqNEwsjB6UvL3UEMkXnhzd8awtCYh0Kcsjl9uEgwVFVbhoj3uu1DO1ZMacNvLoyJJiNfcvg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-            <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js" integrity="sha512-TPh2Oxlg1zp+kz3nFA0C5vVC6leG/6mm1z9+mA81MI5eaUVqasPLO8Cuk4gMF4gUfP5etR73rgU/8PNMsSesoQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
             <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js" integrity="sha256-Lye89HGy1p3XhJT24hcvsoRw64Q4IOL5a7hdOflhjTA=" crossorigin="anonymous"></script>
         </div>
         
