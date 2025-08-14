@@ -1,0 +1,42 @@
+# Puerto de la app en desarrollo
+server.port=20000
+
+# Base de datos MariaDB (en Docker)
+spring.datasource.webpage.jdbc-url=jdbc:mariadb://localhost:3307/webpage?createDatabaseIfNotExist=true
+spring.datasource.webpage.username=root
+spring.datasource.webpage.password=Hrodriguezr0800/+
+spring.datasource.webpage.driver-class-name=org.mariadb.jdbc.Driver
+spring.datasource.webpage.hibernate.dialect=org.hibernate.dialect.MariaDBDialect
+
+# HikariCP
+spring.datasource.webpage.hikari.minimum-idle=5
+spring.datasource.webpage.hikari.maximum-pool-size=20
+spring.datasource.webpage.hikari.idle-timeout=300000
+spring.datasource.webpage.hikari.max-lifetime=1740000
+spring.datasource.webpage.hikari.connection-timeout=30000
+spring.datasource.webpage.hikari.pool-name=MariaDBHikariCP
+spring.datasource.webpage.hikari.validation-timeout=5000
+spring.datasource.webpage.hikari.connection-test-query=SELECT 1
+
+# Oracle DB (QA o local)
+#spring.datasource.sisbur.jdbc-url=jdbc:oracle:thin:@10.20.50.200:1525/BMTKSIS
+spring.datasource.sisbur.jdbc-url=jdbc:oracle:thin:@10.10.50.16:1525/BMTKSIS
+spring.datasource.sisbur.username=sisbur
+spring.datasource.sisbur.password=sisbur
+spring.datasource.sisbur.driver-class-name=oracle.jdbc.OracleDriver
+spring.datasource.sisbur.hikari.minimum-idle=5
+spring.datasource.sisbur.hikari.maximum-pool-size=20
+spring.datasource.sisbur.hikari.connection-timeout=30000
+spring.datasource.sisbur.hikari.idle-timeout=600000
+spring.datasource.sisbur.hikari.max-lifetime=1800000
+spring.datasource.sisbur.hikari.pool-name=OracleDBHikariCP
+spring.datasource.sisbur.hikari.validation-timeout=5000
+spring.datasource.sisbur.hikari.connection-test-query=SELECT 1 FROM DUAL
+
+# Endpoints
+sisbur.backend.host=http://10.10.50.28/bursa
+#sisbur.backend.host=http://10.20.50.6/bursa
+sisbur.backend.endpoint=/api
+#sisbur.ms.host=http://localhost:9001
+sisbur.ms.host=http://10.20.50.132:9001
+sisbur.ms.endpoint=/api/webpage
