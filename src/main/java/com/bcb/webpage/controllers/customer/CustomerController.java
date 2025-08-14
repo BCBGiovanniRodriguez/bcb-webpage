@@ -54,6 +54,7 @@ import com.bcb.webpage.dto.response.taxcertificate.CustomerTaxCertificateDetailR
 import com.bcb.webpage.dto.response.taxcertificate.CustomerTaxCertificatePeriodResponse;
 import com.bcb.webpage.dto.response.taxcertificate.CustomerTaxCertificateResponse;
 import com.bcb.webpage.dto.response.taxcertificate.TaxCertificate;
+import com.bcb.webpage.model.webpage.dto.GeneralDTO;
 import com.bcb.webpage.model.webpage.entity.CustomerData;
 import com.bcb.webpage.model.webpage.entity.CustomerSession;
 import com.bcb.webpage.model.webpage.entity.customers.CustomerContract;
@@ -61,8 +62,8 @@ import com.bcb.webpage.model.webpage.entity.customers.CustomerCustomer;
 import com.bcb.webpage.model.webpage.entity.customers.CustomerStatementAccount;
 import com.bcb.webpage.model.webpage.entity.customers.CustomerTaxCertificate;
 import com.bcb.webpage.model.webpage.repository.CustomerContractRepository;
-import com.bcb.webpage.model.webpage.repository.CustomerDataRepository;
 import com.bcb.webpage.model.webpage.repository.CustomerCustomerRepository;
+import com.bcb.webpage.model.webpage.repository.CustomerDataRepository;
 import com.bcb.webpage.model.webpage.repository.CustomerSessionRepository;
 import com.bcb.webpage.model.webpage.repository.CustomerStatementAccountRepository;
 import com.bcb.webpage.model.webpage.repository.CustomerTaxCertificateRepository;
@@ -197,7 +198,7 @@ public class CustomerController {
             ArrayList<Saldo> listBalance = customerMovementPositionResponse.getSaldo();
             if (listBalance != null && listBalance.size() > 0) {
                 for (Saldo saldo : listBalance) {
-                    if (saldo.getCveDivisa() != "Por Asignar Indeval") {
+                    if (!saldo.getCveDivisa().equals("Por Asignar Indeval")) {
                         totalBalanceMN += Double.parseDouble(saldo.getSubTotal().replace(",", "")); 
                     }
                 }
@@ -263,28 +264,36 @@ public class CustomerController {
     @GetMapping("/posicion")
     public String customerPosition(Authentication authentication, Model model) {
         CustomerCustomer customer = null;
-        CustomerContract contract = null;
+        CustomerContract customerSessionContract = null;
+        CustomerContract customerCurrentContract = null;
+
         ObjectMapper mapper = new ObjectMapper();
+        List<GeneralDTO> generalList = new ArrayList<>();
         List<Posicion> positionStockList = new ArrayList<Posicion>();
         List<Posicion> positionMoneyList = new ArrayList<Posicion>();
         List<Posicion> positionFundsList = new ArrayList<Posicion>();
+        List<Saldo> cashList = new ArrayList<>();
 
+        String generalJson = null;
         String stockMarketJson = null;
         String moneyMarketJson = null;
-        //String cashJson = null;
+        String cashJson = null;
         CustomerMovementPositionResponse customerPositionResponse = null;
         CustomerMovementPositionRequest customerPositionRequest = null;
+        Double cashTotalBalance = 0D;
+        Double grandTotal = 0D;
 
         try {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            contract = contractRepository.findOneByContractNumber(userDetails.getUsername()).get();
-            customer = contract.getCustomer();
+            customerSessionContract = contractRepository.findOneByContractNumber(userDetails.getUsername()).get();
+            customer = customerSessionContract.getCustomer();
 
             customerPositionRequest = new CustomerMovementPositionRequest();
-            customerPositionRequest.setContrato(contract.getContractNumber());
+            customerPositionRequest.setContrato(customerSessionContract.getContractNumber());
             customerPositionRequest.setTipo("2"); // 1: Movimientos - 2: - Posición
 
             customerPositionResponse = backendService.customerPosition(customerPositionRequest);
+            grandTotal = Double.parseDouble(customerPositionResponse.getTotal().replace(",", ""));
 
             List<Posicion> positionList = customerPositionResponse.getPosicion();
             for (Posicion posicion : positionList) {
@@ -292,22 +301,121 @@ public class CustomerController {
                 if (posicion.isMoneyMarket()) positionMoneyList.add(posicion);
                 if (posicion.isFundsMarket()) positionFundsList.add(posicion);
             }
+            
+
+            List<Saldo> balanceList = customerPositionResponse.getSaldo();
+
+            for(int cont = 0; cont < 2; cont++) {
+                Saldo saldoTmp = balanceList.get(cont);
+                cashTotalBalance += Double.parseDouble(saldoTmp.getSaldoActual().replace(",", ""));
+                cashList.add(saldoTmp);
+            }
 
             stockMarketJson = mapper.writeValueAsString(positionStockList);
             moneyMarketJson = mapper.writeValueAsString(positionMoneyList);
+            cashJson = mapper.writeValueAsString(cashList);
+            // ===================================================
+            Double cashPercentage = (cashTotalBalance * 100) / grandTotal;
+            GeneralDTO cashGeneralDTO = new GeneralDTO();
+            
+
+            //System.out.println("GrandTotal: " + grandTotal.toString());
+            //System.out.println("CashTotalBalance" + cashTotalBalance.toString());
+
+            cashGeneralDTO.setMarket("Efectivo");
+            cashGeneralDTO.setEmmiter("");
+            cashGeneralDTO.setSerie("");
+            cashGeneralDTO.setSecurities("");
+            cashGeneralDTO.setAverageAmount(0D);
+            cashGeneralDTO.setPrice(0D);
+            cashGeneralDTO.setValue(cashTotalBalance);
+            cashGeneralDTO.setPercentage(cashPercentage);
+            cashGeneralDTO.setCapitalGainLoss(0D);
+            generalList.add(cashGeneralDTO);
+
+            for (Posicion posicionTmp : positionStockList) {
+                GeneralDTO stockGeneralDto = new GeneralDTO();
+                stockGeneralDto.setMarket("Capitales");
+                stockGeneralDto.setEmmiter(posicionTmp.getEmisora());
+                stockGeneralDto.setSerie(posicionTmp.getSerie());
+                stockGeneralDto.setSecurities(posicionTmp.getTitulos());
+                Double averageAmount = Double.parseDouble(posicionTmp.getCostoPromedio().replace(",", ""));
+                Double price = Double.parseDouble(posicionTmp.getCostoXTitulos().replace(",", ""));
+                Double value = Double.parseDouble(posicionTmp.getValorMercado().replace(",", ""));
+                Double capitalGainLoss = Double.parseDouble(posicionTmp.getPlusMinusvalia().replace(",", ""));
+                
+                stockGeneralDto.setAverageAmount(averageAmount);
+                stockGeneralDto.setPrice(price);
+                stockGeneralDto.setValue(value);
+
+                Double percentage = (100 * value) / grandTotal;
+                //System.out.println("GrandTotal: " + grandTotal.toString());
+                //System.out.println("PositionValue" + value.toString());
+                //System.out.println("Percentage" + percentage.toString());
+                String cssStyle = "";
+                if (capitalGainLoss > 0D) {
+                    cssStyle = "text-success";
+                } else if(capitalGainLoss < 0D) {
+                    cssStyle = "text-danger";
+                }
+
+                stockGeneralDto.setPercentage(percentage);
+                stockGeneralDto.setCapitalGainLoss(capitalGainLoss);
+                stockGeneralDto.setCssStyle(cssStyle);
+                generalList.add(stockGeneralDto);
+            }
+
+            for (Posicion posicionTmp : positionMoneyList) {
+                GeneralDTO moneyGeneralDto = new GeneralDTO();
+                moneyGeneralDto.setMarket("Dinero");
+                moneyGeneralDto.setEmmiter(posicionTmp.getEmisora());
+                moneyGeneralDto.setSerie(posicionTmp.getSerie());
+                moneyGeneralDto.setSecurities(posicionTmp.getTitulos());
+                Double averageAmount = Double.parseDouble(posicionTmp.getCostoPromedio().replace(",", ""));
+                Double price = Double.parseDouble(posicionTmp.getCostoXTitulos().replace(",", ""));
+                Double value = Double.parseDouble(posicionTmp.getValorMercado().replace(",", ""));
+                Double capitalGainLoss = Double.parseDouble(posicionTmp.getPlusMinusvalia().replace(",", ""));
+                
+                moneyGeneralDto.setAverageAmount(averageAmount);
+                moneyGeneralDto.setPrice(price);
+                moneyGeneralDto.setValue(value);
+
+                Double percentage = (100 * value) / grandTotal;
+                //System.out.println("GrandTotal: " + grandTotal.toString());
+                //System.out.println("PositionValue" + value.toString());
+                //System.out.println("Percentage" + percentage.toString());
+
+                moneyGeneralDto.setPercentage(percentage);
+                moneyGeneralDto.setCapitalGainLoss(capitalGainLoss);
+                String cssStyle = "";
+                if (capitalGainLoss > 0D) {
+                    cssStyle = "text-success";
+                } else if(capitalGainLoss < 0D) {
+                    cssStyle = "text-danger";
+                }
+                moneyGeneralDto.setCssStyle(cssStyle);
+                generalList.add(moneyGeneralDto);
+            }
+
+            generalJson = mapper.writeValueAsString(generalList);
 
         } catch (Exception e) {
             System.out.println("Error on CustomerController::customerPosition " + e.getLocalizedMessage());
         }
 
+        model.addAttribute("cashTotalBalance", cashTotalBalance);
         model.addAttribute("today", today);
         model.addAttribute("positionStockList", positionStockList);
         model.addAttribute("positionMoneyList", positionMoneyList);
         model.addAttribute("positionFundsList", positionFundsList);
+        model.addAttribute("cashList", cashList);
         model.addAttribute("customerPositionResponse", customerPositionResponse);
+        model.addAttribute("generalList", generalList);
 
+        model.addAttribute("generalJson", generalJson);
         model.addAttribute("stockMarketJson", stockMarketJson);
         model.addAttribute("moneyMarketJson", moneyMarketJson);
+        model.addAttribute("cashJson", cashJson);
 
         // Obtener # de contrato
         // Obtener # de cliente

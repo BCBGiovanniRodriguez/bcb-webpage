@@ -32,7 +32,7 @@
                                             <div class="col-3">
                                                 <label for="year" class="form-label"><strong>Año</strong></label>
                                                 <!--<input type="date" id="startDate" th:name="startDate" th:value="${startDate}" th:max="${today}" data-date-format="dd/mm/yyyy" class="form-control" required> -->
-                                                <select name="year" id="year" class="form-control">
+                                                <select name="year" id="year" class="form-select">
                                                     <option value="0" selected disabled>Seleccione Opción</option>
                                                     <option th:each="year : ${yearSet}" th:value="${year}" th:text="${year}"></option>
                                                 </select>

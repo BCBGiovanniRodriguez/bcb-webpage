@@ -4,16 +4,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Saldo {
     
-    @JsonProperty("CveDivisa") 
+    @JsonProperty("CveDivisa")
     private String cveDivisa;
     
-    @JsonProperty("SaldoActual") 
+    @JsonProperty("SaldoActual")
     private String saldoActual;
     
-    @JsonProperty("SaldoXLiquidar") 
+    @JsonProperty("SaldoXLiquidar")
     private String saldoXLiquidar;
     
-    @JsonProperty("SubTotal") 
+    @JsonProperty("SubTotal")
     private String subTotal;
 
     public Saldo() {
