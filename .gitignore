@@ -6,6 +6,7 @@ target/
 
 src/main/resources/application.properties
 typescript/package-lock.json
+.env
 
 ### STS ###
 .apt_generated
