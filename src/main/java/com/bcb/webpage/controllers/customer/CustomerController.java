@@ -1,7 +1,11 @@
 package com.bcb.webpage.controllers.customer;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -34,6 +38,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bcb.webpage.dto.request.CustomerDetailRequest;
@@ -54,7 +59,9 @@ import com.bcb.webpage.dto.response.taxcertificate.CustomerTaxCertificateDetailR
 import com.bcb.webpage.dto.response.taxcertificate.CustomerTaxCertificatePeriodResponse;
 import com.bcb.webpage.dto.response.taxcertificate.CustomerTaxCertificateResponse;
 import com.bcb.webpage.dto.response.taxcertificate.TaxCertificate;
-import com.bcb.webpage.model.webpage.dto.GeneralDTO;
+import com.bcb.webpage.model.sisbur.service.LegacyService;
+import com.bcb.webpage.model.webpage.dto.MovementDTO;
+import com.bcb.webpage.model.webpage.dto.interfaces.PositionInterface;
 import com.bcb.webpage.model.webpage.entity.CustomerData;
 import com.bcb.webpage.model.webpage.entity.CustomerSession;
 import com.bcb.webpage.model.webpage.entity.customers.CustomerContract;
@@ -68,6 +75,9 @@ import com.bcb.webpage.model.webpage.repository.CustomerSessionRepository;
 import com.bcb.webpage.model.webpage.repository.CustomerStatementAccountRepository;
 import com.bcb.webpage.model.webpage.repository.CustomerTaxCertificateRepository;
 import com.bcb.webpage.model.webpage.services.BackendService;
+import com.bcb.webpage.service.sisbur.CustomerReportService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -85,6 +95,9 @@ public class CustomerController {
     private final Integer ENVIRONTMENT_MODE_PRODUCTION = 2;
 
     private final Integer ENVIRONTMENT_MODE_MAINTENANCE = 3;
+
+    @Autowired
+    private LegacyService legacyService;
 
     @Autowired
     private BackendService backendService;
@@ -107,6 +120,10 @@ public class CustomerController {
     @Autowired
     private CustomerStatementAccountRepository customerStatementAccountRepository;
 
+    private DateTimeFormatter userSessionFormatter = DateTimeFormatter.ofPattern("EEEE, MMMM dd yyyy");
+
+    private DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+
     private DateTimeFormatter mexFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     private DateTimeFormatter fileFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
@@ -115,36 +132,49 @@ public class CustomerController {
 
     private LocalDateTime todayTime = LocalDateTime.now();
 
-    private CustomerContract currentContract;
+    private CustomerContract currentCustomerContract;
 
     private CustomerCustomer customer;
 
+    private ObjectMapper mappe r = new ObjectMapper();
+
+    @Autowired
+    private CustomerReportService customerReportService;
+
+    public Double getDoubleValue(String val) {
+        return Double.parseDouble(val.replace(",", ""));
+    }
+
     @GetMapping("/dashboard")
     public String dashboard(Authentication authentication, Model model) {
+        String customerFullName = "";
         CustomerCustomer customer = null;
-        CustomerContract customerSessionContract = null;
-        CustomerContract customerCurrentContract = null;
+
+        // Session Information
         String currentSessionDateStr = "N/A";
         String currentSessionTimeStr = "N/A";
         String lastSessionDateStr = "N/A";
         String lastSessionTimeStr = "N/A";
-        CustomerDetailResponse customerDetailResponse = null;
-        CustomerMovementPositionResponse customerMovementPositionResponse = null;
+        // Balance detail
+        Posicion positionDetail = null;
+
         Double totalBalanceMN = 0D;
         Double totalBalanceMoneyMarket = 0D;
         Double totalBalanceStockMarket = 0D;
-        Posicion positionDetail = null;
+        
+        Double grandTotal = 0D;
+        Double cashPercentage = 0D;
+        Double moneyMarketPercentage = 0D;
+        Double stockMarketPercentage = 0D;
+        // Request Response objects
+        //CustomerDetailResponse customerDetailResponse = null;
+        CustomerMovementPositionResponse customerMovementPositionResponse = null;
 
         try {
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            customerSessionContract = contractRepository.findOneByContractNumber(userDetails.getUsername()).get();
-            customer = customerSessionContract.getCustomer();
-            // Find currentContract
-            customerCurrentContract = customer.getContracts()
-                    .stream()
-                    .filter(cc -> cc.isCurrent())
-                    .findFirst()
-                    .orElseThrow();
+            currentCustomerContract = getCurrentCustomerContract(authentication);
+
+            customer = currentCustomerContract.getCustomer();
+            customerFullName = customer.getCustomerFullName();
 
             // Get session detail
             List<CustomerSession> sessionList = customer.getSessions();
@@ -162,25 +192,21 @@ public class CustomerController {
                 lastSession = currentSession;
             }
 
-            System.out.println("Contract: " + customerSessionContract.getContractNumber());
-            System.out.println("CurrentSession" + currentSession.getTimestamp().toString());
-            System.out.println("LastSession" + lastSession.getTimestamp().toString());
-
-            currentSessionDateStr = WordUtils.capitalizeFully(DateTimeFormatter.ofPattern("EEEE, MMMM dd yyyy").format(currentSession.getTimestamp()));
-            currentSessionTimeStr = DateTimeFormatter.ofPattern("HH:mm:ss").format(currentSession.getTimestamp());
-            lastSessionDateStr = WordUtils.capitalizeFully(DateTimeFormatter.ofPattern("EEEE, MMMM dd yyyy").format(lastSession.getTimestamp()));
-            lastSessionTimeStr = DateTimeFormatter.ofPattern("HH:mm:ss").format(lastSession.getTimestamp());
+            currentSessionDateStr = WordUtils.capitalizeFully(userSessionFormatter.format(currentSession.getTimestamp()));
+            currentSessionTimeStr = timeFormatter.format(currentSession.getTimestamp());
+            lastSessionDateStr = WordUtils.capitalizeFully(userSessionFormatter.format(lastSession.getTimestamp()));
+            lastSessionTimeStr = timeFormatter.format(lastSession.getTimestamp());
 
             // TODO User Detail !! Change, already local!!!!
-            CustomerDetailRequest customerDetailRequest = new CustomerDetailRequest();
-            customerDetailRequest.setContrato(customerCurrentContract.getContractNumber());
+            //CustomerDetailRequest customerDetailRequest = new CustomerDetailRequest();
+            //customerDetailRequest.setContrato(currentCustomerContract.getContractNumber());
 
-            // Get balance detail
+            // Get Balance Detail
             CustomerMovementPositionRequest customerMovementPositionRequest = new CustomerMovementPositionRequest();
-            customerMovementPositionRequest.setContrato(customerCurrentContract.getContractNumber());
+            customerMovementPositionRequest.setContrato(currentCustomerContract.getContractNumber());
             customerMovementPositionRequest.setTipo("2");
             
-            customerDetailResponse = backendService.customerDetail(customerDetailRequest);
+            //customerDetailResponse = backendService.customerDetail(customerDetailRequest);
 
             customerMovementPositionResponse = backendService.customerMovements(customerMovementPositionRequest);
             ArrayList<Posicion> listPositions = customerMovementPositionResponse.getPosicion();
@@ -190,60 +216,66 @@ public class CustomerController {
             } else {
                 if (listPositions.size() > 0) {
                     positionDetail = listPositions.getLast();
-                    totalBalanceMoneyMarket = Double.parseDouble(positionDetail.getSubtotalDin().replace(",", ""));
-                    totalBalanceStockMarket = Double.parseDouble(positionDetail.getSubtotalCap().replace(",", ""));
+                    totalBalanceMoneyMarket = getDoubleValue(positionDetail.getSubtotalDin());
+                    totalBalanceStockMarket = getDoubleValue(positionDetail.getSubtotalCap());
                 }
             }
             
             ArrayList<Saldo> listBalance = customerMovementPositionResponse.getSaldo();
+            
             if (listBalance != null && listBalance.size() > 0) {
                 for (Saldo saldo : listBalance) {
                     if (!saldo.getCveDivisa().equals("Por Asignar Indeval")) {
-                        totalBalanceMN += Double.parseDouble(saldo.getSubTotal().replace(",", "")); 
+                        totalBalanceMN += getDoubleValue(saldo.getSubTotal());
                     }
                 }
             }
+            // Get percentages
+            grandTotal = getDoubleValue(customerMovementPositionResponse.getTotal());
+            cashPercentage = (totalBalanceMN * 100) / grandTotal;
+            moneyMarketPercentage = (totalBalanceMoneyMarket * 100) / grandTotal;
+            stockMarketPercentage = (totalBalanceStockMarket * 100) / grandTotal;
+
         } catch (Exception e) {
             System.out.println("Error on CustomerController::dashboard " + e.getLocalizedMessage());
         }
 
         // Plain Values
-        model.addAttribute("customerFullName", customer.getCustomerFullName());
+        model.addAttribute("customerFullName", customerFullName);
         model.addAttribute("currentSessionDateStr", currentSessionDateStr);
         model.addAttribute("currentSessionTimeStr", currentSessionTimeStr);
         model.addAttribute("lastSessionDateStr", lastSessionDateStr);
         model.addAttribute("lastSessionTimeStr", lastSessionTimeStr);
 
+        model.addAttribute("grandTotal", grandTotal);
+        model.addAttribute("cashPercentage", cashPercentage);
+        model.addAttribute("moneyMarketPercentage", moneyMarketPercentage);
+        model.addAttribute("stockMarketPercentage", stockMarketPercentage);
+
         model.addAttribute("totalBalanceMN", totalBalanceMN);
         model.addAttribute("totalBalanceMoneyMarket", totalBalanceMoneyMarket);
         model.addAttribute("totalBalanceStockMarket", totalBalanceStockMarket);
-        // Object Values
-        model.addAttribute("customerDetailResponse", customerDetailResponse);
-        model.addAttribute("positionDetail", positionDetail);
-        model.addAttribute("customerMovementPositionResponse", customerMovementPositionResponse);
-
 
         return "customer/dashboard";
     }
     
     @GetMapping("/detalle")
-    public String customerDetail(Authentication authentication, Model model) {
+    public String customerDetail(Authentication authentication, Model model) throws JsonMappingException, JsonProcessingException {
         CustomerCustomer customer = null;
-        CustomerContract contract = null;
         CustomerDetailResponse customerDetailResponse = null;
         CustomerDetailRequest customerDetailRequest = null;
+        Boolean hasError = false;
+        String errorMessage = "";
         
         List<ListaBeneficiaro> listaBeneficiaros = new ArrayList<>();
         List<ListaCuentum> listaCuenta = new ArrayList<>();
 
         try {
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            
-            contract = contractRepository.findOneByContractNumber(userDetails.getUsername()).get();
-            customer = contract.getCustomer();
+            currentCustomerContract = getCurrentCustomerContract(authentication);
+            customer = currentCustomerContract.getCustomer();
 
             customerDetailRequest = new CustomerDetailRequest();
-            customerDetailRequest.setContrato(contract.getContractNumber());
+            customerDetailRequest.setContrato(currentCustomerContract.getContractNumber());
             
             customerDetailResponse = backendService.customerDetail(customerDetailRequest);
             //System.out.println(customerDetailResponse);
@@ -251,12 +283,26 @@ public class CustomerController {
             listaBeneficiaros = customerDetailResponse.getBeneficiarios().getListaBeneficiaros();
             listaCuenta = customerDetailResponse.getCuenta().getListaCuenta();
         } catch (Exception e) {
+            // Inform of error!
             System.out.println("Error on CustomerController::customerDetail " + e.getLocalizedMessage());
+            // Get last saved if exists
+            Long contractNumber = Long.parseLong(currentCustomerContract.getContractNumber());
+            CustomerData customerData = customerDataRepository.findTopByCustomerNumberAndRequestType(contractNumber, CustomerData.REQUEST_CUSTOMER_DETAIL);
+            customerDetailResponse = mapper.readValue(customerData.getData(), CustomerDetailResponse.class);
+            listaBeneficiaros = customerDetailResponse.getBeneficiarios().getListaBeneficiaros();
+            listaCuenta = customerDetailResponse.getCuenta().getListaCuenta();
+
+            hasError = true;
+            errorMessage = "Ocurrio un error, detalle técnico: " + e.getLocalizedMessage();
         }
+
+        model.addAttribute("hasError", hasError);
+        model.addAttribute("errorMessage", errorMessage);
 
         model.addAttribute("customerDetailResponse", customerDetailResponse);
         model.addAttribute("listaBeneficiaros", listaBeneficiaros);
         model.addAttribute("listaCuenta", listaCuenta);
+        model.addAttribute("customer", customer);
         
         return "customer/detail";
     }
@@ -264,37 +310,28 @@ public class CustomerController {
     @GetMapping("/posicion")
     public String customerPosition(Authentication authentication, Model model) {
         CustomerCustomer customer = null;
-        CustomerContract customerSessionContract = null;
-        CustomerContract customerCurrentContract = null;
-
-        ObjectMapper mapper = new ObjectMapper();
-        List<GeneralDTO> generalList = new ArrayList<>();
+        
+        List<PositionInterface> generalList = new ArrayList<>();
         List<Posicion> positionStockList = new ArrayList<Posicion>();
         List<Posicion> positionMoneyList = new ArrayList<Posicion>();
         List<Posicion> positionFundsList = new ArrayList<Posicion>();
         List<Saldo> cashList = new ArrayList<>();
-
-        String generalJson = null;
-        String stockMarketJson = null;
-        String moneyMarketJson = null;
-        String cashJson = null;
+        
         CustomerMovementPositionResponse customerPositionResponse = null;
         CustomerMovementPositionRequest customerPositionRequest = null;
         Double cashTotalBalance = 0D;
         Double grandTotal = 0D;
 
         try {
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            customerSessionContract = contractRepository.findOneByContractNumber(userDetails.getUsername()).get();
-            customer = customerSessionContract.getCustomer();
+            currentCustomerContract = getCurrentCustomerContract(authentication);
+            customer = currentCustomerContract.getCustomer();
 
             customerPositionRequest = new CustomerMovementPositionRequest();
-            customerPositionRequest.setContrato(customerSessionContract.getContractNumber());
+            customerPositionRequest.setContrato(currentCustomerContract.getContractNumber());
             customerPositionRequest.setTipo("2"); // 1: Movimientos - 2: - Posición
 
             customerPositionResponse = backendService.customerPosition(customerPositionRequest);
-            grandTotal = Double.parseDouble(customerPositionResponse.getTotal().replace(",", ""));
-
+            
             List<Posicion> positionList = customerPositionResponse.getPosicion();
             for (Posicion posicion : positionList) {
                 if (posicion.isStockMarket()) positionStockList.add(posicion);
@@ -302,102 +339,15 @@ public class CustomerController {
                 if (posicion.isFundsMarket()) positionFundsList.add(posicion);
             }
             
-
             List<Saldo> balanceList = customerPositionResponse.getSaldo();
-
             for(int cont = 0; cont < 2; cont++) {
                 Saldo saldoTmp = balanceList.get(cont);
-                cashTotalBalance += Double.parseDouble(saldoTmp.getSaldoActual().replace(",", ""));
+                cashTotalBalance += getDoubleValue(saldoTmp.getSaldoActual());
                 cashList.add(saldoTmp);
             }
 
-            stockMarketJson = mapper.writeValueAsString(positionStockList);
-            moneyMarketJson = mapper.writeValueAsString(positionMoneyList);
-            cashJson = mapper.writeValueAsString(cashList);
-            // ===================================================
-            Double cashPercentage = (cashTotalBalance * 100) / grandTotal;
-            GeneralDTO cashGeneralDTO = new GeneralDTO();
-            
-
-            //System.out.println("GrandTotal: " + grandTotal.toString());
-            //System.out.println("CashTotalBalance" + cashTotalBalance.toString());
-
-            cashGeneralDTO.setMarket("Efectivo");
-            cashGeneralDTO.setEmmiter("");
-            cashGeneralDTO.setSerie("");
-            cashGeneralDTO.setSecurities("");
-            cashGeneralDTO.setAverageAmount(0D);
-            cashGeneralDTO.setPrice(0D);
-            cashGeneralDTO.setValue(cashTotalBalance);
-            cashGeneralDTO.setPercentage(cashPercentage);
-            cashGeneralDTO.setCapitalGainLoss(0D);
-            generalList.add(cashGeneralDTO);
-
-            for (Posicion posicionTmp : positionStockList) {
-                GeneralDTO stockGeneralDto = new GeneralDTO();
-                stockGeneralDto.setMarket("Capitales");
-                stockGeneralDto.setEmmiter(posicionTmp.getEmisora());
-                stockGeneralDto.setSerie(posicionTmp.getSerie());
-                stockGeneralDto.setSecurities(posicionTmp.getTitulos());
-                Double averageAmount = Double.parseDouble(posicionTmp.getCostoPromedio().replace(",", ""));
-                Double price = Double.parseDouble(posicionTmp.getCostoXTitulos().replace(",", ""));
-                Double value = Double.parseDouble(posicionTmp.getValorMercado().replace(",", ""));
-                Double capitalGainLoss = Double.parseDouble(posicionTmp.getPlusMinusvalia().replace(",", ""));
-                
-                stockGeneralDto.setAverageAmount(averageAmount);
-                stockGeneralDto.setPrice(price);
-                stockGeneralDto.setValue(value);
-
-                Double percentage = (100 * value) / grandTotal;
-                //System.out.println("GrandTotal: " + grandTotal.toString());
-                //System.out.println("PositionValue" + value.toString());
-                //System.out.println("Percentage" + percentage.toString());
-                String cssStyle = "";
-                if (capitalGainLoss > 0D) {
-                    cssStyle = "text-success";
-                } else if(capitalGainLoss < 0D) {
-                    cssStyle = "text-danger";
-                }
-
-                stockGeneralDto.setPercentage(percentage);
-                stockGeneralDto.setCapitalGainLoss(capitalGainLoss);
-                stockGeneralDto.setCssStyle(cssStyle);
-                generalList.add(stockGeneralDto);
-            }
-
-            for (Posicion posicionTmp : positionMoneyList) {
-                GeneralDTO moneyGeneralDto = new GeneralDTO();
-                moneyGeneralDto.setMarket("Dinero");
-                moneyGeneralDto.setEmmiter(posicionTmp.getEmisora());
-                moneyGeneralDto.setSerie(posicionTmp.getSerie());
-                moneyGeneralDto.setSecurities(posicionTmp.getTitulos());
-                Double averageAmount = Double.parseDouble(posicionTmp.getCostoPromedio().replace(",", ""));
-                Double price = Double.parseDouble(posicionTmp.getCostoXTitulos().replace(",", ""));
-                Double value = Double.parseDouble(posicionTmp.getValorMercado().replace(",", ""));
-                Double capitalGainLoss = Double.parseDouble(posicionTmp.getPlusMinusvalia().replace(",", ""));
-                
-                moneyGeneralDto.setAverageAmount(averageAmount);
-                moneyGeneralDto.setPrice(price);
-                moneyGeneralDto.setValue(value);
-
-                Double percentage = (100 * value) / grandTotal;
-                //System.out.println("GrandTotal: " + grandTotal.toString());
-                //System.out.println("PositionValue" + value.toString());
-                //System.out.println("Percentage" + percentage.toString());
-
-                moneyGeneralDto.setPercentage(percentage);
-                moneyGeneralDto.setCapitalGainLoss(capitalGainLoss);
-                String cssStyle = "";
-                if (capitalGainLoss > 0D) {
-                    cssStyle = "text-success";
-                } else if(capitalGainLoss < 0D) {
-                    cssStyle = "text-danger";
-                }
-                moneyGeneralDto.setCssStyle(cssStyle);
-                generalList.add(moneyGeneralDto);
-            }
-
-            generalJson = mapper.writeValueAsString(generalList);
+            customerReportService.generatePositionReports(customerPositionResponse, customer);
+            generalList = customerReportService.getGeneralList();
 
         } catch (Exception e) {
             System.out.println("Error on CustomerController::customerPosition " + e.getLocalizedMessage());
@@ -412,15 +362,6 @@ public class CustomerController {
         model.addAttribute("customerPositionResponse", customerPositionResponse);
         model.addAttribute("generalList", generalList);
 
-        model.addAttribute("generalJson", generalJson);
-        model.addAttribute("stockMarketJson", stockMarketJson);
-        model.addAttribute("moneyMarketJson", moneyMarketJson);
-        model.addAttribute("cashJson", cashJson);
-
-        // Obtener # de contrato
-        // Obtener # de cliente
-        // Obtener posición del contrato
-
         return "customer/position";
     }
     
@@ -432,25 +373,7 @@ public class CustomerController {
         Model model) {
 
         List<Movimiento> movementsList = new ArrayList<Movimiento>();
-        /*
-        String contractNumber = "101272";
-        CustomerMovementPositionResponse movementResponse = null;
-        CustomerMovementPositionRequest movementRequest = new CustomerMovementPositionRequest();
-        movementRequest.setContrato(contractNumber);
-        movementRequest.setTipo("1"); // Movements
-
-        String startDateStr = "01/06/2025";
-        String endDateStr = "15/06/2025";
-        movementRequest.setFechaIni(startDateStr);
-        movementRequest.setFechaFin(endDateStr);
-
-        try {
-            movementResponse = backendService.customerMovements(movementRequest);
-            movementsList = movementResponse.movimiento;
-        } catch (Exception e) {
-            System.out.println("Error on CustomerController::customerMovements " + e.getLocalizedMessage());
-        }
-        */
+        
         model.addAttribute("today", today);
         model.addAttribute("startDate", startDate);
         model.addAttribute("endDate", endDate);
@@ -461,35 +384,22 @@ public class CustomerController {
 
     @PostMapping("/movimientos")
     public String customerMovementsSubmit(
-        @RequestParam(name = "startDate", required = true) LocalDate startDate, 
-        @RequestParam(name = "endDate", required = true) LocalDate endDate, 
+        @RequestParam(required = true) LocalDate startDate, 
+        @RequestParam(required = true) LocalDate endDate, 
         @RequestBody String entity,
         Authentication authentication,
         Model model) {
         CustomerCustomer customer = null;
-        CustomerContract contract = null;
 
-        //System.out.println(startDate.toString());
-        //System.out.println(endDate.toString());
-
+        List<MovementDTO> movementReportList = new ArrayList<>();
         List<Movimiento> movementsList = new ArrayList<Movimiento>();
-        CustomerMovementPositionResponse movementResponse = null;
-        CustomerMovementPositionRequest movementRequest = null;
 
         try {
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            contract = contractRepository.findOneByContractNumber(userDetails.getUsername()).get();
-            customer = contract.getCustomer();
-
-            movementRequest = new CustomerMovementPositionRequest();
-            movementRequest.setContrato(contract.getContractNumber());
-            movementRequest.setTipo("1"); // Movements
+            currentCustomerContract = getCurrentCustomerContract(authentication);
+            customer = currentCustomerContract.getCustomer();
             
-            movementRequest.setFechaIni(mexFormatter.format(startDate));
-            movementRequest.setFechaFin(mexFormatter.format(endDate));
-
-            movementResponse = backendService.customerMovements(movementRequest);
-            movementsList = movementResponse.movimiento;
+            customerReportService.generateMovementsReport(customer, startDate, endDate);
+            movementReportList = customerReportService.getMovementDataList();
         } catch (Exception e) {
             System.out.println("Error on CustomerController::customerMovements " + e.getLocalizedMessage());
         }
@@ -497,6 +407,7 @@ public class CustomerController {
         model.addAttribute("startDate", startDate);
         model.addAttribute("endDate", endDate);
         model.addAttribute("movementsList", movementsList);
+        model.addAttribute("movementReportList", movementReportList);
 
         return "customer/movements";
     }
@@ -525,11 +436,11 @@ public class CustomerController {
         int counter;
         
         try {
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            //CustomerContract contract = contractRepository.findOneByContractNumber(userDetails.getUsername()).get();
+            currentCustomerContract = getCurrentCustomerContract(authentication);
+            customer = currentCustomerContract.getCustomer();
 
             statementAccountRequest = new CustomerStatementAccountRequest();
-            statementAccountRequest.setContrato(userDetails.getUsername());
+            statementAccountRequest.setContrato(currentCustomerContract.getContractNumber());
 
             statementAccountResponse = backendService.getStatementsInfo(statementAccountRequest);
 
@@ -555,11 +466,9 @@ public class CustomerController {
             System.out.println("Error on CustomerController::customerStatements " + e.getLocalizedMessage());
         }
 
-        //model.addAttribute("statementAccountList", statementAccountList);
         model.addAttribute("currentStatementAccount", currentStatementAccount);
         model.addAttribute("last12StatementAccounts", last12StatementAccounts);
         model.addAttribute("statementYearsSet", statementYearList);
-        //model.addAttribute("lastStatementAccounts", lastStatementAccounts);redd
         model.addAttribute("lastStatementAccountsJson", lastStatementAccountsJson);
 
         return "customer/statements";
@@ -772,16 +681,21 @@ public class CustomerController {
 
     @GetMapping("/constancia-fiscal")
     public String customerTaxCertificates(Authentication authentication, Model model) {
+        CustomerTaxCertificateRequest taxCertificateRequest = null;
         CustomerTaxCertificateDetailResponse taxCertificateDetailResponse = null;
         List<TaxCertificate> taxCertificateList = new ArrayList<>();
         Set<String> yearSet = new TreeSet<>();
         String taxCertificatesJson = null;
-        ObjectMapper mapper = new ObjectMapper();
+        
+        CustomerCustomer customer = null;
 
         try {
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            CustomerTaxCertificateRequest taxCertificateRequest = new CustomerTaxCertificateRequest();
-            taxCertificateRequest.setContrato(userDetails.getUsername());
+            currentCustomerContract = getCurrentCustomerContract(authentication);
+            customer = currentCustomerContract.getCustomer();
+
+            taxCertificateRequest = new CustomerTaxCertificateRequest();
+            taxCertificateRequest.setContrato(currentCustomerContract.getContractNumber());
+
             taxCertificateDetailResponse = backendService.getTaxCertificatesDetail(taxCertificateRequest);
             taxCertificateList = taxCertificateDetailResponse.getListaConstancias();
             
@@ -804,23 +718,19 @@ public class CustomerController {
 
     @GetMapping("/constancia-fiscal/consultarpdf")
     public String customerTaxCertificateViewPdf(@RequestParam Integer year, @RequestParam Integer type, Authentication authentication, Model model) {
-        // Si no existe el archivo previamente, se descarga
-        // Se guarda el detalle de la descarga en la base de datos
-        // Se guarda registro de la constancia fiscal
+        CustomerTaxCertificateRequest taxCertificateRequest = null;
+        CustomerTaxCertificateResponse taxCertificateResponse = null;
+
         String contractNumber = null;
-        CustomerContract customerContract = null;
         CustomerTaxCertificate customerTaxCertificate = null;
         Long customerTaxCertificateId = null;
-        System.out.println("Anio:" + year);
-        System.out.println("Tipo:" + type);
-
 
         try {
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            contractNumber = userDetails.getUsername();
-            customerContract = contractRepository.findOneByContractNumber(contractNumber).get();
+            currentCustomerContract = getCurrentCustomerContract(authentication);
+            customer = currentCustomerContract.getCustomer();
+            contractNumber = currentCustomerContract.getContractNumber();
 
-            Optional<CustomerTaxCertificate> result = customerTaxCertificateRepository.findByYearAndTypeAndCustomerContract(year.toString(), type.toString(), customerContract);
+            Optional<CustomerTaxCertificate> result = customerTaxCertificateRepository.findByYearAndTypeAndFileTypeAndCustomerContract(year.toString(), type, CustomerTaxCertificate.FILE_TYPE_PDF, currentCustomerContract);
 
             if (result.isPresent()) { // Already downloaded, get and send taxCertificateId
                 customerTaxCertificate = result.get();
@@ -829,10 +739,9 @@ public class CustomerController {
                 String taxCertificateFilePath = null;
                 String taxCertificateFileName = null;
                 customerTaxCertificate = new CustomerTaxCertificate();
-                customerTaxCertificate.setType(type.toString());
+                customerTaxCertificate.setType(type);
 
-                CustomerTaxCertificateRequest taxCertificateRequest = new CustomerTaxCertificateRequest();
-                CustomerTaxCertificateResponse taxCertificateResponse = null;
+                taxCertificateRequest = new CustomerTaxCertificateRequest();
                 taxCertificateRequest.setContrato(contractNumber);
                 taxCertificateRequest.setPdf("1");
                 taxCertificateRequest.setConstanciaTipo(type.toString());
@@ -857,7 +766,7 @@ public class CustomerController {
 
                     // Fill project
                     LocalDateTime now = LocalDateTime.now();
-                    customerTaxCertificate.setCustomerContract(customerContract);
+                    customerTaxCertificate.setCustomerContract(currentCustomerContract);
                     customerTaxCertificate.setDownloadedDate(now);
                     customerTaxCertificate.setFilename(taxCertificateFileName);
                     customerTaxCertificate.setYear(year.toString());
@@ -882,9 +791,88 @@ public class CustomerController {
         return "customer/tax-certificate-view";
     }
 
-    @GetMapping("/constancia-fiscal/descargarxml")
-    public String customerTaxCertificateDownloadXml() {
-        return "customer/tax-certificate-view";
+    @RequestMapping(value = "/constancia-fiscal/descargarxml", produces = "application/xml", method = RequestMethod.GET)
+    public void customerTaxCertificateDownloadXml(@RequestParam Integer year, @RequestParam Integer type, 
+        HttpServletResponse response,
+        Authentication authentication) {
+
+        String contractNumber = null;
+        CustomerTaxCertificateRequest taxCertificateRequest = null;
+        CustomerTaxCertificateResponse taxCertificateResponse = null;
+
+        CustomerTaxCertificate customerTaxCertificate = null;
+        String taxCertificateFilePath = "";
+        String taxCertificateFileName = "";
+
+        try {
+            
+            if (year == null || type == null) {
+                throw new Exception("Parametros año y tipo son requeridos");
+            } else {
+                currentCustomerContract = getCurrentCustomerContract(authentication);
+                customer = currentCustomerContract.getCustomer();
+                contractNumber = currentCustomerContract.getContractNumber();
+                InputStream inputStream = null;
+
+                Optional<CustomerTaxCertificate> result = customerTaxCertificateRepository.findByYearAndTypeAndFileTypeAndCustomerContract(year.toString(), type, CustomerTaxCertificate.FILE_TYPE_XML, currentCustomerContract);
+
+                if (result.isPresent()) {
+                    customerTaxCertificate = result.get();
+                    File xmlFile = new File(customerTaxCertificate.getPath() + customerTaxCertificate.getFilename());
+
+                    inputStream = new FileInputStream(xmlFile);
+                } else {
+                    taxCertificateRequest = new CustomerTaxCertificateRequest();
+                    taxCertificateRequest.setAnoconsulta(year.toString());
+                    taxCertificateRequest.setConstanciaTipo(type.toString());
+                    taxCertificateRequest.setPdf("2"); // 1 PDF, 2 XML
+                    taxCertificateRequest.setContrato(contractNumber);
+        
+                    taxCertificateResponse = backendService.getTaxCertificateFile(taxCertificateRequest);
+                    
+                    if (taxCertificateResponse.getRespuesta() != "Error") {
+                        customerTaxCertificate = new CustomerTaxCertificate();
+                        customerTaxCertificate.setType(type);
+    
+                        // Save downloaded file
+                        taxCertificateFilePath = "contracts/" + contractNumber  + "/tax_certificates/";
+                        taxCertificateFileName = contractNumber + "_" + year.toString() + "_" + customerTaxCertificate.getTypeAsString() + ".xml";
+        
+                        // Save file and record
+                        Path path = Paths.get(taxCertificateFilePath);
+                        Files.createDirectories(path);
+                        // Decode from Base64 to binary
+                        byte[] byteArray = Base64.getDecoder().decode(taxCertificateResponse.getConstancia());
+                        // Save the binary file
+                        OutputStream outputStream = new FileOutputStream(taxCertificateFilePath + taxCertificateFileName);
+                        outputStream.write(byteArray);
+                        outputStream.close();
+        
+                        // Fill Tax Certificate
+                        LocalDateTime now = LocalDateTime.now();
+                        customerTaxCertificate.setCustomerContract(currentCustomerContract);
+                        customerTaxCertificate.setDownloadedDate(now);
+                        customerTaxCertificate.setFilename(taxCertificateFileName);
+                        customerTaxCertificate.setYear(year.toString());
+                        customerTaxCertificate.setPath(taxCertificateFilePath);
+        
+                        customerTaxCertificateRepository.saveAndFlush(customerTaxCertificate);
+        
+                        inputStream = new ByteArrayInputStream(byteArray);
+                    }
+                    
+                }
+
+                response.setContentType("application/xml");
+                org.apache.commons.io.IOUtils.copy(inputStream, response.getOutputStream());
+                response.flushBuffer();
+            }
+
+        } catch (Exception e) {
+            System.out.println("" + e.getLocalizedMessage());
+        }
+
+        //return "customer/tax-certificate-view";
     }
 
     @GetMapping("/constancia-fiscal/ver-pdf/{customerTaxCertificateId}")
@@ -923,57 +911,35 @@ public class CustomerController {
     }
 
 
-
-
-    @PostMapping("/constancia-fiscal")
-    public String customerTaxCertificatesSubmit(@RequestBody String year, Authentication authentication, Model model) {
-        
-        try {
-
-            
-            
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            CustomerTaxCertificateRequest taxCertificateRequest = new CustomerTaxCertificateRequest();
-            taxCertificateRequest.setContrato(userDetails.getUsername());
-            taxCertificateRequest.setAnoconsulta(year);
-            taxCertificateRequest.setPdf("1");
-            taxCertificateRequest.setConstanciaTipo("1");
-
-            CustomerTaxCertificatePeriodResponse taxCertificatePeriodResponse;
-
-
-        } catch (Exception e) {
-            System.out.println("Error on: customerTaxCertificatesSubmit " + e.getLocalizedMessage());
-        }
-
-        model.addAttribute("year", year);
-        
-        return "customer/tax-certificates";
-    }
     
     @GetMapping("/cambiar-contrato/{contractNumber}")
     public String getChangeContract(@PathVariable String contractNumber, Authentication authentication) {
-        // Verify if contract number in customer contracts
         if (contractNumber != null) {
             try {
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
                 CustomerContract customerContract = contractRepository.findOneByContractNumber(userDetails.getUsername()).get();
-
-                CustomerContract customerContractTarget = customerContract.getCustomer().getContracts()
-                    .stream()
-                    .filter(cc -> cc.getContractNumber() == contractNumber)
-                    .findAny()
-                    .orElseThrow();
-
-                customerContractTarget.setCurrent(CustomerContract.CURRENT_TRUE);
-                contractRepository.saveAndFlush(customerContractTarget);
                 
-                for (CustomerContract customerContractTmp : customerContract.getCustomer().getContracts()) {
-                    if (customerContractTarget.getCustomerContractId() != customerContractTmp.getCustomerContractId()) {
-                        customerContractTmp.setCurrent(CustomerContract.CURRENT_FALSE);
-                        contractRepository.saveAndFlush(customerContractTmp);
+                // Verify if contract number in customer contracts
+                List<CustomerContract> customerContractList = customerContract.getCustomer().getContracts();
+                CustomerContract customerContractTarget = customerContractList
+                    .stream()
+                    .filter(cc -> cc.getContractNumber().equals(contractNumber))
+                    .findFirst()
+                    .orElseThrow();
+                
+                if (customerContractTarget != null) {
+                    customerContractTarget.setCurrent(CustomerContract.CURRENT_TRUE);
+                    contractRepository.saveAndFlush(customerContractTarget);
+                    
+                    for (CustomerContract customerContractTmp : customerContractList) {
+                        if (customerContractTarget.getCustomerContractId() != customerContractTmp.getCustomerContractId()) {
+                            customerContractTmp.setCurrent(CustomerContract.CURRENT_FALSE);
+
+                            contractRepository.saveAndFlush(customerContractTmp);
+                        }
                     }
                 }
+
 
             } catch (Exception e) {
                 System.out.println("CustomerController::getChangeContract::[" + e.getLocalizedMessage() + "]");
@@ -982,7 +948,6 @@ public class CustomerController {
 
         return "redirect:/portal-clientes/dashboard";
     }
-
 
     @ModelAttribute("customerContractList")
     public List<CustomerContract> customerContractList(Authentication authentication) {
@@ -1004,9 +969,9 @@ public class CustomerController {
     @ModelAttribute("currentCustomerContract")
     public CustomerContract getCurrentCustomerContract(Authentication authentication) {
         CustomerContract currentCustomerContract = null;
+
         try {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            //
             CustomerContract contract = contractRepository.findOneByContractNumber(userDetails.getUsername()).get();
             
             if (contract.isCurrent()) {
@@ -1015,7 +980,7 @@ public class CustomerController {
                 for (CustomerContract customerContract : contract.getCustomer().getContracts()) {
                     if(customerContract.isCurrent()) {
                         currentCustomerContract = customerContract;
-                        continue;
+                        break;
                     }
                 }
             }
@@ -1025,4 +990,5 @@ public class CustomerController {
 
         return currentCustomerContract;
     }
+
 }

@@ -1,6 +1,5 @@
 package com.bcb.webpage.service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +15,6 @@ import com.bcb.webpage.model.webpage.entity.customers.CustomerAuthenticated;
 import com.bcb.webpage.model.webpage.entity.customers.CustomerContract;
 import com.bcb.webpage.model.webpage.entity.customers.CustomerCustomer;
 import com.bcb.webpage.model.webpage.repository.CustomerContractRepository;
-import com.bcb.webpage.model.webpage.repository.CustomerCustomerRepository;
 import com.bcb.webpage.model.webpage.repository.CustomerSessionRepository;
 
 @Service
@@ -27,9 +25,6 @@ public class DatabaseUserDetailsService implements UserDetailsService {
 
     @Autowired
     CustomerSessionRepository customerSessionRepository;
-
-    //@Autowired
-    //CustomerRepository customerRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

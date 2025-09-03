@@ -28,7 +28,7 @@
                                         <tbody>
                                             <tr>
                                                 <td><strong>NOMBRE</strong></td>
-                                                <td><span th:unless="${customerDetailResponse == null}" th:text="${customerDetailResponse.nombre}"></span></td>
+                                                <td><span th:unless="${customer == null}" th:text="${customer.customerFullName}"></span></td>
                                             </tr>
                                             
                                             <tr>

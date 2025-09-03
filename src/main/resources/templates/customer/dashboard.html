@@ -83,7 +83,7 @@
                                                             <strong>FONDOS DE INVERSIÓN</strong>
                                                         </td>
                                                         <td class="text-end" style="width: 20%;">
-                                                            <span th:text="${positionDetail} != null AND ${positionDetail.subtotalFon} != null ? ${positionDetail.subtotalFon} : '0'"></span>
+                                                            <!--<span th:text="${positionDetail} != null AND ${positionDetail.subtotalFon} != null ? ${positionDetail.subtotalFon} : '0'"></span>-->
                                                         </td>
                                                         <td></td>
                                                     </tr>
@@ -122,18 +122,18 @@
         <div th:replace="~{customer/fragments/common :: jsDependencies}"></div>
 
         <script th:inline="javascript">
-            let totalBalanceMN = [[${totalBalanceMN}]];
-            let totalBalanceMoneyMarket = [[${totalBalanceMoneyMarket}]];
-            let totalBalanceStockMarket = [[${totalBalanceStockMarket}]];
+            let totalBalanceMN = [[${cashPercentage}]];
+            let totalBalanceMoneyMarket = [[${moneyMarketPercentage}]];
+            let totalBalanceStockMarket = [[${stockMarketPercentage}]];
 
-            const ctx = document.getElementById('myChart');
+            //const ctx = document.getElementById('myChart');
 
-            new Chart(ctx, {
+            new Chart(document.getElementById('myChart'), {
                 type: 'pie',
                 data: {
                 labels: ['Mercado de Dinero', 'Mercado de Capitales', 'Saldo MN'],
                 datasets: [{
-                    label: 'Monto MN',
+                    label: '%',
                     data: [totalBalanceMoneyMarket, totalBalanceStockMarket, totalBalanceMN],
                     borderWidth: 1
                 }]

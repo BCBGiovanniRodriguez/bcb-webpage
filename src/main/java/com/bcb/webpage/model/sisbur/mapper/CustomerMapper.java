@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import com.bcb.webpage.model.webpage.entity.customers.CustomerCustomer;
@@ -12,7 +13,7 @@ public class CustomerMapper implements RowMapper<CustomerCustomer>{
 
     @Override
     @Nullable
-    public CustomerCustomer mapRow(ResultSet rs, int rowNum) throws SQLException {
+    public CustomerCustomer mapRow(@NonNull ResultSet rs, int rowNum) throws SQLException {
         CustomerCustomer customer = new CustomerCustomer();
 
         customer.setCustomerKey(rs.getString("CVECLIENTE"));

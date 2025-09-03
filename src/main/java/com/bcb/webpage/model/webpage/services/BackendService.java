@@ -128,7 +128,7 @@ public class BackendService {
         return customerData;
     }
 
-    public CustomerDetailResponse customerDetail(CustomerDetailRequest customerDetailRequest) throws NoSuchAlgorithmException, JsonMappingException, JsonProcessingException {
+    public CustomerDetailResponse customerDetail(CustomerDetailRequest customerDetailRequest) throws JsonMappingException, JsonProcessingException {
         CustomerDetailResponse customerDetailResponse = null;
         ObjectMapper mapper = new ObjectMapper();
         String json = null;
@@ -206,7 +206,7 @@ public class BackendService {
 
         try {
             json = getJson(mapper, movementRequest, ENDPOINT_MOVEMENT_AND_POSITION);
-            System.out.println("RawData: " + json);
+            //System.out.println("RawData: " + json);
             // Get md5sum
             String md5sumResponse = getMd5(json);
             // Get previous data

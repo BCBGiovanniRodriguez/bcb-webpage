@@ -25,7 +25,9 @@ public class CustomerTaxCertificate {
 
     private String year;
 
-    private String type;
+    private Integer type;
+
+    private Integer fileType;
 
     private String filename;
 
@@ -66,6 +68,14 @@ public class CustomerTaxCertificate {
 
     public static final int TAX_CERTIFICATE_DERIVATIVES = 7;
 
+    public static final String[] taxCertificateTypes = {"Factura", "Intereses", "Dividendos2013", "Dividendos2014", "DividendosSIC", "Enajenación", "Fibras", "Derivados"};
+
+    public static final int FILE_TYPE_PDF = 1;
+
+    public static final int FILE_TYPE_XML = 2;
+
+    public static final String[] fileTypes = {"PDF", "XML"};
+
 
     public CustomerTaxCertificate() {
     }
@@ -94,11 +104,11 @@ public class CustomerTaxCertificate {
         this.year = year;
     }
 
-    public String getType() {
+    public Integer getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(Integer type) {
         this.type = type;
     }
 
@@ -125,48 +135,40 @@ public class CustomerTaxCertificate {
     public void setDownloadedDate(LocalDateTime downloadedDate) {
         this.downloadedDate = downloadedDate;
     }
-
+    
     @Override
     public String toString() {
         return "CustomerTaxCertificate [taxCertificateId=" + taxCertificateId + ", customerContract=" + customerContract
-                + ", year=" + year + ", type=" + type + ", filename=" + filename + ", path=" + path
-                + ", downloadedDate=" + downloadedDate + "]";
+        + ", year=" + year + ", type=" + type + ", filename=" + filename + ", path=" + path
+        + ", downloadedDate=" + downloadedDate + "]";
+    }
+    
+    public Integer getFileType() {
+        return fileType;
     }
 
-    public String getTypeAsString() {
-        String result;
+    public void setFileType(Integer fileType) {
+        this.fileType = fileType;
+    }
 
-        switch (this.getType()) {
-            case "0":
-                result = CustomerTaxCertificate.TAX_CERTIFICATE_INVOICE_STRING;
-                break;
-            case "1":
-                result = CustomerTaxCertificate.TAX_CERTIFICATE_INTEREST_STRING;
-                break;
-            case "2":
-                result = CustomerTaxCertificate.TAX_CERTIFICATE_DIVIDENDS2013_STRING;
-                break;
-            case "3":
-                result = CustomerTaxCertificate.TAX_CERTIFICATE_DIVIDENDS2014_STRING;
-                break;
-            case "4":
-                result = CustomerTaxCertificate.TAX_CERTIFICATE_DIVIDENDSSIC_STRING;
-                break;
-            case "5":
-                result = CustomerTaxCertificate.TAX_CERTIFICATE_FORECLOSURE_STRING;
-                break;
-            case "6":
-                result = CustomerTaxCertificate.TAX_CERTIFICATE_FIBERS_STRING;
-                break;
-            case "7":
-                result = CustomerTaxCertificate.TAX_CERTIFICATE_DERIVATIVES_STRING;
-                break;
-            default:
-                result = "OPCION NO CONOCIDA";
-                break;
+    public String getTypeAsString() throws Exception {
+
+        if (this.getType() < 0 || this.getType() > CustomerTaxCertificate.taxCertificateTypes.length) {
+            throw new Exception("Valor de tipo fuera de rango");
         }
 
-        return result;
+        return CustomerTaxCertificate.taxCertificateTypes[this.getType()];
     }
+
+    public String getFileTypeAsString() throws Exception {
+
+        if (this.getFileType() < 0 || this.getFileType() > CustomerTaxCertificate.fileTypes.length) {
+            throw new Exception("Valor de tipo de archivo fuera de rango");
+        }
+
+        return CustomerTaxCertificate.fileTypes[this.getFileType()];
+    }
+    
+
     
 }

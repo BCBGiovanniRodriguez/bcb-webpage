@@ -1,5 +1,5 @@
 <!-- Created with Jaspersoft Studio version 7.0.2.final using JasperReports Library version 7.0.2-31532122640f516c6d17238ae0e41a08113d5ac0  -->
-<jasperReport name="MoneyMarket_Letter_Landscape" language="java" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3a35090a-98a9-41d1-a367-bc070e33511b">
+<jasperReport name="StockMarket_Letter_Landscape" language="java" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3a35090a-98a9-41d1-a367-bc070e33511b">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<parameter name="P_SEARCH_DATE" class="java.lang.String"/>
 	<parameter name="P_CUSTOMER_NAME" class="java.lang.String"/>
@@ -7,12 +7,9 @@
 	<query language="sql"><![CDATA[]]></query>
 	<field name="emisora" class="java.lang.String"/>
 	<field name="serie" class="java.lang.String"/>
-	<field name="plazo" class="java.math.BigDecimal"/>
-	<field name="tasa" class="java.math.BigDecimal"/>
 	<field name="titulos" class="java.math.BigDecimal"/>
 	<field name="precio" class="java.math.BigDecimal"/>
 	<field name="costoPromedio" class="java.math.BigDecimal"/>
-	<field name="valorACosto" class="java.math.BigDecimal"/>
 	<field name="valor" class="java.math.BigDecimal"/>
 	<field name="plusMinusValia" class="java.math.BigDecimal"/>
 	<background splitType="Stretch"/>
@@ -44,60 +41,48 @@
 		<property name="com.jaspersoft.studio.unit.height" value="px"/>
 	</title>
 	<pageHeader height="31" splitType="Stretch">
-		<element kind="staticText" uuid="220e65bb-f011-4b34-9367-1ac86320c265" x="275" y="6" width="210" height="22" forecolor="#003B72" fontSize="13.0" bold="true" italic="false" hTextAlign="Right">
-			<text><![CDATA[RUBRO: MERCADO DE DINERO]]></text>
+		<element kind="staticText" uuid="220e65bb-f011-4b34-9367-1ac86320c265" x="255" y="9" width="242" height="22" forecolor="#003B72" fontSize="13.0" bold="true" italic="false" hTextAlign="Right">
+			<text><![CDATA[RUBRO: MERCADO DE CAPITALES]]></text>
 		</element>
 	</pageHeader>
 	<columnHeader height="30" splitType="Stretch">
-		<element kind="staticText" uuid="58910d0f-bb8a-4544-bf0f-6ee6bfeb1646" x="20" y="15" width="90" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Center">
+		<element kind="staticText" uuid="58910d0f-bb8a-4544-bf0f-6ee6bfeb1646" x="200" y="15" width="90" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Left">
 			<text><![CDATA[EMISORA - SERIE]]></text>
 		</element>
-		<element kind="staticText" uuid="692fc29b-dca7-41e3-910f-e1412d15b9ec" x="110" y="15" width="90" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Center">
-			<text><![CDATA[PLAZO]]></text>
-		</element>
-		<element kind="staticText" uuid="68d6ef4f-225b-4215-8e14-a1a94547c1ad" x="200" y="15" width="90" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Center">
-			<text><![CDATA[TASA (Cupón)]]></text>
-		</element>
-		<element kind="staticText" uuid="f55a634a-c00e-4bc9-a580-89032965ae92" x="290" y="15" width="90" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Center">
+		<element kind="staticText" uuid="f55a634a-c00e-4bc9-a580-89032965ae92" x="290" y="15" width="90" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Right">
 			<text><![CDATA[TÍTULOS]]></text>
 		</element>
-		<element kind="staticText" uuid="51b59c80-22c8-4e28-93c2-de95388fc713" x="380" y="15" width="90" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Center">
+		<element kind="staticText" uuid="51b59c80-22c8-4e28-93c2-de95388fc713" x="380" y="15" width="90" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Right">
 			<text><![CDATA[COSTO PROMEDIO]]></text>
 		</element>
-		<element kind="staticText" uuid="314c963d-f8bd-4e20-9d9c-d6c88c27bad8" x="470" y="15" width="90" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Center">
+		<element kind="staticText" uuid="314c963d-f8bd-4e20-9d9c-d6c88c27bad8" x="470" y="15" width="90" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Right">
 			<text><![CDATA[PRECIO MERCADO]]></text>
 		</element>
-		<element kind="staticText" uuid="94eb7665-67a2-418b-a75c-1053aa5ab668" x="560" y="15" width="90" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Center">
+		<element kind="staticText" uuid="94eb7665-67a2-418b-a75c-1053aa5ab668" x="560" y="15" width="90" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Right">
 			<text><![CDATA[VALOR MERCADO]]></text>
 		</element>
-		<element kind="staticText" uuid="43845205-e88b-462f-8049-60db15ecc235" x="650" y="15" width="90" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Center">
+		<element kind="staticText" uuid="43845205-e88b-462f-8049-60db15ecc235" x="650" y="15" width="90" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Right">
 			<text><![CDATA[PLUS/MINUS VALÍA]]></text>
 		</element>
 	</columnHeader>
 	<detail>
 		<band height="16">
-			<element kind="textField" uuid="3b06dc75-bf63-4b2d-b4b4-89cc79e82107" x="20" y="0" width="90" height="16" fontSize="8.0">
+			<element kind="textField" uuid="3b06dc75-bf63-4b2d-b4b4-89cc79e82107" x="200" y="0" width="90" height="16" fontSize="8.0">
 				<expression><![CDATA[$F{emisora} + " " + $F{serie}]]></expression>
 			</element>
-			<element kind="textField" uuid="2d23b5b4-ece5-476d-936c-800be77fec37" x="120" y="0" width="80" height="16" fontSize="8.0" pattern="#,##0;-#,##0" hTextAlign="Right">
-				<expression><![CDATA[$F{plazo}]]></expression>
-			</element>
-			<element kind="textField" uuid="c19a809d-2af3-47e2-af9a-4ea1d9b10e96" x="210" y="0" width="80" height="16" fontSize="8.0" pattern="#,##0.00;-#,##0.00" hTextAlign="Right">
-				<expression><![CDATA[$F{tasa}]]></expression>
-			</element>
-			<element kind="textField" uuid="fe342811-e4f0-4268-adab-ff39df2d57e0" x="300" y="0" width="80" height="16" fontSize="8.0" pattern="#,##0;-#,##0" hTextAlign="Right">
+			<element kind="textField" uuid="fe342811-e4f0-4268-adab-ff39df2d57e0" x="290" y="0" width="90" height="16" fontSize="8.0" pattern="#,##0;-#,##0" hTextAlign="Right">
 				<expression><![CDATA[$F{titulos}]]></expression>
 			</element>
-			<element kind="textField" uuid="9bccdcb6-3ef0-4917-ac91-1d1f49f4f745" x="390" y="0" width="80" height="16" fontSize="8.0" pattern=" #,##0.000000;-#,##0.000000" hTextAlign="Right">
+			<element kind="textField" uuid="9bccdcb6-3ef0-4917-ac91-1d1f49f4f745" x="380" y="0" width="90" height="16" fontSize="8.0" pattern=" #,##0.000000;-#,##0.000000" hTextAlign="Right">
 				<expression><![CDATA[$F{costoPromedio}]]></expression>
 			</element>
-			<element kind="textField" uuid="4e05c415-5248-4520-af55-5ac8189cf739" x="480" y="0" width="80" height="16" fontSize="8.0" pattern=" #,##0.000000;-#,##0.000000" hTextAlign="Right">
+			<element kind="textField" uuid="4e05c415-5248-4520-af55-5ac8189cf739" x="470" y="0" width="90" height="16" fontSize="8.0" pattern=" #,##0.000000;-#,##0.000000" hTextAlign="Right">
 				<expression><![CDATA[$F{precio}]]></expression>
 			</element>
-			<element kind="textField" uuid="6bcc70a4-fc67-4fde-b972-c1c607982369" x="570" y="0" width="80" height="16" fontSize="8.0" pattern="#,##0.00;-#,##0.00" hTextAlign="Right">
+			<element kind="textField" uuid="6bcc70a4-fc67-4fde-b972-c1c607982369" x="560" y="0" width="90" height="16" fontSize="8.0" pattern="#,##0.00;-#,##0.00" hTextAlign="Right">
 				<expression><![CDATA[$F{valor}]]></expression>
 			</element>
-			<element kind="textField" uuid="95bcbae6-7edf-4c08-b02c-7c71344b726e" x="660" y="0" width="80" height="16" fontSize="8.0" pattern="#,##0.00;-#,##0.00" hTextAlign="Right">
+			<element kind="textField" uuid="95bcbae6-7edf-4c08-b02c-7c71344b726e" x="650" y="0" width="90" height="16" fontSize="8.0" pattern="#,##0.00;-#,##0.00" hTextAlign="Right">
 				<expression><![CDATA[$F{plusMinusValia}]]></expression>
 			</element>
 		</band>

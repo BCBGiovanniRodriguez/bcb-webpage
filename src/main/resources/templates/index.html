@@ -47,6 +47,132 @@
         <link rel="stylesheet" th:href="@{/public/legacy/makestyle/023.css}">
         <link rel="stylesheet" th:href="@{/public/legacy/makestyle/024.css}">
         <link rel="stylesheet" th:href="@{/public/legacy/css/common-footer.css}">
+        <style>
+
+            * {
+                -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+                -webkit-tap-highlight-color: transparent;
+                box-sizing: border-box;
+            }
+
+            html * {
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+
+            html {
+                font-family: sans-serif;
+                line-height: 1.15;
+                -webkit-text-size-adjust: 100%;
+                -ms-text-size-adjust: 100%;
+                -ms-overflow-style: scrollbar;
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            body {
+                background-color: #fff;
+                color: #3c4858;
+                margin: 0;
+                font-size: 1rem;
+                text-align: left;
+            }
+
+            body, h1, h2, h3, h4, h5, h6 {
+                font-family: "Open Sans", sans-serif;
+                font-weight: 300;
+                line-height: 1.5em;
+            }
+
+            h1, h2, h3, h4, h5, h6 {
+                font-family: "Lato", sans-serif;
+                color: inherit;
+            }
+
+            h1, h2, h3, h4, h5, h6 {
+                margin-bottom: 10px;
+            }
+
+            h4, h5, h6 {
+                margin-top: 10px;
+            }
+
+            h4 {
+                font-size: 1.125rem;
+                line-height: 1.5em;
+            }
+
+            /**   Footer    **/
+
+            .common-284 {
+                color: #FFF;
+                width: 100%;
+                padding-top: 0;
+                padding-bottom: 0;
+                background-size: cover;
+                background-color: #242424;
+            }
+
+            .common-284 i, .common-284 h5, .common-284 h4 {
+                color: #FFF !important;
+            }
+            
+            .common-274 {
+                display: flex;
+                padding: 83px 0;
+                z-index: 2;
+                position: relative;
+                flex-direction: column;
+            }
+
+            .common-274 h4 {
+                display: inline-block;
+                position: relative;
+                font-size: 1.5rem !important;
+                margin-top: 0;
+                font-weight: 400;
+                line-height: 1.36em;
+                margin-bottom: 2.6rem;
+                text-transform: uppercase;
+            }
+
+            
+
+            .common-286 {
+                width: 100%;
+                padding: 0 !important;
+                margin-left: auto;
+                margin-right: auto;
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+
+            @media (min-width: 1200px) {
+                .common-286 {
+                    width: 1170px;
+                }
+            }
+
+            @media (min-width: 992px) {
+                .common-286 {
+                    width: 970px;
+                }
+            }
+
+            @media (min-width: 768px) {
+                .common-286 {
+                    width: 750px;
+                }
+            }
+
+            
+
+            .common-282 {
+                text-align: left;
+            }
+
+            
+            
+        </style>
     </head>
     <body>
         <noscript>Debe Activar JavaScript en su Navegador para ver nuestra Aplicacion.</noscript>
@@ -80,8 +206,8 @@
                                         <div>
                                             <div class="jss246 jss336 jss338" style="background-image: url(&quot;&quot;);">
                                                 <div class="jss333">
-                                                    <video controls autoplay loop>
-                                                        <source th:src="@{${homeVideoUrl}}" type="video/mp4">
+                                                    <video width="100%" controls autoplay="true" loop="true">
+                                                        <source th:src="@{/public/legacy/pages/home/video/HomeBCB220728.mp4}" type="video/mp4">
                                                         Tu navegador no soporta el elemento de video.
                                                         <code>video</code>
                                                     </video>
@@ -178,7 +304,7 @@
                         </div>
                     </div>
                     <div class="MuiGrid-root jss101 undefined MuiGrid-item MuiGrid-grid-xs-12" style="padding: 0px; min-height: 450px;">
-                        <div class="jss246 jss252 jss223 jss225" style="background-image: url(&quot;/public/legacy/pages/common/image/portada-PS-gestion-inversiones-mandatos.jpg&quot;);">
+                        <div class="jss246 jss252 jss223 jss225" style="background-image: url('/public/legacy/pages/common/image/portada-PS-gestion-inversiones-mandatos.jpg');">
                             <div class="jss263 jss264 jss235">
                                 <a>
                                     <h3 class="jss230">MANTENEMOS UNA SÓLIDA CULTURA DE CUMPLIMIENTO Y GOBIERNO CORPORATIVO</h3>

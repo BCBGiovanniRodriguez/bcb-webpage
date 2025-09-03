@@ -56,7 +56,7 @@
                                                 <thead>
                                                     <tr>
                                                         <th>Tipo Constancia</th>
-                                                        <th class="text-center">PDF</th>
+                                                        <th class="text-center" colspan="2">PDF</th>
                                                         <th class="text-center">XML</th>
                                                     </tr>
                                                 </thead>
@@ -80,14 +80,11 @@
 
         <div th:replace="~{customer/fragments/common :: jsDependencies}"></div>
         <script th:inline="javascript">
-            $(document).ready(function(){
-                console.log('JavaScript Activo');
-                let taxCertificatesStr = [[${taxCertificatesJson}]];
-                let taxCertificatesJson = JSON.parse(taxCertificatesStr);
+            $(document).ready(function() {
+                //let taxCertificatesStr = [[${taxCertificatesJson}]];
+                let taxCertificatesJson = JSON.parse([[${taxCertificatesJson}]]);
                 let taxCertificatesArray = ["Factura", "Intereses", "Dividendos2013", "Dividendos2014", "DividendosSIC", "Enajenación", "Fibras", "Derivados"];
                 let commonUrl = "/portal-clientes/constancia-fiscal/";
-
-                //console.dir(taxCertificatesJson);
                 
                 $("#year").on("change", function() {
                     let year = $(this).val();
@@ -98,17 +95,17 @@
                         if(year == element.Periodo) {
                             let tr = $("<tr>");
                             let tdPeriodo = $("<td>", { "text": element.Periodo + " - " + taxCertificatesArray[element.Tipo] });
-                            let tdPdf = $("<td>", {"class": "text-center"});
+                            let tdPdfView = $("<td>", {"class": "text-center"});
+                            let tdPdfDownload = $("<td>", {"class": "text-center"});
                             let tdXml = $("<td>", {"class": "text-center"});
+                            
                             let searchPdfUrl = commonUrl + "consultarpdf?year=" + year + "&type=" + element.Tipo;
                             let buttonSearchPdf = $("<a>", {"class": "btn btn-primary", "href": searchPdfUrl, "target": "_blank", "text": "Consulta "});
                             
                             let downloadPdfUrl = commonUrl + "descargarpdf?year=" + year + "&type=" + element.Tipo;
                             let buttonDownloadPdf = $("<a>", {"class": "btn btn-success", "href": downloadPdfUrl, "text": "Descarga "});
-                            
                             let iSearchPdf = $("<i>", {"class": "fa fa-search"});
                             let iDownloadPdf = $("<i>", {"class": "fa fa-download"});
-                            
                             buttonSearchPdf.append(iSearchPdf);
                             buttonDownloadPdf.append(iDownloadPdf);
 
@@ -117,12 +114,13 @@
                             let iDownloadXml = $("<i>", {"class": "fa fa-download"});
                             buttonDownloadXml.append(iDownloadXml);
                             
-                            tdPdf.append(buttonSearchPdf)
-                            .append(buttonDownloadPdf);
+                            tdPdfView.append(buttonSearchPdf);
+                            tdPdfDownload.append(buttonDownloadPdf);
                             tdXml.append(buttonDownloadXml);
 
                             tr.append(tdPeriodo)
-                            .append(tdPdf)
+                            .append(tdPdfView)
+                            .append(tdPdfDownload)
                             .append(tdXml);
                             
                             $("#taxCertificatesTable").find("tbody").append(tr);

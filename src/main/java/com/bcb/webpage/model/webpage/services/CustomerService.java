@@ -1,6 +1,7 @@
 package com.bcb.webpage.model.webpage.services;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,8 @@ public class CustomerService {
     private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
     private CustomerCustomer customer;
+
+    private DateTimeFormatter mexFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
     public void setCustomerRepository(CustomerCustomerRepository customerRepository) {
         this.customerRepository = customerRepository;
@@ -106,5 +109,5 @@ public class CustomerService {
 
     }
     
-
+    
 }

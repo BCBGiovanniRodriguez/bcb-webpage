@@ -52,8 +52,8 @@
                         </form>
                         <br />
 
-                        <div th:if="${movementsList != null}" class="table-responsive">
-                            <div th:if="${movementsList.size() > 0}" class="card card-primary card-outline">
+                        <div th:if="${movementReportList != null}" class="table-responsive">
+                            <div th:if="${movementReportList.size() > 0}" class="card card-primary card-outline">
                                 <div class="card-header">
                                     <h5 class="card-title text-primary">
                                         Movimientos del <strong><span th:text="${startDate}"></span></strong> al <strong><span th:text="${endDate}"></span></strong>
@@ -69,36 +69,39 @@
                                     <table class="table table-sm table-hover">
                                         <thead>
                                             <tr>
-                                                <th><strong>FECHA</strong></th>
+                                                <th><strong>F. OPE</strong></th>
+                                                <th><strong>F. LIQ</strong></th>
                                                 <th><strong>CONCEPTO</strong></th>
-                                                <th><strong>EMISORA</strong></th>
-                                                <th><strong>SERIE</strong></th>
-                                                <th><strong>PLAZO</strong></th>
-                                                <th><strong>TASA</strong></th>
-                                                <th><strong>PRECIO</strong></th>
-                                                <th><strong>TÍTULOS</strong></th>
-                                                <th><strong>IMPORTE BRUTO</strong></th>
-                                                <th><strong>COMISIÓN</strong></th>
-                                                <th><strong>IVA</strong></th>
-                                                <th><strong>ISR</strong></th>
-                                                <th><strong>IMPORTE NETO</strong></th>
+                                                <th><strong>EMISORA - SERIE</strong></th>
+                                                <th class="text-end"><strong>PLAZO</strong></th>
+                                                <th class="text-end"><strong>TASA</strong></th>
+                                                <th class="text-end"><strong>PRECIO</strong></th>
+                                                <th class="text-end"><strong>TÍTULOS</strong></th>
+                                                <th class="text-end"><strong>IMPORTE BRUTO</strong></th>
+                                                <th class="text-end"><strong>COMISIÓN</strong></th>
+                                                <th class="text-end"><strong>IVA</strong></th>
+                                                <th class="text-end"><strong>ISR</strong></th>
+                                                <th class="text-end"><strong>IMPORTE NETO</strong></th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr th:each="movement : ${movementsList}">
-                                                <td th:text="${movement.fecOperacion}"></td>
-                                                <td th:text="${movement.descripcion}"></td>
-                                                <td th:text="${movement.emisora}"></td>
-                                                <td th:text="${movement.serie}"></td>
-                                                <td th:text="${movement.plazo}"></td>
-                                                <td th:text="${movement.tasa}"></td>
-                                                <td th:text="${movement.precio}"></td>
-                                                <td th:text="${movement.titulos}"></td>
-                                                <td th:text="${movement.importeBruto}"></td>
-                                                <td th:text="${movement.comision}"></td>
-                                                <td th:text="${movement.iva}"></td>
-                                                <td th:text="${movement.isr}"></td>
-                                                <td th:text="${movement.importeNeto}"></td>
+                                            <tr th:each="movement : ${movementReportList}">
+                                                <td th:text="${movement.operationDate}"></td>
+                                                <td th:text="${movement.saleDate}"></td>
+                                                <td th:text="${movement.concept}"></td>
+                                                <td>
+                                                    <span th:text="${movement.emmiter}"></span>
+                                                    <span th:text="${movement.serie}"></span>
+                                                </td>
+                                                <td class="text-end" th:text="${#numbers.formatDecimal(movement.period, 1, 0)}"></td>
+                                                <td class="text-end" th:text="${#numbers.formatDecimal(movement.rate, 1, 2)}"></td>
+                                                <td class="text-end" th:text="${#numbers.formatDecimal(movement.price, 1, 'COMMA', 6, 'POINT')}"></td>
+                                                <td class="text-end" th:text="${#numbers.formatDecimal(movement.securities, 1, 'COMMA', 0, 'POINT')}"></td>
+                                                <td class="text-end" th:text="${#numbers.formatDecimal(movement.savageAmount, 1, 'COMMA', 2, 'POINT')}"></td>
+                                                <td class="text-end" th:text="${#numbers.formatDecimal(movement.commision, 1, 'COMMA', 2, 'POINT')}"></td>
+                                                <td class="text-end" th:text="${#numbers.formatDecimal(movement.iva, 1, 'COMMA', 2, 'POINT')}"></td>
+                                                <td class="text-end" th:text="${#numbers.formatDecimal(movement.isr, 1, 'COMMA', 2, 'POINT')}"></td>
+                                                <td class="text-end" th:text="${#numbers.formatDecimal(movement.amount, 1, 'COMMA', 2, 'POINT')}"></td>
                                             </tr>
                                         </tbody>
                                     </table>

@@ -1,8 +1,9 @@
 package com.bcb.webpage.model.webpage.dto;
 
+import com.bcb.webpage.model.webpage.dto.interfaces.PositionInterface;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class GeneralDTO {
+public class GeneralDTO implements PositionInterface {
 
     @JsonProperty("mercado")
     private String market;
@@ -15,6 +16,12 @@ public class GeneralDTO {
 
     @JsonProperty("titulos")
     private String securities;
+
+    @JsonProperty("plazo")
+    private String period;
+
+    @JsonProperty("tasa")
+    private String rate;
 
     @JsonProperty("costoPromedio")
     private Double averageAmount;
@@ -124,6 +131,19 @@ public class GeneralDTO {
         this.cssStyle = cssStyle;
     }
 
-    
-    
+    public String getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(String period) {
+        this.period = period;
+    }
+
+    public String getRate() {
+        return rate;
+    }
+
+    public void setRate(String rate) {
+        this.rate = rate;
+    }
 }
