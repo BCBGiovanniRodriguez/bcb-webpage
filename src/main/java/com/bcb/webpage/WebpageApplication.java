@@ -11,20 +11,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import com.bcb.webpage.model.sisbur.service.LegacyService;
-import com.bcb.webpage.model.sisbur.service.MovementService;
 import com.bcb.webpage.model.webpage.entity.customers.CustomerContract;
-import com.bcb.webpage.model.webpage.entity.customers.CustomerCustomer;
 import com.bcb.webpage.model.webpage.services.CustomerService;
 
 @SpringBootApplication
 @EnableScheduling
 public class WebpageApplication implements CommandLineRunner {
-
-	//@Autowired
-	//private SisburBackendService sisburBackendService;
-
-	@Autowired
-	private MovementService movementService;
 
 	@Autowired
 	private LegacyService legacyService;
