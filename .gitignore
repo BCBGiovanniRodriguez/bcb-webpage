@@ -71,3 +71,4 @@ src/main/resources/static/public/*
 !src/main/resources/static/public/js
 contracts/
 node_modules/
+src/main/resources/static
