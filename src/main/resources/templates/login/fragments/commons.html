@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:fragment="head">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+        <link rel="shortcut icon" th:href="@{/public/img/favicon.ico}">
+        <!-- Google fonts - witch you want to use - (rest you can just remove) -->
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic,700,700italic,800,800italic" rel="stylesheet" type="text/css" />
+        <link href="https://fonts.googleapis.com/css?family=Lato:400,700,900&display=swap" rel="stylesheet" />
+        <!-- stylesheets -->
+        <link rel="stylesheet" th:href="@{/public/js/bootstrap/bootstrap.min.css}" />
+        <link rel="stylesheet" th:href="@{/public/css/default.css}" />
+        <link rel="stylesheet" th:href="@{/public/css/shortcodes.css}" />
+        <link rel="stylesheet" th:href="@{/public/font-awesome/css/font-awesome.min.css}" />
+        <link rel="stylesheet" th:href="@{/public/css/responsive-layouts.css}" media="screen" />
+        <link rel="stylesheet" th:href="@{/public/js/animations/css/animations.min.css}" media="all" />
+        <link rel="stylesheet" th:href="@{/public/css/Simple-Line-Icons-Webfont/simple-line-icons.css}" media="screen" />
+        <link rel="stylesheet" th:href="@{/public/css/et-line-font/et-line-font.css}" media="all" />
+        <link rel="stylesheet" th:href="@{/public/js/tabs/assets/css/responsive-tabs.css}" />
+        <link rel="stylesheet" th:href="@{/public/js/owl-carousel/owl.carousel.css}" />
+        <link rel="stylesheet" th:href="@{/public/js/smart-forms/smart-forms.css}" type="text/css" />
+        <style>
+            .widget {
+                width: 80vw;
+                max-width: 600px;
+                padding: 1rem;
+                margin: 2rem auto;
+                border-radius: 1rem;
+                background-color: #fff;
+                box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.025);
+            }
+
+            .tabs {
+                --tab-count: 2;
+                --active: 0;
+
+                position: relative;
+                isolation: isolate;
+                display: flex;
+                height: 3.5rem;
+                border-block-end: 1px solid #e9ebec;
+            }
+
+            .tabs input {
+                display: none;
+            }
+
+            .tabs label {
+                flex: 1;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 0.9375rem;
+                font-weight: 600;
+                color: #656d7b;
+                cursor: pointer;
+                transition: color 0.5s ease-in-out;
+            }
+
+            .tabs input:checked + label {
+                color: #101010;
+            }
+
+            .tabs::after {
+                pointer-events: none;
+                position: absolute;
+                content: "";
+                z-index: -1;
+                /* inset: 0; */
+                inset: 0 0 -1px;
+                /* width: 100%; */
+                /* width: calc((100% / 3) - 2px); */
+                width: calc((100% / var(--tab-count)) - 2px);
+                border-radius: 0.5rem 0.5rem 0 0;
+                border: 1px solid #e9ebec;
+                border-block-end: none;
+                background-image: linear-gradient(#edf4ff, #fff);
+
+                /*
+                    1st = 0 * 100% = 0%
+                    2nd = 1 * 100% = 100%
+                    3rd = 2 * 100% = 200%
+                */
+                translate: calc(var(--active) * 100%);
+                transition: translate 0.5s ease-in-out;
+            }
+
+            .tabs:has(:checked:nth-of-type(1)) {
+                --active: 0;
+            }
+
+            .tabs:has(:checked:nth-of-type(2)) {
+                --active: 1;
+            }
+
+            .tab-content {
+                padding: 1rem;
+            }
+
+            [class^="tab-content-"] {
+                display: none;
+            }
+
+            .widget:has(:checked:nth-of-type(1)) .tab-content-1,
+            .widget:has(:checked:nth-of-type(2)) .tab-content-2 {
+                display: block;
+            }
+        </style>
+    </head>
+    
+    <body>
+        <div th:fragment="header" id="header" class="topbar dark topbar-padding">
+            <div class="container">
+                <a th:href="@{/}" class="logo two toppadd">
+                    <img th:src="@{/public/images/logo/BCB-logo-white.svg}" alt="Logo Bursamétrica"/>
+                </a>
+                <ul class="toplist toppadding">
+                    <li>
+                        <a class="topbar-btn btn-dark" th:href="@{/inicio-de-sesion}">
+                            Acceso a clientes
+                        </a>
+                    </li>
+                    <li>
+                        <a class="topbar-btn" href="#" data-toggle="modal" data-target="#MainMenu-BM-buscar">
+                            <i class="fa fa-search"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="topbar-btn" href="#" data-toggle="modal" data-target="#MainMenu-BM">
+                            <i class="fa fa-navicon"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slider -->
+        <div th:fragment="slider" id="slider-home" class="slider-home">
+            <div class="container">
+                <div class="row">
+                    <div class="logo-slider"><img src="/public/images/logo/BCB-logo-white.svg" alt="Logo Bursamétrica"/></div>
+                    <h1 class="slider-title01 text-white">La tranquilidad</h1>
+                    <h1 class="slider-title02 text-white">de invertir</h1>
+                    <a class="btn btn-colorBM-2 dark btn-round btn-slider" th:href="@{/productos-servicios}">Más información</a>
+                </div>
+            </div>
+        </div>
+
+        <section th:fragment="section-organizations" class="section-light section-less-padding clearfix">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <ul class="Reguladores-logo-list">
+                            <li>
+                                <a href="https://www.bmv.com.mx/" target="_blank">
+                                    <img src="/public/images/reguladores/BMV-logo.svg" alt=""/></a>
+                                </li>
+                            <li>
+                                <a href="https://www.gob.mx/cnbv" target="_blank">
+                                    <img src="/public/images/reguladores/CNBV-logo.svg" alt=""/></a>
+                                </li>
+                            <li>
+                                <a href="http://www.amib.com.mx/" target="_blank">
+                                    <img src="/public/images/reguladores/AMIB-logo.svg" alt=""/>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://www.gob.mx/condusef" target="_blank">
+                                    <img src="/public/images/reguladores/CONDUSEF-logo.png" alt=""/>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://www.biva.mx/es/web/portal-biva/home" target="_blank">
+                                    <img src="/public/images/reguladores/BIVA-logo.png" alt=""/>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://www.banxico.org.mx/" target="_blank">
+                                    <img src="/public/images/reguladores/Banxico-logo.png" alt=""/>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!--end section -->
+        <div class="clearfix"></div>
+
+        <div th:fragment="section-contact" class="section section-dark two section-less-padding">
+            <div class="container">
+                <div class="col-md-3 col-sm-6 col-xs-12">
+                    <div class="iconbox-smedium round left grayoutline">
+                        <i class="fa fa-phone"></i>
+                    </div>
+                    <div class="text-box-right more-padding-1">
+                        <h4 class="text-white less-mar1 paddtop1">LLÁMANOS</h4>
+                        <span>+52 55 1328 3936</span><br/>
+                        <span>De 9:00 a 17:30 hrs.</span>
+                    </div>
+                </div>
+                <!--end item-->
+                
+                <div class="col-md-4 col-sm-6 col-xs-12">
+                    <div class="iconbox-smedium round left grayoutline">
+                        <i class="fa fa-map-marker"></i>
+                    </div>
+                    <div class="text-box-right more-padding-1">
+                        <h4 class="text-white less-mar1 paddtop1">VISÍTANOS</h4>
+                        <a href="https://goo.gl/maps/b86yUzmt5Pte46b1A" target="_blank" rel="noopener noreferrer">
+                            <span>
+                                Insurgentes Sur No.1605, Piso 17, <br>
+                                Col. San José Insurgentes, Alcaldía <br>
+                                Benito Juárez, C.P. 03900, CDMX.
+                            </span>
+                        </a>
+                    </div>
+                </div>
+                <!--end item-->
+                
+                <div class="col-md-5 col-sm-6 col-xs-12">
+                    <div class="iconbox-smedium round left grayoutline">
+                        <i class="fa fa-envelope"></i>
+                    </div>
+                    <div class="text-box-right more-padding-1">
+                        <h4 class="text-white less-mar1 paddtop1">CONTÁCTANOS</h4>
+                        <span><a href="mailto:servicioaclientes@bursametrica.com">servicioaclientes@bursametrica.com</a></span>
+                    </div>
+                </div>
+                <!--end item--> 
+            </div>
+        </div>
+        <!--end section -->
+
+        <section th:fragment="section-navigation" class="section-dark sec-padding">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3 clearfix">
+                        <img th:src="@{/public/images/logo/BCB-logo-white.svg}" alt="Logo Bursamétrica"/>
+                        <a href="#" class="logo two sec-bpadding-1">
+                        </a>
+                    </div>
+                    <!--end item-->
+                    
+                    <div class="col-md-3 clearfix">
+                        <h4 class="uppercase footer-title less-mar3">
+                            LINKS DE INTERÉS
+                        </h4>
+                        <div class="clearfix"></div>
+                        <div class="footer-title-bottomstrip"></div>
+                        <ul class="usefull-links">
+                            <li>
+                                <a th:href="@{/buro-de-entidades-financieras}">
+                                    <i class="fa fa-angle-right"></i> BURÓ DE ENTIDADES FINANCIERAS
+                                </a>
+                            </li>
+                            <li>
+                                <a th:href="@{/mapa-de-sitio}">
+                                    <i class="fa fa-angle-right"></i> MAPA DEL SITIO
+                                </a>
+                            </li>
+                            <li>
+                                <a th:href="@{/economia-y-mercados}">
+                                    <i class="fa fa-angle-right"></i> NOTICIAS
+                                </a>
+                            </li>
+                            <li>
+                                <a th:href="@{/une}">
+                                    <i class="fa fa-angle-right"></i> UNE
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!--end item-->
+                    
+                    <div class="col-md-3 clearfix">
+                        <ul class="usefull-links">
+                            <li><a th:href="@{/estados-financieros}"><i class="fa fa-angle-right"></i> Estados Financieros</a></li>
+                            <li><a th:href="@{/administracion-de-riesgos}"><i class="fa fa-angle-right"></i> Administración de Riesgos</a></li>
+                            <li><a th:href="@{/remuneraciones}"><i class="fa fa-angle-right"></i> Remuneraciones</a></li>
+                            <li><a th:href="@{/servicios-de-inversion}"><i class="fa fa-angle-right"></i> Servicios de Inversión</a></li>
+                            <li><a th:href="@{/aviso-de-privacidad}"><i class="fa fa-angle-right"></i> Aviso de Privacidad</a></li>
+                            <li class="sec-bpadding-1"><a th:href="@{/organos-de-control}"><i class="fa fa-angle-right"></i> Órganos de Control</a></li>
+                        </ul>
+                    </div>
+                    <!--end item-->
+                    
+                    <div class="col-md-3 clearfix">
+                        <div class="item-holder">
+                            <h4 class="uppercase footer-title less-mar3">¿ERES CLIENTE?</h4>
+                            <div class="clearfix"></div>
+                            <div class="footer-title-bottomstrip"></div>
+                            <ul class="address-info">
+                                <li>Insurgentes Sur No.1605, Piso 17, Col. San José Insurgentes, Alcaldía Benito Juárez, C.P. 03900, CDMX.</li>
+                                <li><i class="fa fa-phone"></i> +52 55 1328 3936</li>
+                                <li>
+                                    <i class="fa fa-fax"></i> Conmutador:<br/> +52 55 1328 3930<br/>
+                                </li>
+                                <li class="last"><i class="fa fa-envelope"></i> servicioaclientes@bursametrica.com </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!--end item--> 
+                </div>
+            </div>
+        </section>
+        <!--end section-->
+
+        <section th:fragment="section-credits" class="section-copyrights sec-moreless-padding">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <span class="text-nowrap">Copyright © 2025 | Bursamétrica Casa de Bolsa S.A. de C.V.* se encuentra en trámite de autorización por parte de las autoridades competentes para cambiar su denominación social a BCB Casa de Bolsa S.A. de C.V.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!--end section-->
+        
+        <div th:fragment="modals">
+            <!-- Modal Menu -->
+            <div class="modal fade" id="MainMenu-BM" tabindex="-1" role="dialog" aria-labelledby="MainMenu-BM-modal" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content dark">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <a th:href="@{/}" class="button-BM-Main" >Inicio</a>
+                            <a th:href="@{/acerca-de-nosotros}" class="button-BM-Main" >Acerca de Nosotros</a>
+                            <a th:href="@{/productos-y-servicios}" class="button-BM-Main" >Productos y Servicios</a>
+                            <!--<a th:href="@{/economia-mercados}" class="button-BM-Main" >Economía y Mercados</a>-->
+                            <a th:href="@{/personas-y-familias}" class="button-BM-Main" >Personas y Familias</a>
+                            <a th:href="@{/inversionista-institucional}" class="button-BM-Main" >Inversionista Institucional</a>
+                        </div>
+                        <div class="modal-footer text-center">
+                            <p class="text-center">
+                                <img th:src="@{/public/images/logo/BCB-logo-white.svg}" width="160px" height="auto" alt="Logo Bursamétrica"/>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal Buscar -->
+            <div class="modal fade" id="MainMenu-BM-buscar" tabindex="-1" role="dialog" aria-labelledby="MainMenu-BM-modal-buscar" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content dark">
+                        <div class="modal-header">
+                            <h5 class="text-white text-center">BUSCAR</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" placeholder="Ingresa una palabra o frase de búsqueda" aria-label="Ingresa una palabra o frase de búsqueda" aria-describedby="basic-addon2">
+                                <div class="input-group-append">
+                                    <button class="btn btn-BM-search" type="button">
+                                        <i class="fa fa-search"></i> Buscar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                            <div class="modal-footer text-center">
+                            <p class="text-center">
+                                <img th:src="@{/public/images/logo/BCB-logo-white.svg}" width="160px" height="auto" alt="Logo Bursamétrica"/>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+	
+            <!-- Modal Contacto -->
+            <div class="modal fade" id="MainMenu-BM-contacto" tabindex="-1" role="dialog" aria-labelledby="MainMenu-BM-modal-contacto" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content dark">
+                        <div class="modal-header">
+                            <h5 class="text-white text-center">CONTACTO</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <div class="col-md-8 col-centered">
+                                <div class="smart-forms bmargin">
+                                    <form method="post" action="" id="smart-form">
+                                        <div>
+                                            <div class="section">
+                                                <label class="field prepend-icon">
+                                                    <input type="text" name="sendername" id="sendername" class="gui-input" placeholder="Nombre">
+                                                    <span class="field-icon">
+                                                        <i class="fa fa-user"></i>
+                                                    </span>
+                                                </label>
+                                            </div>
+                                            <!-- end section -->
+                                            
+                                            <div class="section">
+                                                <label class="field prepend-icon">
+                                                    <input type="email" name="emailaddress" id="emailaddress" class="gui-input" placeholder="Correo electrónico">
+                                                    <span class="field-icon"><i class="fa fa-envelope"></i></span>
+                                                </label>
+                                            </div>
+                                            <!-- end section -->
+                                            
+                                            <div class="section colm colm6">
+                                                <label class="field prepend-icon">
+                                                    <input type="tel" name="telephone" id="telephone" class="gui-input" placeholder="Teléfono">
+                                                    <span class="field-icon"><i class="fa fa-phone-square"></i></span>
+                                                </label>
+                                            </div>
+                                            <!-- end section -->
+                                            
+                                            <div class="section">
+                                                <div class="dropdown">
+                                                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                                                        Estoy interesado en <span class="caret"></span>
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li><a href="#">Información de producto</a></li>
+                                                        <li><a href="#">Que me contacte un asesor</a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <!-- end section -->
+                                            
+                                            <div class="section">
+                                                <label class="field prepend-icon">
+                                                    <textarea class="gui-textarea" id="sendermessage" name="sendermessage" placeholder="Ingresa tu mensaje"></textarea>
+                                                    <span class="field-icon"><i class="fa fa-comments"></i></span>
+                                                </label>
+                                            </div>
+                                            <!-- end section --> 
+                                            
+                                            <div class="section colm colm6">
+                                                <label class="field prepend-icon">
+                                                    <span class="text-white">
+                                                        <input type="checkbox"> He leído y acepto el 
+                                                        <a th:href="@{/aviso-privacidad}" target="_blank" class="btn-privacy">Aviso de Privacidad</a>
+                                                    </span>
+                                                </label>
+                                            </div>
+                                            <!-- end section -->
+                                        </div>
+                                        <!-- end .form-body section -->
+                                        <div class="form-footer">
+                                            <button type="submit" class="button btn-primary">Enviar</button>
+                                        </div>
+                                        <!-- end .form-footer section -->
+                                    </form>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-8 col-centered">
+                                <h5 class="text-white text-center">¡GRACIAS!</h5>
+                                <h6 class="text-white text-center">Hemos recibido tu mensaje, en breve te contactaremos.</h6>
+                            </div>
+                            
+                            <div class="clearfix"></div>
+                        </div>
+                            <div class="modal-footer text-center">
+                            <p class="text-center">
+                                <img th:src="@{/public/images/logo/BCB-logo-white.svg}" width="160px" height="auto" alt="Logo Bursamétrica"/>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal Contacto -->
+        </div>
+
+        <div th:fragment="js-dependencies">
+            <script th:src="@{/public/js/universal/jquery.js}" type="text/javascript" ></script> 
+            <script th:src="@{/public/js/bootstrap/bootstrap.min.js}" type="text/javascript"></script> 
+            <script th:src="@{/public/js/tabs/smk-accordion.js}"></script> 
+            <script th:src="@{/public/js/mainmenu/customeUI.js}"></script> 
+            <script th:src="@{/public/js/mainmenu/jquery.sticky.js}"></script> 
+            <script th:src="@{/public/js/scrolltotop/totop.js}"></script>
+            <script th:src="@{/public/js/owl-carousel/owl.carousel.js}"></script> 
+            <script th:src="@{/public/js/owl-carousel/custom.js}"></script> 
+            <script th:src="@{/public/js/scripts/functions.js}" type="text/javascript"></script>
+            <script type="text/javascript">
+            var a = $("#header").offset().top;
+
+            $(document).scroll(function(){
+                if($(this).scrollTop() > a)
+                {   
+                $('#header').css({"background":"rgba(0,59,114,0.95)"});
+                    
+                } else {
+                $('#header').css({"background":"rgba(0,59,114,1.00)"});
+                }
+            });
+            </script>
+        </div>
+    </body>
+</html>

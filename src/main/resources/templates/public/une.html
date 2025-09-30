@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{public/fragments/commons :: head}"></head>
+    <body>
+        <div class="site_wrapper">
+            <div th:replace="~{public/fragments/commons :: header}"></div>
+            <div class="clearfix"></div>
+
+            <section>
+                <div class="header-inner">
+                    <div class="inner text-center">
+                        <h3 class="text-white uppercase"><strong>UNE</strong></h3>
+                    </div>
+                    <div class="overlay bg-opacity-5"></div>
+                </div>
+            </section>
+            <!-- end section -->
+            <div class="clearfix"></div>
+
+            <section class="sec-moreless-padding">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-xs-12 text-center">
+                            <h1 class="text-center text-nowrap"><strong>Realiza una consulta, reclamación o aclaración al correo unebursametrica@bcbcasadebolsa.com</strong></h1>
+                            <p>Datos requeridos: Nombre completo, Domicilio fiscal, Teléfono, Correo Electrónico, Número de Cliente, Número de Contrato, Perfil de Cliente y Nombre de Promotor.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+
+            <section class="sec-moreless-padding">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <a class="btn btn-border btn-white btn-large btn-round" href="mailto:unebursametrica@bcbcasadebolsa.com">CORREO</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+
+            <section th:replace="~{public/fragments/commons :: section-organizations}"></section>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div th:replace="~{public/fragments/commons :: section-contact}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div th:replace="~{public/fragments/commons :: section-navigation}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+            
+            
+            <div th:replace="~{public/fragments/commons :: section-credits}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div class="contacto-pop colorBM"><a href="#" data-toggle="modal" data-target="#MainMenu-BM-contacto"><i class="fa fa-envelope"></i> Contáctanos</a></div>
+            <a href="#" class="scrollup colorBM"></a><!-- end scroll to top of the page--> 
+        </div>
+
+        <div th:replace="~{public/fragments/commons :: modals}"></div>
+        
+        <div th:replace="~{public/fragments/commons :: js-dependencies}"></div>
+    </body>
+</html>

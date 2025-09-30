@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{public/fragments/commons :: head}"></head>
+    <body>
+        <div class="site_wrapper">
+            <div th:replace="~{public/fragments/commons :: header}"></div>
+            <div class="clearfix"></div>
+
+            <section>
+                <div class="header-inner">
+                    <div class="inner text-center">
+                        <h3 class="text-white uppercase"><strong>REMUNERACIONES</strong></h3>
+                    </div>
+                    <div class="overlay bg-opacity-5"></div>
+                </div>
+            </section>
+            <!-- end section -->
+            <div class="clearfix"></div>
+
+            <section>
+                <div class="pagination-holder">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <div class="pagination_links"><a th:href="@{/}">Inicio</a><i> / </i> Remuneraciones</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+
+            <section class="sec-moreless-padding">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <p class="text-left"><strong>Bursamétrica Casa de Bolsa, S.A. de C.V.</strong>, en adelante Casa de Bolsa, en cumplimiento de las Disposiciones de Carácter General aplicables a las Casas de Bolsa, ha implementado un Sistema de Remuneración el cual establece las políticas y procedimientos relativos a las remuneraciones ordinarias y extraordinarias aplicables a los colaboradores que prestan sus servicios en la Casa de Bolsa y que están sujetos al referido Sistema, tomando en consideración los riesgos que asumen en el desarrollo de sus actividades y promoviendo una efectiva administración de riesgos.</p>
+                            <p>La Casa de Bolsa cuenta con un Comité de Remuneración, el cual tiene, entre otras funciones, la de emitir un juicio independiente respecto de la evaluación de riesgos asumidos por la institución, revisar la metodología de evaluación y sancionar respecto del pago de las compensaciones variables en cada caso particular. Este Comité de Remuneración sesiona trimestralmente y reporta de manera semestral al Consejo de Administración sobre el funcionamiento del Sistema de Remuneración, así como de las modificaciones que se realicen al mismo; adicionalmente el Consejo de Administración recibe un reporte anual por parte de los Comités de Riesgos y de Auditoría respecto del desempeño del Sistema de Remuneración y la consistencia en la aplicación del mismo.</p>
+                            <p>El Sistema de Remuneración considera para la Casa de Bolsa las remuneraciones ordinarias y extraordinarias de los puestos elegibles, ya sea que estas se otorguen en efectivo o a través de otros mecanismos de remuneración.</p>
+                            <p>Dentro de la siguiente tabla se muestra el tipo de remuneración que percibe el personal sujeto al Sistema de Remuneración de acuerdo a cada grupo de perfil:</p>
+
+                            <p>1. Remuneración Ordinaria: conjunto de sueldos, prestaciones o contraprestaciones fijas que la Casa de Bolsa otorga al personal sujeto al Sistema de Remuneración, ya sea pagadas en efectivo o mediante otro tipo de compensación y que no varía en atención a los resultados obtenidos por dichos empleados o personal, en la realización de las actividades que les son propias.</p>
+                            <p>2. Remuneración Extraordinaria: conjunto de sueldos, prestaciones o contraprestaciones que la Casa de Bolsa otorga al personal sujeto al Sistema de Remuneración, ya sea pagadas en efectivo o mediante otro tipo de compensación y que se determina con base en los resultados obtenidos por dichos empleados o personal, en la realización de las actividades que les son propias.</p>
+                            <p>El Sistema de Remuneración de la Casa de Bolsa considera dentro de sus políticas ajustes a las remuneraciones extraordinarias derivados de la inobservancia de los límites de riesgos establecidos por el Consejo de Administración, el nivel de dichos ajustes considera dentro de su magnitud la recurrencia a dicha inobservancia.</p>
+                            <br><br><br><br>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- end section -->
+            <div class="clearfix"></div>
+
+            <section th:replace="~{public/fragments/commons :: section-organizations}"></section>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div th:replace="~{public/fragments/commons :: section-contact}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div th:replace="~{public/fragments/commons :: section-navigation}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+            
+            
+            <div th:replace="~{public/fragments/commons :: section-credits}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div class="contacto-pop colorBM"><a href="#" data-toggle="modal" data-target="#MainMenu-BM-contacto"><i class="fa fa-envelope"></i> Contáctanos</a></div>
+            <a href="#" class="scrollup colorBM"></a><!-- end scroll to top of the page--> 
+        </div>
+
+        <div th:replace="~{public/fragments/commons :: modals}"></div>
+        
+        <div th:replace="~{public/fragments/commons :: js-dependencies}"></div>
+    </body>
+</html>

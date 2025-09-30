@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import com.bcb.webpage.model.webpage.entity.customers.CustomerCustomer;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -12,5 +13,9 @@ import java.util.Optional;
 public interface CustomerCustomerRepository extends JpaRepository<CustomerCustomer, Long> {
 
     Optional<CustomerCustomer> findOneByCustomerKey(String customerKey);
+
+    Optional<CustomerCustomer> findOneByEmail(String email);
+
+    List<CustomerCustomer> findByEmail(String email);
     
 }

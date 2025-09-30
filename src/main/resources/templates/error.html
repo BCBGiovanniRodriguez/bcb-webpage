@@ -1,11 +1,21 @@
 <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>
-    </head>
-    <body>
-        <h1>Error page</h1>
-    </body>
+<html xmlns:th="http://www.thymeleaf.org">
+ <head>
+     <title>     Error</title>
+     <link rel="stylesheet" th:href="@{/css/style.css}"/>
+ </head>
+ <body th:style="'background: url(/images/background1.jpg) 
+ no-repeat center center fixed;'">
+     <div class="container" >
+       <h1>An error has occurred...</h1>
+       <img th:src="@{/images/error-icon.png}" 
+       width="100px" height="100px" />
+       <p>There seems to be a problem with the page you requested 
+       (<span th:text="${path}"></span>).</p>
+       <p th:text="${'The status code is ' + status 
+       + ', which means that the page was ' + error + '.'}"></p>
+       <p th:text="${'Further details: ' + message + '.'}"></p>
+       <a class="btn" href="/home">Back to home</a>
+     </div>
+ </body>
 </html>

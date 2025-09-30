@@ -1,10 +1,7 @@
 package com.bcb.webpage.config;
 
-import java.util.HashMap;
-
 import javax.sql.DataSource;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -13,7 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Primary;
-import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -33,9 +29,6 @@ import jakarta.persistence.EntityManagerFactory;
 )
 public class DBConfig {
 
-    @Autowired
-    private Environment environment;
-
     @Primary
     @Bean(name = "webpageDatasource")
     @ConfigurationProperties("spring.datasource.webpage")
@@ -48,13 +41,8 @@ public class DBConfig {
     public LocalContainerEntityManagerFactoryBean webpageEntityManagerFactory(EntityManagerFactoryBuilder builder,
         @Qualifier("webpageDatasource") DataSource webpageDataSource) {
 
-        HashMap<String, Object> properties = new HashMap<>();
-        properties.put("hibernate.hbm2ddl.auto", environment.getProperty("hibernate.hbm2ddl.auto"));
-        properties.put("hibernate.dialect", environment.getProperty("hibernate.dialect"));
-
         return builder.dataSource(webpageDataSource)
             .packages("com.bcb.webpage.model.webpage.*")
-            //.properties(properties)
             .persistenceUnit("webpage")
             .build();
     }

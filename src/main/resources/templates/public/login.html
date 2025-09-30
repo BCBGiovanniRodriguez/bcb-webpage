@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{public/fragments/commons :: head}"></head>
+    <body>
+        <div class="site_wrapper">
+            <div th:replace="~{public/fragments/commons :: header}"></div>
+            <div class="clearfix"></div>
+
+            <section class="sec-moreless-padding">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <h4 th:text="${mensaje}"></h4>
+                        </div>
+                        <hr>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <h4>INICIAR SESIÓN</h4>
+
+                            <div class="widget">
+                                <div class="tabs">
+                                    <input type="radio" id="overview" name="tabs" checked />
+                                    <label for="overview"><h4>Ingreso Tradicional</h4></label>
+
+                                    <input type="radio" id="experience" name="tabs" />
+                                    <label for="experience"><h4>Solicitud de Token</h4></label>
+                                </div>
+
+                                <div class="tab-content">
+                                    <div class="tab-content-1">
+                                        <div class="container-fluid">
+                                            <form class="form-inline login-form" th:action="@{/login}" method="post">
+                                                <div class="form-group row">
+                                                    <div class="col-md-12">
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon">Número de Contrato</span>
+                                                            <input type="text" id="username" name="username" class="form-control" required autofocus />
+                                                        </div><!-- /input-group -->
+                                                    </div>
+                                                </div>
+                                                <br><br>
+    
+                                                <div class="form-group row">
+                                                    <div class="col-md-12">
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon">Contraseña</span>
+                                                            <input type="password" id="password" name="password" class="form-control" placeholder="Contraseña" required>
+                                                            <span class="input-group-btn">
+                                                                <button id="btnShowPassword" class="btn btn-default" type="button">
+                                                                    <i id="iconPassword" class="fa fa-eye-slash"></i>
+                                                                </button>
+                                                            </span>
+                                                        </div><!-- /input-group -->
+                                                    </div>
+                                                </div>
+                                                <br><br>
+                                                <div class="row g-3 align-items-center">
+                                                    <div class="col-12">
+                                                        <button type="submit" class="btn btn-blue" tabindex="0">
+                                                            <span>INGRESAR</span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <br>
+                                                <div class="text-danger" th:if="${param.error}">
+                                                    <strong>Número de Contrato y/o Contraseña incorrectos</strong>
+                                                </div>
+                                                <hr>
+                                                <a th:href="@{/recuperar-password}" class="btn btn-link">
+                                                    Olvidaste tu contraseña?
+                                                </a>
+                                            </form>
+                                        </div>
+                                    </div>
+
+                                    <div class="tab-content-2">
+                                        <form th:action="@{/ml/generate}" method="post">
+                                            <div class="row g-3 align-items-center">
+                                                <label for="contractNumber" class="col-form-label">Número de Contrato</label>
+                                                <input type="text" id="username" name="username" class="form-control" required autofocus />
+                                            </div>
+                                            <br><br>
+                                            <div class="row g-3 align-items-center">
+                                                <div class="col-12">
+                                                    <button type="submit" class="btn btn-blue" tabindex="0">
+                                                        <span>SOLICITAR TOKEN</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <br><br>
+                        <div class="col-xs-12 text-center">
+                            <div class="text-primary" th:if="${param.logout}">
+                                <strong>Has cerrado sesión correctamente</strong>
+                            </div>
+
+                            <p>
+                                Le recomendamos que para la consulta de su estado de cuenta y utilizar los servicios de en línea de la Casa de Bolsa, no lo haga a través de redes públicas, es mejor esperar y ocupar una red segura y privada.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+
+            <section th:replace="~{public/fragments/commons :: section-organizations}"></section>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div th:replace="~{public/fragments/commons :: section-contact}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div th:replace="~{public/fragments/commons :: section-navigation}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+            
+            
+            <div th:replace="~{public/fragments/commons :: section-credits}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div class="contacto-pop colorBM"><a href="#" data-toggle="modal" data-target="#MainMenu-BM-contacto"><i class="fa fa-envelope"></i> Contáctanos</a></div>
+            <a href="#" class="scrollup colorBM"></a><!-- end scroll to top of the page--> 
+        </div>
+
+        <div th:replace="~{public/fragments/commons :: modals}"></div>
+        
+        <div th:replace="~{public/fragments/commons :: js-dependencies}"></div>
+
+        <script type="text/javascript">
+            const togglePassword = document.querySelector("#btnShowPassword");
+            const password = document.querySelector("#password");
+            const iconPassword = document.querySelector("#iconPassword");
+
+            togglePassword.addEventListener("click", function () {
+                // toggle the type attribute
+                const type = password.getAttribute("type") === "password" ? "text" : "password";
+                password.setAttribute("type", type);
+                // toggle the eye icon
+                iconPassword.classList.toggle('fa-eye-slash');
+                iconPassword.classList.toggle('fa-eye');
+            });
+        </script>
+    </body>
+</html>
+
+

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{login/fragments/commons :: head}"></head>
+    <body>
+        <div class="site_wrapper">
+            <div th:replace="~{login/fragments/commons :: header}"></div>
+            <div class="clearfix"></div>
+
+            <section class="sec-moreless-padding">
+                <div class="container">
+
+                    <div class="row">
+                        <div class="col-2"></div>
+                        <div class="col-8 text-center">
+                            <h4>ACCESO CON TOKEN</h4>
+
+                            <form th:action="@{/ml/submit}" method="post">
+                                <div class="row g-3 align-items-center">
+                                    <label for="token" class="col-form-label">TOKEN</label>
+                                    <input type="text" id="token" name="token" th:value="${token}" class="form-control" required autofocus />
+                                </div>
+                                <br><br>
+                                <div class="row g-3 align-items-center">
+                                    <div class="col-12">
+                                        <button type="submit" class="btn btn-blue" tabindex="0">
+                                            <span>ACCESO</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+
+            <section th:replace="~{login/fragments/commons :: section-organizations}"></section>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div th:replace="~{login/fragments/commons :: section-contact}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div th:replace="~{login/fragments/commons :: section-navigation}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+            
+            
+            <div th:replace="~{login/fragments/commons :: section-credits}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div class="contacto-pop colorBM"><a href="#" data-toggle="modal" data-target="#MainMenu-BM-contacto"><i class="fa fa-envelope"></i> Contáctanos</a></div>
+            <a href="#" class="scrollup colorBM"></a><!-- end scroll to top of the page--> 
+        </div>
+
+        <div th:replace="~{login/fragments/commons :: modals}"></div>
+        
+        <div th:replace="~{login/fragments/commons :: js-dependencies}"></div>
+    </body>
+</html>
+
+

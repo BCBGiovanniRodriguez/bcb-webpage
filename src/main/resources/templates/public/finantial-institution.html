@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{public/fragments/commons :: head}"></head>
+    <body>
+        <div class="site_wrapper">
+            <div th:replace="~{public/fragments/commons :: header}"></div>
+            <div class="clearfix"></div>
+
+            <section>
+                <div class="header-inner">
+                    <div class="inner text-center">
+                        <h3 class="text-white uppercase"><strong>BURÓ DE ENTIDADES FINANCIERAS</strong></h3>
+                    </div>
+                    <div class="overlay bg-opacity-5"></div>
+                </div>
+            </section>
+            <!-- end section -->
+            <div class="clearfix"></div>
+            
+            <section>
+                <div class="pagination-holder">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <div class="pagination_links"><a th:href="@{/}">Inicio</a><i> / </i> Buró de Entidades Financieras</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+            
+            <section class="sec-moreless-padding">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xs-12 text-left">
+                            <p>Es una herramienta de consulta y difusión con la que podrás conocer los productos que ofrecen las entidades financieras, sus comisiones y tasas, las reclamaciones de los usuarios, las prácticas no sanas en que incurren, las sanciones administrativas que les han impuesto, las cláusulas abusivas de sus contratos y otra información que resulte relevante para informarte sobre su desempeño.</p>
+                            <p>Con el Buró de Entidades Financieras, se logrará saber quién es quién en bancos, seguros, sociedades financieras de objeto múltiple, cajas de ahorro, afores, entre otras entidades. Con ello, podrás comparar y evaluar a las entidades financieras, sus productos y servicios y tendrás mayores elementos para elegir lo que más te convenga.</p>
+                            <p>Esta información te será útil para elegir un producto financiero y también para conocer y usar mejor los que ya tienes.</p>
+                            <p>Este Buró de Entidades Financieras, es una herramienta que puede contribuir al crecimiento económico del país, al promover la competencia entre las instituciones financieras; que impulsará la transparencia al revelar información a los usuarios sobre el desempeño de éstas y los productos que ofrecen y que va a facilitar un manejo responsable de los productos y servicios financieros al conocer a detalle sus características.</p>
+                            <p>Lo anterior, podrá derivar en un mayor bienestar social, porque al conjuntar en un solo espacio tan diversa información del sistema financiero, el usuario tendrá más elementos para optimizar su presupuesto, para mejorar sus finanzas personales, para utilizar correctamente los créditos que fortalecerán su economía y obtener los seguros que la protejan, entre otros aspectos.</p>
+                            <p>Podrás consultar la información que consta de Bursamétrica Casa de Bolsa, S.A. de C.V., en el Buró de Entidades Financieras a través de la liga en la parte superior o a través de:</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+
+            <section class="sec-moreless-padding">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <a class="btn btn-border btn-white btn-large btn-round" href="https://www.buro.gob.mx" target="_blank">www.buro.gob.mx</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+
+            <section th:replace="~{public/fragments/commons :: section-organizations}"></section>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div th:replace="~{public/fragments/commons :: section-contact}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div th:replace="~{public/fragments/commons :: section-navigation}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+            
+            
+            <div th:replace="~{public/fragments/commons :: section-credits}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div class="contacto-pop colorBM"><a href="#" data-toggle="modal" data-target="#MainMenu-BM-contacto"><i class="fa fa-envelope"></i> Contáctanos</a></div>
+            <a href="#" class="scrollup colorBM"></a><!-- end scroll to top of the page--> 
+        </div>
+
+        <div th:replace="~{public/fragments/commons :: modals}"></div>
+        
+        <div th:replace="~{public/fragments/commons :: js-dependencies}"></div>
+    </body>
+</html>

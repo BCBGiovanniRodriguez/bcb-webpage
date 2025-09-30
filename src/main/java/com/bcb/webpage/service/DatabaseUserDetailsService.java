@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -76,6 +78,24 @@ public class DatabaseUserDetailsService implements UserDetailsService {
 
             return new CustomerAuthenticated(customer, contract);
         }
+    }
+
+    public UserDetails loadUserByUsernameForOtt(String username) throws UsernameNotFoundException {
+
+        var userOptional = contractRepository.findOneByContractNumber(username);
+
+        if (!userOptional.isPresent()) {
+            throw new UsernameNotFoundException(username);
+        }
+
+        CustomerContract customerContract = userOptional.get();
+
+        User.UserBuilder userBuilder = User.builder().password("")
+            .username(customerContract.getCustomer().getEmail())
+            .authorities(new SimpleGrantedAuthority("USER"));
+
+
+        return userBuilder.build();
     }
 
 }

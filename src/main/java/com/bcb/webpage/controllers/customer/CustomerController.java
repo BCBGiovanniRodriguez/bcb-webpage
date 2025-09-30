@@ -136,7 +136,7 @@ public class CustomerController {
 
     private CustomerCustomer customer;
 
-    private ObjectMapper mappe r = new ObjectMapper();
+    private ObjectMapper mapper = new ObjectMapper();
 
     @Autowired
     private CustomerReportService customerReportService;
@@ -171,6 +171,10 @@ public class CustomerController {
         CustomerMovementPositionResponse customerMovementPositionResponse = null;
 
         try {
+            if (authentication == null) {
+                return "redirect:/inicio-de-sesion";
+            }
+
             currentCustomerContract = getCurrentCustomerContract(authentication);
 
             customer = currentCustomerContract.getCustomer();
@@ -261,6 +265,11 @@ public class CustomerController {
     
     @GetMapping("/detalle")
     public String customerDetail(Authentication authentication, Model model) throws JsonMappingException, JsonProcessingException {
+
+        if (authentication == null) {
+            return "redirect:/inicio-de-sesion";
+        }
+        
         CustomerCustomer customer = null;
         CustomerDetailResponse customerDetailResponse = null;
         CustomerDetailRequest customerDetailRequest = null;
@@ -309,6 +318,11 @@ public class CustomerController {
 
     @GetMapping("/posicion")
     public String customerPosition(Authentication authentication, Model model) {
+        
+        if (authentication == null) {
+            return "redirect:/inicio-de-sesion";
+        }
+
         CustomerCustomer customer = null;
         
         List<PositionInterface> generalList = new ArrayList<>();
@@ -370,7 +384,12 @@ public class CustomerController {
     public String customerMovements(
         @RequestParam(name = "startDate", required = false) LocalDate startDate, 
         @RequestParam(name = "endDate", required = false) LocalDate endDate, 
+        Authentication authentication,
         Model model) {
+
+        if (authentication == null) {
+            return "redirect:/inicio-de-sesion";
+        }
 
         List<Movimiento> movementsList = new ArrayList<Movimiento>();
         
@@ -389,6 +408,11 @@ public class CustomerController {
         @RequestBody String entity,
         Authentication authentication,
         Model model) {
+
+        if (authentication == null) {
+            return "redirect:/inicio-de-sesion";
+        }
+
         CustomerCustomer customer = null;
 
         List<MovementDTO> movementReportList = new ArrayList<>();
@@ -415,11 +439,17 @@ public class CustomerController {
 
     @GetMapping("/resultados")
     public String customerResults() {
+
         return "customer/results";
     }
 
     @GetMapping("/estados-cuenta")
     public String customerStatements(Authentication authentication, Model model) {
+
+        if (authentication == null) {
+            return "redirect:/inicio-de-sesion";
+        }
+
         CustomerStatementAccountRequest statementAccountRequest = null;
         CustomerStatementAccountResponse statementAccountResponse = null;
 
@@ -477,11 +507,20 @@ public class CustomerController {
     @PostMapping("/estados-cuenta")
     public String customerStatementsSubmit(Authentication authentication, Model model) {
 
+        if (authentication == null) {
+            return "redirect:/inicio-de-sesion";
+        }
+
         return "customer/statements";
     }
 
     @GetMapping("/estados-cuenta/consultarpdf/{number}")
     public String customerStatementsQuery(@PathVariable Integer number, Authentication authentication, Model model, HttpServletResponse response) {
+        
+        if (authentication == null) {
+            return "redirect:/inicio-de-sesion";
+        }
+
         ObjectMapper mapper = new ObjectMapper();
         String contractNumber;
         CustomerStatementAccountResponse statementAccountResponse;
@@ -589,6 +628,10 @@ public class CustomerController {
 
     @GetMapping("/estados-cuenta/consultarxml/{number}")
     public String customerStatementsXmlQuery(@PathVariable Integer number, Authentication authentication, Model model, HttpServletResponse response) {
+        if (authentication == null) {
+            return "redirect:/inicio-de-sesion";
+        }
+
         return "customer/statement-search-xml";
     }
 
@@ -673,6 +716,9 @@ public class CustomerController {
 
     @GetMapping("/estados-cuenta/descargar/{number}")
     public String customerStatementsDownload(@PathVariable Integer number, Authentication authentication, Model model) {
+        if (authentication == null) {
+            return "redirect:/inicio-de-sesion";
+        }
 
         return "customer/statement-download";
     }
@@ -681,6 +727,11 @@ public class CustomerController {
 
     @GetMapping("/constancia-fiscal")
     public String customerTaxCertificates(Authentication authentication, Model model) {
+        
+        if (authentication == null) {
+            return "redirect:/inicio-de-sesion";
+        }
+
         CustomerTaxCertificateRequest taxCertificateRequest = null;
         CustomerTaxCertificateDetailResponse taxCertificateDetailResponse = null;
         List<TaxCertificate> taxCertificateList = new ArrayList<>();
@@ -718,6 +769,11 @@ public class CustomerController {
 
     @GetMapping("/constancia-fiscal/consultarpdf")
     public String customerTaxCertificateViewPdf(@RequestParam Integer year, @RequestParam Integer type, Authentication authentication, Model model) {
+
+        if (authentication == null) {
+            return "redirect:/inicio-de-sesion";
+        }
+
         CustomerTaxCertificateRequest taxCertificateRequest = null;
         CustomerTaxCertificateResponse taxCertificateResponse = null;
 
@@ -877,6 +933,7 @@ public class CustomerController {
 
     @GetMapping("/constancia-fiscal/ver-pdf/{customerTaxCertificateId}")
     public ResponseEntity<PathResource> showTaxCertificate(@PathVariable Integer customerTaxCertificateId, Authentication authentication) {
+
         Optional<CustomerTaxCertificate> result;
         CustomerTaxCertificate taxCertificate;
         String customerTaxCertificateFileName = null;
@@ -914,6 +971,11 @@ public class CustomerController {
     
     @GetMapping("/cambiar-contrato/{contractNumber}")
     public String getChangeContract(@PathVariable String contractNumber, Authentication authentication) {
+        
+        if (authentication == null) {
+            return "redirect:/inicio-de-sesion";
+        }
+
         if (contractNumber != null) {
             try {
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{public/fragments/commons :: head}"></head>
+    <body>
+        <div class="site_wrapper">
+            <div th:replace="~{public/fragments/commons :: header}"></div>
+            <div class="clearfix"></div>
+
+            <section>
+                <div class="header-inner back-img-Fideicomisos-personas-fisicas">
+                <div class="inner text-center">
+                    <h3 class="text-white uppercase">Fideicomisos Personas Físicas</h3>
+                </div>
+                <div class="overlay bg-opacity-5"></div>
+                </div>
+            </section>
+            <!-- end section -->
+            <div class="clearfix"></div>
+            
+            <section>
+                <div class="pagination-holder">
+                <div class="container">
+                    <div class="row">
+                    <div class="col-md-12 text-right">
+                        <div class="pagination_links"><a th:href="@{/}">Inicio</a><i> / </i> <a th:href="@{/productos-y-servicios}">Productos y Servicios</a><i> / </i> <a th:href="@{/planeacion-financiera}">Planeación Financiera</a><i> / </i>Fideicomisos Personas Físicas</div>
+                    </div>
+                    </div>
+                </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+            
+            <section class="sec-moreless-padding">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-2 col-sm-push-5 col-xs-6 col-xs-push-3"> <img th:src="@{public/images/iconos/fideicomiso-fisica-0.svg}" alt=""/> </div>
+                    </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+
+            <section class="sec-moreless-padding">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="text-box border padding-4">
+                                <div class="image-holder"><img th:src="@{public/images/productos-servicios/fiduciario/Fideicomiso-F-Planeacion-Patrimomial.jpg}" alt="" class="img-responsive"/></div>
+                                <div class="clearfix"></div>
+                                <br/>
+                                <h4>Planeación Patrimonial</h4>
+                                <p>Este fideicomiso nos ayuda a organizarnos con respecto de nuestros bienes acciones, efectivo, valores, derechos, entre otros, en vida y una vez ocurrido el fallecimiento se volverá irrevocable, por lo que el patrimonio fideicomitido se distribuirá entre los beneficiarios designados en los términos y condiciones establecidas en el fideicomiso, teniendo como ventajas la confidencialidad y transparencia en la administración de los bienes.</p>
+                                <br/>
+                                <a class="btn btn-border light btn-round" th:href="@{/planeacion-financiera}">Planeación Financiera</a>
+                            </div>
+                        </div>
+                        <!--end item-->
+                        
+                        <div class="col-md-4">
+                            <div class="text-box border padding-4">
+                                <div class="image-holder"><img th:src="@{public/images/productos-servicios/fiduciario/Fideicomiso-F-Testamentarios.jpg}" alt="" class="img-responsive"/></div>
+                                <div class="clearfix"></div>
+                                <br/>
+                                <h4>Testamentarios</h4>
+                                <p>En este tipo de fideicomisos se crea un patrimonio autónomo e inembargable, en el que se establecen los términos y condiciones para la repartición del patrimonio, volviéndose irrevocable al fallecimiento, con el cual se asegura el porvenir de menores incapacitados designados como beneficiarios, y en el que no se requiere promover un juicio testamentario debiéndose acreditar de manera fehaciente el fallecimiento.</p>
+                            </div>
+                        </div>
+                        <!--end item-->
+                        
+                        <div class="col-md-4">
+                            <div class="text-box border padding-4">
+                                <div class="image-holder"><img th:src="@{public/images/productos-servicios/fiduciario/Fideicomiso-F-Administracion-Rentas.jpg}" alt="" class="img-responsive"/></div>
+                                <div class="clearfix"></div>
+                                <br/>
+                                <h4>Administración de rentas</h4>
+                                <p>Como finalidad principal de este fideicomiso se establece la aportación de derechos de cobro de rentas de uno o varios inmuebles, por lo cual los recursos producto de las rentas será distribuido entre los beneficiarios designados conforme a lo previsto en el fideicomiso.</p>
+                            </div>
+                        </div>
+                        <!--end item-->
+                    </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+
+            <section class="sec-moreless-padding">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <p class="text-center">Para mayor información de nuestros servicios Fiduciarios como una solución para sus necesidades, estamos para servirle.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- end section -->
+            <div class="clearfix"></div>
+            
+            <section class="sec-moreless-padding section-colorBM-2">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <a class="btn btn-border white-2 btn-large btn-round" href="#">Contacto Fiduciario</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+
+            <section th:replace="~{public/fragments/commons :: section-organizations}"></section>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div th:replace="~{public/fragments/commons :: section-contact}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div th:replace="~{public/fragments/commons :: section-navigation}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+            
+            
+            <div th:replace="~{public/fragments/commons :: section-credits}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div class="contacto-pop colorBM"><a href="#" data-toggle="modal" data-target="#MainMenu-BM-contacto"><i class="fa fa-envelope"></i> Contáctanos</a></div>
+            <a href="#" class="scrollup colorBM"></a><!-- end scroll to top of the page--> 
+        </div>
+
+        <div th:replace="~{public/fragments/commons :: modals}"></div>
+        
+        <div th:replace="~{public/fragments/commons :: js-dependencies}"></div>
+    </body>
+</html>

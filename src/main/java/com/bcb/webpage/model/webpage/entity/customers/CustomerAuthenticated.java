@@ -37,4 +37,12 @@ public class CustomerAuthenticated implements UserDetails {
         //return customer.getCustomerKey();
     }
 
+    public CustomerContract getContract() {
+        return contract;
+    }
+
+    public CustomerCustomer getCustomer() {
+        return customer;
+    }
+    
 }

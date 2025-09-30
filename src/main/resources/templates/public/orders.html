@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{public/fragments/commons :: head}"></head>
+    <body>
+        <div class="site_wrapper">
+            <div th:replace="~{public/fragments/commons :: header}"></div>
+            <div class="clearfix"></div>
+
+            <section>
+                <div class="header-inner back-img-Mandatos">
+                <div class="inner text-center">
+                    <h3 class="text-white uppercase">Mandatos</h3>
+                </div>
+                <div class="overlay bg-opacity-5"></div>
+                </div>
+            </section>
+            <!-- end section -->
+            <div class="clearfix"></div>
+            
+            <section>
+                <div class="pagination-holder">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <div class="pagination_links"><a th:href="@{/}">Inicio</a><i> / </i> Mandatos</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+            
+            <section class="sec-moreless-padding">
+                <div class="container">
+                <div class="row">
+                    <div class="col-sm-2 col-sm-push-5 col-xs-6 col-xs-push-3"> <img th:src="@{public/images/iconos/logo-bursametrica-mandatos-0.svg}" alt=""/> </div>
+                    <div class="col-xs-12 text-left">
+                        <h4 class="text-center">“El diseño exacto para todo requerimiento de inversión”</h4>
+                        <br/>
+                        <p>Nuestro servicio de mandatos se caracteriza por mantener una visión integral en el diseño de las políticas de inversión que mejor se ajusten a los requerimientos específicos de todo tipo de inversionista.</p>
+                    </div>
+                </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+            
+            <section class="sec-bpadding-1">
+                <div class="container">
+                <div class="row">
+                    <div class="clearfix"></div>
+                    <div class="col-md-4 col-sm-4">
+                    <div class="feature-box7 text-center bmargin"> <img th:src="@{public/images/iconos/logo-bursametrica-planeacion-financiera-a.svg}" alt=""/><br/>
+                        <br/>
+                        <h4>Planeación Financiera</h4>
+                        <br/>
+                        <a class="btn btn-border light btn-round" th:href="@{/planeacion-financiera}">Más información</a> </div>
+                    </div>
+                    <!--end item-->
+                    
+                    <div class="col-md-4 col-sm-4">
+                    <div class="feature-box7 text-center bmargin"> <img th:src="@{public/images/iconos/planes-prevision-a.svg}" alt=""/><br/>
+                        <br/>
+                        <h4>Planes Previsionales</h4>
+                        <br/>
+                        <a class="btn btn-border light btn-round" th:href="@{/planes-de-prevision-social-pensiones-y-ahorro-institucional}">Más información</a> </div>
+                    </div>
+                    <!--end item-->
+                    
+                    <div class="col-md-4 col-sm-4">
+                    <div class="feature-box7 text-center bmargin"> <img th:src="@{public/images/iconos/planes-prevision-a.svg}" alt=""/><br/>
+                        <br/>
+                        <h4>Fondos de pensión</h4>
+                        <br/> <br/>
+                        <a class="btn btn-border light btn-round" th:href="@{/planes-de-prevision-social-pensiones-y-ahorro-institucional}">Más información</a> </div>
+                    </div>
+                    <!--end item--> 
+                </div>
+                </div>
+            </section>
+            <!-- end section -->
+            <div class="clearfix"></div>
+            
+            <section class="sec-moreless-padding">
+                <div class="container">
+                <div class="row">
+                    <div class="col-xs-12 text-left">
+                    <p>Definición y construcción de referentes o parámetros para el monitoreo y medición sistemática del desempeño relativo en todo el trayecto de la inversión, favoreciendo la transparencia en la rendición de cuentas.</p><br>
+                    <p>Administración especializada de la inversión por parte de nuestro equipo experimentado de profesionales en gestión con la infraestructura tecnológica de vanguardia para la operación y cumplimiento con los respectivos criterios de administración de riesgo.</p>
+                    </div>
+                </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+            
+            <section class="sec-moreless-padding">
+                <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                    <p class="text-center">Para mayor información de nuestros servicios de Mandatos como una solución para sus necesidades, estamos para servirle.</p>
+                    </div>
+                </div>
+                </div>
+            </section>
+            <!-- end section -->
+            <div class="clearfix"></div>
+            
+            <section class="sec-moreless-padding section-colorBM-2">
+                <div class="container">
+                <div class="row">
+                    <div class="col-md-12 text-center"> <a class="btn btn-border white-2 btn-large btn-round" href="#">Contacto Mandatos</a></div>
+                </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+
+            <section th:replace="~{public/fragments/commons :: section-organizations}"></section>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div th:replace="~{public/fragments/commons :: section-contact}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div th:replace="~{public/fragments/commons :: section-navigation}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+            
+            
+            <div th:replace="~{public/fragments/commons :: section-credits}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div class="contacto-pop colorBM"><a href="#" data-toggle="modal" data-target="#MainMenu-BM-contacto"><i class="fa fa-envelope"></i> Contáctanos</a></div>
+            <a href="#" class="scrollup colorBM"></a><!-- end scroll to top of the page--> 
+        </div>
+
+        <div th:replace="~{public/fragments/commons :: modals}"></div>
+        
+        <div th:replace="~{public/fragments/commons :: js-dependencies}"></div>
+    </body>
+</html>

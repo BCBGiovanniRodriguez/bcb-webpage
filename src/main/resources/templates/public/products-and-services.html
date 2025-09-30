@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{public/fragments/commons :: head}"></head>
+    <body>
+        <div class="site_wrapper">
+            <div th:replace="~{public/fragments/commons :: header}"></div>
+            <div class="clearfix"></div>
+            <section>
+                <div class="header-inner back-img-PS">
+                <div class="inner text-center">
+                    <h3 class="title text-white uppercase">Productos</h3>
+                    <h4 class="text-white uppercase">&amp; Servicios</h4>
+                </div>
+                <div class="overlay bg-opacity-5"></div>
+                </div>
+            </section>
+            <!-- end section -->
+            <div class="clearfix"></div>
+
+            <section>
+                <div class="pagination-holder">
+                    <div class="container">
+                        <div class="row">
+                        <div class="col-md-12 text-right">
+                            <div class="pagination_links"><a th:href="@{/}">Inicio</a><i> / </i> Productos &amp; Servicios</div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+            
+            <section>
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12 nopadding">
+                            <div class="feature-box21">
+                                <div class="background-imgholder back-img-PS-02">
+                                    <div class="overlay bg-opacity-6"></div>
+                                </div>
+                                <div class="text-box text-center"> <br/>
+                                    <br/>
+                                    <h3 class="text-white section-title">GESTIÓN DE INVERSIONES &amp; MANDATOS</h3>
+                                        <p class="text-light">"La experiencia de estar en buenas manos.”</p>
+                                    <br/>
+                                    <a class="btn btn-border white btn-round" th:href="@{/gestion-de-inversion-y-mandatos}">Más información</a>
+                                </div>
+                            </div>
+                        </div>
+                        <!--end item-->
+                    </div>
+                </div>
+
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6 nopadding">
+                            <div class="feature-box21">
+                                <div class="background-imgholder back-img-PS-01">
+                                    <div class="overlay bg-opacity-6"></div>
+                                </div>
+                                <div class="text-box text-center"> <br/>
+                                    <br/>
+                                    <h3 class="text-white section-title">ALTERNATIVAS DE INVERSIÓN</h3>
+                                        <p class="text-light">“Amplitud de opciones para toda necesidad financiera”</p>
+                                    <br/>
+                                    <a class="btn btn-border white btn-round" th:href="@{/alternativas-de-inversion}">Más información</a>
+                                </div>
+                            </div>
+                        </div>
+                        <!--end item-->
+                        
+                        <div class="col-md-6 nopadding clearfix">
+                            <div class="feature-box21">
+                                <div class="background-imgholder back-img-PS-04">
+                                    <div class="overlay bg-opacity-6"></div>
+                                </div>
+                                <div class="text-box text-center"> <br/>
+                                    <br/>
+                                    <h3 class="text-white section-title">DIVISAS</h3>
+                                        <p class="text-light">“La pronta operación al precio más competitivo”</p>
+                                    <br/>
+                                    <a class="btn btn-border white btn-round" th:href="@{/divisas}">Más información</a>
+                                </div>
+                            </div>
+                        </div>
+                        <!--end item--> 
+                        
+                    </div>
+                    </div>
+                    <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12 nopadding">
+                        <div class="feature-box21">
+                            <div class="background-imgholder back-img-PS-03">
+                                <div class="overlay bg-opacity-6"></div>
+                            </div>
+                            <div class="text-box text-center"> <br/>
+                                <br/>
+                                <h3 class="text-white section-title">FIDUCIARIO</h3>
+                                    <p class="text-light">“El conocimiento que fortalece la transparencia y protección patrimonial”</p>
+                                <br/>
+                                <a class="btn btn-border white btn-round" th:href="@{/fiduciario}">Más información</a>
+                            </div>
+                        </div>
+                        </div>
+                        <!--end item-->
+                    </div>
+                    </div>
+                </section>
+                <!-- end section -->
+                <div class="clearfix"></div>
+
+            <section th:replace="~{public/fragments/commons :: section-organizations}"></section>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div th:replace="~{public/fragments/commons :: section-contact}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div th:replace="~{public/fragments/commons :: section-navigation}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+            
+            
+            <div th:replace="~{public/fragments/commons :: section-credits}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div class="contacto-pop colorBM"><a href="#" data-toggle="modal" data-target="#MainMenu-BM-contacto"><i class="fa fa-envelope"></i> Contáctanos</a></div>
+            <a href="#" class="scrollup colorBM"></a><!-- end scroll to top of the page--> 
+        </div>
+
+        <div th:replace="~{public/fragments/commons :: modals}"></div>
+        
+        <div th:replace="~{public/fragments/commons :: js-dependencies}"></div>
+    </body>
+</html>

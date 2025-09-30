@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{public/fragments/commons :: head}"></head>
+    <body>
+        <div class="site_wrapper">
+            <div th:replace="~{public/fragments/commons :: header}"></div>
+            <div class="clearfix"></div>
+
+            <section>
+                <div class="header-inner back-img-Fideicomisos-personas-morales">
+                <div class="inner text-center">
+                    <h3 class="text-white uppercase">Fideicomisos Personas Morales</h3>
+                </div>
+                <div class="overlay bg-opacity-5"></div>
+                </div>
+            </section>
+            <!-- end section -->
+            <div class="clearfix"></div>
+
+            <section>
+                <div class="pagination-holder">
+                    <div class="container">
+                        <div class="row">
+                        <div class="col-md-12 text-right">
+                            <div class="pagination_links"><a th:href="@{/}">Inicio</a><i> / </i> Fideicomisos Personas Morales</div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+
+            <section class="sec-moreless-padding">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-2 col-sm-push-5 col-xs-6 col-xs-push-3"> <img th:src="@{public/images/iconos/fideicomiso-moral-0.svg}" alt=""/> </div>
+                    </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+
+            <section class="sec-moreless-padding">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="text-box border padding-4">
+                                <div class="image-holder"><img th:src="@{public/images/productos-servicios/fiduciario/Fideicomiso-PrevisionSocial.jpg}" alt="" class="img-responsive"/></div>
+                                <div class="clearfix"></div>
+                                <br/>
+                                <h4>Previsión Social</h4>
+                                <p>Los fideicomisos de previsión social permiten brindar a los trabajadores prestaciones adicionales a las establecidas en la ley, fomentado el ahorro mediante aportaciones periódicas de estos y de la empresa en Fondos de Ahorro, Planes de Pensiones, Primas de Antigüedad y Cajas de Ahorro (solo trabajadores), cuyos rendimientos generados están exentos de impuestos.</p>
+                                <br/>
+                                <a class="btn btn-border light btn-round" th:href="@{/planes-de-prevision-social-pensiones-y-ahorro-institucional}">Planes de Previsión</a>
+                            </div>
+                        </div>
+                        <!--end item-->
+                        
+                        <div class="col-md-6">
+                        <div class="text-box border padding-4">
+                            <div class="image-holder"><img th:src="@{public/images/productos-servicios/fiduciario/Fideicomiso-Administracion-Tesorerias.jpg}" alt="" class="img-responsive"/></div>
+                            <div class="clearfix"></div>
+                            <br/>
+                            <h4>Administración de Tesorerías</h4>
+                            <p>Este tipo de contrato, permite al Fiduciario administrar los recursos de la tesorería de una empresa mediante su inversión y la seguridad de que está protegida,  además de la transparencia y mejor control sobre la misma, con la posibilidad de emitir reportes según lo previsto en el Fideicomiso.</p>
+                            <br/>
+                            <a class="btn btn-border light btn-round" th:href="@{/tesorerias}">Tesorerías</a> </div>
+                        </div>
+                        <!--end item-->
+                        <div class="clearfix"></div>
+                        <br/>
+                        <div class="col-md-6">
+                        <div class="text-box border padding-4">
+                            <div class="image-holder"><img th:src="@{public/images/productos-servicios/fiduciario/Fideicomiso-Control-Accionario.jpg}" alt="" class="img-responsive"/></div>
+                            <div class="clearfix"></div>
+                            <br/>
+                            <h4>Control Accionario</h4>
+                            <p>Mediante este tipo de fideicomiso, los accionistas transiten al fiduciario sus acciones, a fin de que ejerza los derechos corporativos y patrimoniales sobre las mismas, logrando tener el control accionario de la empresa, con la finalidad de agilizar la toma de decisiones.</p>
+                        </div>
+                        </div>
+                        <!--end item-->
+                        <div class="col-md-6">
+                        <div class="text-box border padding-4">
+                            <div class="image-holder"><img th:src="@{public/images/productos-servicios/fiduciario/Fideicomiso-Fuente-Pago.jpg}" alt="" class="img-responsive"/></div>
+                            <div class="clearfix"></div>
+                            <br/>
+                            <h4>Fuente de Pago</h4>
+                            <p>Es un fideicomiso de administración de patrimonio, utilizado como una alternativa para garantizar el pago de un crédito.</p>
+                        </div>
+                        </div>
+                        <!--end item--> 
+                        
+                    </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+
+            <section class="sec-moreless-padding">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-12">
+                        <p class="text-center">Para mayor información de nuestros servicios Fiduciarios como una solución para sus necesidades, estamos para servirle.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- end section -->
+            <div class="clearfix"></div>
+
+            <section class="sec-moreless-padding section-colorBM-2">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 text-center"> <a class="btn btn-border white-2 btn-large btn-round" href="#">Contacto Fiduciario</a></div>
+                    </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+
+            <section th:replace="~{public/fragments/commons :: section-organizations}"></section>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div th:replace="~{public/fragments/commons :: section-contact}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div th:replace="~{public/fragments/commons :: section-navigation}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+            
+            
+            <div th:replace="~{public/fragments/commons :: section-credits}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div class="contacto-pop colorBM"><a href="#" data-toggle="modal" data-target="#MainMenu-BM-contacto"><i class="fa fa-envelope"></i> Contáctanos</a></div>
+            <a href="#" class="scrollup colorBM"></a><!-- end scroll to top of the page--> 
+        </div>
+
+        <div th:replace="~{public/fragments/commons :: modals}"></div>
+        
+        <div th:replace="~{public/fragments/commons :: js-dependencies}"></div>
+    </body>
+</html>

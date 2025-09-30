@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{public/fragments/commons :: head}"></head>
+    <body>
+        <div class="site_wrapper">
+            <div th:replace="~{public/fragments/commons :: header}"></div>
+            <div class="clearfix"></div>
+
+            <section>
+                <div class="header-inner back-img-II-tesorerias">
+                <div class="inner text-center">
+                    <h3 class="text-white uppercase">Tesorerías</h3>
+                </div>
+                <div class="overlay bg-opacity-5"></div>
+                </div>
+            </section>
+            <!-- end section -->
+            <div class="clearfix"></div>
+            
+            <section>
+                <div class="pagination-holder">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <div class="pagination_links"><a th:href="@{/}">Inicio</a><i> / </i> Tesorerías</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+            <div class="clearfix"></div>
+
+            <section class="sec-moreless-padding">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-2 col-sm-push-5 col-xs-6 col-xs-push-3"> <img th:src="@{public/images/iconos/tesorerias-0.svg}" alt=""/> </div>
+                        <div class="col-xs-12 text-left">
+                            <h4 class="text-center">“La oportuna atención para el manejo de liquidez y excedentes”</h4>
+                            <br/>
+                            <p>Nuestra amplia trayectoria trabajando con clientes institucionales nos mantiene conscientes sobre la gestión de tesorería como una de las actividades esenciales para la operación diaria de toda empresa e institución, razón para centramos en ofrecer la atención oportuna apoyando al manejo eficiente de la liquidez junto de los excedentes de efectivo. </p>
+                            <p>Brindamos acceso a una oferta variada de instrumentos que favorecen tasas de interés de óptima rentabilidad y  la flexibilidad adecuada para estructurar flujos a la medida exacta de las necesidades de todo corporativo o gobierno.</p>
+                            <p>Contamos con la infraestructura tecnológica que permite una pronta ejecución, liquidación de operaciones, transparencia y ágil reportería.</p>
+                            <p>Adicionalmente, ofrecemos soluciones integrales con nuestros servicios siguientes:</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+
+            <section class="sec-bpadding-1">
+                <div class="container">
+                <div class="row">
+                    <div class="clearfix"></div>
+                    <div class="col-md-4 col-sm-4">
+                        <div class="feature-box7 text-center bmargin"> <img th:src="@{public/images/iconos/alternativas-inversion-a.svg}" alt=""/><br/>
+                            <br/>
+                            <h4>Alternativas de Inversión</h4>
+                            <br/>
+                            <a class="btn btn-border light btn-round" th:href="@{/alternativas-de-inversion}">Más información</a>
+                        </div>
+                    </div>
+                    <!--end item-->
+                    
+                    <div class="col-md-4 col-sm-4">
+                        <div class="feature-box7 text-center bmargin"> <img th:src="@{public/images/iconos/divisas-a.svg}" alt=""/><br/>
+                            <br/>
+                            <h4>Divisas</h4>
+                            <br/>
+                            <a class="btn btn-border light btn-round" th:href="@{/divisas}">Más información</a>
+                        </div>
+                    </div>
+                    <!--end item-->
+                    
+                    <div class="col-md-4 col-sm-4">
+                        <div class="feature-box7 text-center bmargin"> 
+                            <img th:src="@{public/images/iconos/fideicomiso-moral-a.svg}" alt=""/>
+                            <img th:src="@{public/images/iconos/fideicomiso-moral-b.svg}" alt="" hidden/><br/>
+                            <br/>
+                            <h4>Fiduciario Personas Morales </h4>
+                            <br/>
+                            <a class="btn btn-border light btn-round" th:href="@{/fideicomisos-personas-morales}">Más información</a>
+                        </div>
+                    </div>
+                    <!--end item--> 
+                </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+
+            <section class="sec-moreless-padding">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <p class="text-center">Para mayor información de nuestros servicios de Tesorerías como una solución para sus necesidades, estamos para servirle.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- end section -->
+            <div class="clearfix"></div>
+
+            <section class="sec-moreless-padding section-colorBM-2">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <a class="btn btn-border white-2 btn-large btn-round" href="#">Contacto Tesorerías</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+
+            <section th:replace="~{public/fragments/commons :: section-organizations}"></section>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div th:replace="~{public/fragments/commons :: section-contact}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div th:replace="~{public/fragments/commons :: section-navigation}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+            
+            
+            <div th:replace="~{public/fragments/commons :: section-credits}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div class="contacto-pop colorBM"><a href="#" data-toggle="modal" data-target="#MainMenu-BM-contacto"><i class="fa fa-envelope"></i> Contáctanos</a></div>
+            <a href="#" class="scrollup colorBM"></a><!-- end scroll to top of the page--> 
+        </div>
+
+        <div th:replace="~{public/fragments/commons :: modals}"></div>
+        
+        <div th:replace="~{public/fragments/commons :: js-dependencies}"></div>
+    </body>
+</html>

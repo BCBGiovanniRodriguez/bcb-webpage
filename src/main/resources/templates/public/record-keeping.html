@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{public/fragments/commons :: head}"></head>
+    <body>
+        <div class="site_wrapper">
+            <div th:replace="~{public/fragments/commons :: header}"></div>
+            <div class="clearfix"></div>
+
+            <section>
+                <div class="header-inner back-img-II-record-keeping">
+                <div class="inner text-center">
+                    <h3 class="text-white uppercase">Record Keeping</h3>
+                </div>
+                <div class="overlay bg-opacity-5"></div>
+                </div>
+            </section>
+            <!-- end section -->
+            <div class="clearfix"></div>
+
+            <section>
+                <div class="pagination-holder">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <div class="pagination_links"><a th:href="@{/}">Inicio</a><i> / </i> Record Keeping</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+
+            <section class="sec-moreless-padding">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-2 col-sm-push-5 col-xs-6 col-xs-push-3"> <img th:src="@{public/images/iconos/record-keeping-0.svg}" alt=""/> </div>
+                        <div class="col-xs-12 text-left">
+                        <h4 class="text-center">“La forma más práctica y efectiva de administrar cuentas”</h4>
+                        <br/>
+                        <p>Nuestro servicio provee un sistema integral caracterizado por la practicidad y efectividad en la administración e individualización de cuentas acompañado de su solidez tecnológica siempre orientado a la mejor experiencia del usuario final del sistema.</p>
+                        <p>Encontramos soluciones para administradores y participantes de cualquier plan de fondo de pensiones, plan de previsión social, fondos de ahorro, cajas de ahorro, fideicomisos y todo usuario que requiera la individualización de cuentas.</p>
+                        <p>Favorecemos la organización, operación, reportería y visualización de toda actividad relacionada a la individualización para eficientizar la administración y brindar la transparencia necesaria en la información a los participantes del plan.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+
+            <section class="sec-moreless-padding">
+                <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                    <p class="text-center">Para mayor información de nuestros servicios de Record Keeping como una solución para sus necesidades, estamos para servirle.</p>
+                    </div>
+                </div>
+                </div>
+            </section>
+            <!-- end section -->
+            <div class="clearfix"></div>
+
+            <section class="sec-moreless-padding section-colorBM-2">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 text-center"> <a class="btn btn-border white-2 btn-large btn-round" href="#">Contacto Record Keeping</a></div>
+                    </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+
+            <section th:replace="~{public/fragments/commons :: section-organizations}"></section>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div th:replace="~{public/fragments/commons :: section-contact}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div th:replace="~{public/fragments/commons :: section-navigation}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+            
+            
+            <div th:replace="~{public/fragments/commons :: section-credits}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div class="contacto-pop colorBM"><a href="#" data-toggle="modal" data-target="#MainMenu-BM-contacto"><i class="fa fa-envelope"></i> Contáctanos</a></div>
+            <a href="#" class="scrollup colorBM"></a><!-- end scroll to top of the page--> 
+        </div>
+
+        <div th:replace="~{public/fragments/commons :: modals}"></div>
+        
+        <div th:replace="~{public/fragments/commons :: js-dependencies}"></div>
+    </body>
+</html>

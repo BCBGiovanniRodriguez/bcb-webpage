@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{public/fragments/commons :: head}"></head>
+    <body>
+        <div class="site_wrapper">
+            <div th:replace="~{public/fragments/commons :: header}"></div>
+            <div class="clearfix"></div>
+
+            <section>
+                <div class="header-inner back-img-PF">
+                    <div class="inner text-center">
+                        <h3 class="title text-white uppercase">Construyendo</h3>
+                        <h4 class="text-white uppercase">su tranquilidad patrimonial</h4>
+                    </div>
+                    <div class="overlay bg-opacity-5"></div>
+                </div>
+            </section>
+            <!-- end section -->
+            <div class="clearfix"></div>
+            
+            <section>
+                <div class="pagination-holder">
+                    <div class="container">
+                        <div class="row">
+                        <div class="col-md-12 text-right">
+                            <div class="pagination_links"><a th:href="@{/}">Inicio</a><i> / </i> Personas y Familias</div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+
+            <section class="sec-moreless-padding">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xs-12 text-center">
+                            <h5>Ayudamos a nuestros clientes a administrar su patrimonio de la misma forma que los informamos de todas las alternativas a su alcance.</h5>
+                            <h5>Nuestro enfoque personalizado ayuda a construir los logros de sus metas financieras, siempre acompañados por una guía profesional y especializada para seleccionar los productos más eficientes y alternativas de inversión acordes a su perfil de inversión.</h5>
+                            <br/>
+                            <a class="btn btn-border dark btn-round" href="#">Ver Guía de servicios de inversión</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+            
+            <section>
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6 nopadding">
+                            <div class="feature-box21">
+                                <div class="background-imgholder back-img-PF-01">
+                                    <div class="overlay bg-opacity-6"></div>
+                                </div>
+                                <div class="text-box text-center"> <br/>
+                                    <br/>
+                                    <h3 class="text-white section-title">PLANEACIÓN FINANCIERA</h3>
+                                    <p class="text-light">“Nuestro proceso de planeación prioriza los resultados mediante la inversión y brinda tranquilidad a nuestros clientes”</p>
+                                    <br/>
+                                    <a class="btn btn-border white btn-round" th:href="@{/planeacion-financiera}">Más información</a>
+                                </div>
+                            </div>
+                        </div>
+                        <!--end item-->
+                        
+                        <div class="col-md-6 nopadding clearfix">
+                            <div class="feature-box21">
+                                <div class="background-imgholder back-img-PF-02">
+                                    <div class="overlay bg-opacity-6"></div>
+                                </div>
+                                <div class="text-box text-center"> <br/>
+                                    <br/>
+                                    <h3 class="text-white section-title">ESTRATEGIAS SELECTIVAS</h3>
+                                    <p class="text-light">“Nuestro objetivo es ofrecer estrategias que agreguen valor y protejan el patrimonio de nuestros clientes ajustándose a sus necesidades”</p>
+                                    <br/>
+                                    <a class="btn btn-border white btn-round" th:href="@{/estrategias-selectivas}">Más información</a>
+                                </div>
+                            </div>
+                        </div>
+                        <!--end item--> 
+                        
+                    </div>
+                </div>
+            </section>
+            <!-- end section -->
+            <div class="clearfix"></div>
+
+            <section th:replace="~{public/fragments/commons :: section-organizations}"></section>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div th:replace="~{public/fragments/commons :: section-contact}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div th:replace="~{public/fragments/commons :: section-navigation}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+            
+            
+            <div th:replace="~{public/fragments/commons :: section-credits}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div class="contacto-pop colorBM"><a href="#" data-toggle="modal" data-target="#MainMenu-BM-contacto"><i class="fa fa-envelope"></i> Contáctanos</a></div>
+            <a href="#" class="scrollup colorBM"></a><!-- end scroll to top of the page--> 
+        </div>
+
+        <div th:replace="~{public/fragments/commons :: modals}"></div>
+        
+        <div th:replace="~{public/fragments/commons :: js-dependencies}"></div>
+    </body>
+</html>

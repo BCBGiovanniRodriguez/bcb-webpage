@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{public/fragments/commons :: head}"></head>
+    <body>
+        <div class="site_wrapper">
+            <div th:replace="~{public/fragments/commons :: header}"></div>
+            <div class="clearfix"></div>
+            <section>
+                <div class="header-inner back-img-II-planes-prevision">
+                <div class="inner text-center">
+                    <h3 class="text-white uppercase">Planes de Previsión Social, Pensiones y Ahorro Institucional</h3>
+                </div>
+                <div class="overlay bg-opacity-5"></div>
+                </div>
+            </section>
+            <!-- end section -->
+            <div class="clearfix"></div>
+
+            <section>
+                <div class="pagination-holder">
+                <div class="container">
+                    <div class="row">
+                    <div class="col-md-12 text-right">
+                        <div class="pagination_links"><a th:href="@{/}">Inicio</a><i> / </i> Planes de Previsión Social, Pensiones y Ahorro Institucional</div>
+                    </div>
+                    </div>
+                </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+
+            <div class="clearfix"></div>
+            <section class="sec-moreless-padding">
+                <div class="container">
+                <div class="row">
+                    <div class="col-sm-2 col-sm-push-5 col-xs-6 col-xs-push-3"> <img th:src="@{public/images/iconos/planes-prevision-a.svg}" alt=""/> </div>
+                    <div class="col-xs-12 text-left">
+                    <h4 class="text-center">“Soluciones  integrales de ahorro e inversión para sus colaboradores”</h4>
+                    <br/>
+                    <p>Entendemos que la administración de recursos para fines de previsión social, desde prestaciones para fomentar el ahorro hasta el diseño, inversión, administración y operación de un plan de pensiones de contribución definida (CD), beneficio definido (DB) o mixto (características de ambos), son un alto compromiso y responsabilidad hacia sus colaboradores.</p>
+                    <p>Nuestra  amplia experiencia en temas de previsión, ahorro y prestaciones nos permite estar a su lado entregando un servicio integral y especializado en beneficio de la mejor experiencia para sus colaboradores.</p>
+                    <p>Adicionalmente tiene a su disposición nuestros servicios:</p>
+                    </div>
+                </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+
+            <section class="sec-bpadding-1">
+                <div class="container">
+                    <div class="row">
+                        <div class="clearfix"></div>
+                        <div class="col-md-4 col-sm-4">
+                            <div class="feature-box7 text-center bmargin"> <img th:src="@{public/images/iconos/fideicomiso-moral-a.svg}" alt=""/><br/>
+                                <br/>
+                                <h4>Fiduciario personas morales</h4>
+                                <br/>
+                                <a class="btn btn-border light btn-round" th:href="@{/fideicomisos-personas-morales}">Más información</a>
+                            </div>
+                        </div>
+                        <!--end item-->
+                        
+                        <div class="col-md-4 col-sm-4">
+                        <div class="feature-box7 text-center bmargin"> <img th:src="@{public/images/iconos/logo-gestion-inversiones-a.svg}" alt=""/><br/>
+                            <br/>
+                            <h4>Gestión de Inversiones</h4>
+                            <br/>
+                            <a class="btn btn-border light btn-round" th:href="@{/gestion-de-inversion-y-mandatos}">Más información</a> </div>
+                        </div>
+                        <!--end item-->
+                        
+                        <div class="col-md-4 col-sm-4">
+                        <div class="feature-box7 text-center bmargin"> <img th:src="@{public/images/iconos/record-keeping-0.svg}" alt=""/><br/>
+                            <br/>
+                            <h4>Récord Keeping</h4>
+                            <br/>
+                            <a class="btn btn-border light btn-round" th:href="@{/record-keeping}">Más información</a> </div>
+                        </div>
+                        <!--end item--> 
+                    </div>
+                </div>
+            </section>
+            <!-- end section -->
+            <div class="clearfix"></div>
+
+            <section class="sec-moreless-padding">
+                <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                    <p class="text-center">Para mayor información de nuestros servicios Previsión y Ahorro Institucional como una solución para sus necesidades, estamos para servirle.</p>
+                    </div>
+                </div>
+                </div>
+            </section>
+            <!-- end section -->
+            <div class="clearfix"></div>
+
+            <section class="sec-moreless-padding section-colorBM-2">
+                <div class="container">
+                <div class="row">
+                    <div class="col-md-12 text-center"> <a class="btn btn-border white-2 btn-large btn-round" href="#">Contacto Previsión y Ahorro Institucional</a></div>
+                </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+
+            <section th:replace="~{public/fragments/commons :: section-organizations}"></section>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div th:replace="~{public/fragments/commons :: section-contact}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div th:replace="~{public/fragments/commons :: section-navigation}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+            
+            
+            <div th:replace="~{public/fragments/commons :: section-credits}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div class="contacto-pop colorBM"><a href="#" data-toggle="modal" data-target="#MainMenu-BM-contacto"><i class="fa fa-envelope"></i> Contáctanos</a></div>
+            <a href="#" class="scrollup colorBM"></a><!-- end scroll to top of the page--> 
+        </div>
+
+        <div th:replace="~{public/fragments/commons :: modals}"></div>
+        
+        <div th:replace="~{public/fragments/commons :: js-dependencies}"></div>
+    </body>
+</html>

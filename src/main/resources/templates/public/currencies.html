@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{public/fragments/commons :: head}"></head>
+    <body>
+        <div class="site_wrapper">
+            <div th:replace="~{public/fragments/commons :: header}"></div>
+            <div class="clearfix"></div>
+
+            <section>
+                <div class="header-inner back-img-PS-divisas">
+                    <div class="inner text-center">
+                        <h3 class="text-white uppercase">Divisas</h3>
+                    </div>
+                    <div class="overlay bg-opacity-5"></div>
+                </div>
+            </section>
+            <!-- end section -->
+            <div class="clearfix"></div>
+            
+            <section>
+                <div class="pagination-holder">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <div class="pagination_links"><a th:href="@{/}">Inicio</a><i> / </i> Divisas</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+            
+            <section class="sec-moreless-padding">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-2 col-sm-push-5 col-xs-6 col-xs-push-3"> <img th:src="@{public/images/iconos/logo-bursametrica-divisas-0.svg}" alt=""/> </div>
+                        <div class="col-xs-12 text-left">
+                            <h4 class="text-center">“La pronta operación al precio más competitivo”</h4>
+                            <br/>
+                            <p>Acceso a los <strong>mercados de divisas</strong> y tipos de cambios competitivos con la oportunidad y seguridad en la liquidación de sus operaciones al extranjero y en territorio nacional.</p>
+                            <p>De la mano de un experimentado equipo de profesionales con experiencia en los mercados cambiarios, nuestro servicio proporciona una respuesta oportuna a los requerimientos de compraventa de divisas de todo inversionista persona física y moral mediante el acceso a tipos de cambio competitivos para sus operaciones acompañado de la certeza en la liquidación de las mismas en México y el extranjero.</p>
+                            <p>De igual forma tenemos a su disposición los servicios de pagos a terceros, proveedores y dispersión de fondos en divisas y confirmaciones con comprobante electrónicos para su consulta  y seguridad.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+            
+            <section class="sec-moreless-padding">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-12">
+                        <p class="text-center">Para mayor información de nuestros servicios de Divisas como una solución para sus necesidades, estamos para servirle.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- end section -->
+            <div class="clearfix"></div>
+            
+            <section class="sec-moreless-padding section-colorBM-2">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <a class="btn btn-border white-2 btn-large btn-round" href="#">Contacto Divisas</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+
+            <section th:replace="~{public/fragments/commons :: section-organizations}"></section>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div th:replace="~{public/fragments/commons :: section-contact}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div th:replace="~{public/fragments/commons :: section-navigation}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+            
+            
+            <div th:replace="~{public/fragments/commons :: section-credits}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div class="contacto-pop colorBM"><a href="#" data-toggle="modal" data-target="#MainMenu-BM-contacto"><i class="fa fa-envelope"></i> Contáctanos</a></div>
+            <a href="#" class="scrollup colorBM"></a><!-- end scroll to top of the page--> 
+        </div>
+
+        <div th:replace="~{public/fragments/commons :: modals}"></div>
+        
+        <div th:replace="~{public/fragments/commons :: js-dependencies}"></div>
+    </body>
+</html>

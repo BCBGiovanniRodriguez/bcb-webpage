@@ -1,31 +1,30 @@
 package com.bcb.webpage.config;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.authentication.ott.OneTimeTokenService;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.bcb.webpage.model.webpage.repository.OneTimeTokenRepository;
+import com.bcb.webpage.service.CustomOneTimeTokenSuccessHandler;
 import com.bcb.webpage.service.DatabaseUserDetailsService;
+import com.bcb.webpage.service.EmailGeneratedOneTimeTokenHandler;
+import com.bcb.webpage.service.JpaOneTimeTokenService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Configuration
-@EnableWebSecurity
 public class SecurityConfig {
-//public class SecurityConfig extends WebSecurityConfiguration {
-    // Guía: https://www.youtube.com/watch?v=pmSJTrOWi7w
+    
     public static final int BCRYPT_DEFAULT_STRENGHT = 12;
 
     @Autowired
@@ -34,6 +33,11 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(BCRYPT_DEFAULT_STRENGHT);
+    }
+
+    @Bean
+    public OneTimeTokenService jpaOneTimeTokenService(OneTimeTokenRepository oneTimeTokenRepository, DatabaseUserDetailsService databaseUserDetailsService) {
+        return new JpaOneTimeTokenService(oneTimeTokenRepository, databaseUserDetailsService);
     }
 
     public AuthenticationProvider authenticationProvider() {
@@ -45,16 +49,15 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity, 
+        JpaOneTimeTokenService jpaOneTimeTokenService,
+        EmailGeneratedOneTimeTokenHandler ottSuccessHandler) throws Exception {
         return httpSecurity
-        .headers(h -> h.frameOptions(f -> f.sameOrigin()))
-            //.csrf(csrf -> csrf.disable())
+            .headers(h -> h.frameOptions(f -> f.sameOrigin()))
+            .csrf(Customizer.withDefaults())
             .authorizeHttpRequests( auth -> {
-                
-                auth.requestMatchers("/**").permitAll();
+                auth.requestMatchers("/**", "/login", "/login/**", "/ml/**", "/ott/sent", "/logout", "/public/**").permitAll();
                 auth.requestMatchers("/portal-clientes", "/portal-clientes/**").authenticated();
-                //auth.requestMatchers("/", "/login", "/public/**", "/static/**","/css/**", "/pages/**", "/inicio-de-sesion", "/portal-clientes/**").permitAll();
-                //auth.requestMatchers("/", "/login", "/public/**", "/static/**").permitAll();
             })
             .formLogin(frm -> frm
                 .loginPage("/inicio-de-sesion")
@@ -62,11 +65,29 @@ public class SecurityConfig {
                 .defaultSuccessUrl("/portal-clientes/dashboard", true)
                 .permitAll()
             )
-            //.formLogin(Customizer.withDefaults())
+            //.logout(Customizer.withDefaults())
             .logout(logout -> {
+                logout.logoutUrl("/logout");
+                logout.deleteCookies("JSESSIONID");
+                logout.invalidateHttpSession(true);
                 logout.logoutSuccessUrl("/inicio-de-sesion?logout");
                 logout.permitAll();
-            })/*
+            })
+            //.oneTimeTokenLogin(Customizer.withDefaults())
+            .oneTimeTokenLogin(ott -> {
+                ott.tokenService(jpaOneTimeTokenService);
+                ott.defaultSubmitPageUrl("/login/ott");
+                ott.tokenGeneratingUrl("/ml/generate");
+                ott.loginProcessingUrl("/ml/submit");
+                ott.showDefaultSubmitPage(false);
+                ott.tokenGenerationSuccessHandler(ottSuccessHandler);
+                ott.authenticationSuccessHandler(successHandler());
+                ott.authenticationFailureHandler((request, response, exception) -> {
+                    log.error("Error", exception);
+                    response.sendRedirect("/login?error=ott");
+                });
+            }) 
+            /*
             .sessionManagement(mgmt -> {
                 mgmt.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
                 //mgmt.invalidSessionUrl("/login");
@@ -77,6 +98,12 @@ public class SecurityConfig {
             .httpBasic(Customizer.withDefaults())
             .build();
     }
+
+    @Bean
+    public AuthenticationSuccessHandler successHandler() {
+        return new CustomOneTimeTokenSuccessHandler("/portal-clientes/dashboard");
+    }
+
     /*
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
