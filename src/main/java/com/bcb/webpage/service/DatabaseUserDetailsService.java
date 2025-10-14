@@ -19,6 +19,8 @@ import com.bcb.webpage.model.webpage.entity.customers.CustomerCustomer;
 import com.bcb.webpage.model.webpage.repository.CustomerContractRepository;
 import com.bcb.webpage.model.webpage.repository.CustomerSessionRepository;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @Service
 public class DatabaseUserDetailsService implements UserDetailsService {
 
@@ -27,6 +29,9 @@ public class DatabaseUserDetailsService implements UserDetailsService {
 
     @Autowired
     CustomerSessionRepository customerSessionRepository;
+
+    @Autowired
+    HttpServletRequest httpServletRequest;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -59,6 +64,11 @@ public class DatabaseUserDetailsService implements UserDetailsService {
                 newCustomerSession.setCurrent(true);
                 newCustomerSession.setCustomer(customer);
                 newCustomerSession.setTimestamp(now);
+                newCustomerSession.setContractNumber(username);
+
+                newCustomerSession.setRemoteAddress(httpServletRequest.getRemoteAddr());
+                newCustomerSession.setUserAgent(httpServletRequest.getHeader("user-agent"));
+                
                 // Save Session
                 customerSessionRepository.saveAndFlush(newCustomerSession);
                 customerSessionRepository.flush();

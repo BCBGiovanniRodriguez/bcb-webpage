@@ -17,5 +17,7 @@ public interface CustomerStatementAccountRepository extends JpaRepository<Custom
     List<CustomerStatementAccount> findByYearAndMonth(String year, String month);
 
     Optional<CustomerStatementAccount> findOneByCustomerContractAndYearAndMonth(CustomerContract customerContract, String year, String month);
+
+    Optional<CustomerStatementAccount> findOneByCustomerContractAndYearAndMonthAndType(CustomerContract customerContract, String year, String month, Integer type);
     
 }

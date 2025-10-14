@@ -10,7 +10,9 @@ import com.bcb.webpage.model.webpage.entity.customers.CustomerTaxCertificate;
 
 @Repository
 public interface CustomerTaxCertificateRepository extends JpaRepository<CustomerTaxCertificate, Long> {
+
     Optional<CustomerTaxCertificate> findByYearAndTypeAndCustomerContract(String year, Integer type, CustomerContract contract);
 
-    Optional<CustomerTaxCertificate> findByYearAndTypeAndFileTypeAndCustomerContract(String year, Integer type, Integer fileType, CustomerContract contract);
+    Optional<CustomerTaxCertificate> findOneByYearAndTypeAndFileTypeAndCustomerContract(String year, Integer type, Integer fileType, CustomerContract contract);
+
 }

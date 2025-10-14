@@ -3,11 +3,14 @@ package com.bcb.webpage.service;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
@@ -21,9 +24,13 @@ import org.springframework.security.authentication.ott.OneTimeTokenService;
 import com.bcb.webpage.model.webpage.entity.OneTimeTokenEntity;
 import com.bcb.webpage.model.webpage.repository.OneTimeTokenRepository;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 
 public class JpaOneTimeTokenService implements OneTimeTokenService, DisposableBean, InitializingBean {
+
+    @Autowired
+    HttpServletRequest httpServletRequest;
 
     private final OneTimeTokenRepository repository;
 
@@ -75,7 +82,9 @@ public class JpaOneTimeTokenService implements OneTimeTokenService, DisposableBe
         oneTimeTokenEntity.setEmail(oneTimeToken.getUsername());
         oneTimeTokenEntity.setExpiresAt(oneTimeToken.getExpiresAt());
         oneTimeTokenEntity.setContractNumber(contractNumber);
-        oneTimeTokenEntity.setCreated(Instant.now());
+        oneTimeTokenEntity.setRequestedDate(Instant.now());
+        oneTimeTokenEntity.setRemoteIpAddressRequester(httpServletRequest.getRemoteAddr());
+        oneTimeTokenEntity.setRemoteUserAgentRequester(httpServletRequest.getHeader("user-agent"));
 
         repository.saveAndFlush(oneTimeTokenEntity);
     }
@@ -92,7 +101,13 @@ public class JpaOneTimeTokenService implements OneTimeTokenService, DisposableBe
 
         OneTimeTokenEntity oneTimeTokenEntity = oneTimeTokenEntityOptional.get();
         DefaultOneTimeToken defaultOneTimeToken = new DefaultOneTimeToken(oneTimeTokenEntity.getId(), oneTimeTokenEntity.getContractNumber(), oneTimeTokenEntity.getExpiresAt());
-        repository.deleteById(defaultOneTimeToken.getTokenValue());
+
+        oneTimeTokenEntity.setState(OneTimeTokenEntity.STATE_CONSUMED);
+        oneTimeTokenEntity.setProcessedDate(Instant.now());
+        oneTimeTokenEntity.setRemoteIpAddressProcessor(httpServletRequest.getRemoteAddr());
+        oneTimeTokenEntity.setRemoteUserAgentProcessor(httpServletRequest.getHeader("user-agent"));
+        
+        repository.saveAndFlush(oneTimeTokenEntity);
 
         if (isExpired(defaultOneTimeToken)) {
             return null;
@@ -121,9 +136,21 @@ public class JpaOneTimeTokenService implements OneTimeTokenService, DisposableBe
 
     @Transactional
     public void cleanupExpiredTokens() {
-        int deletedCount = repository.deleteAllByExpiresAtBefore(Instant.now()).size();
-
-        System.out.println("Tokens eliminados: " + deletedCount);
+        //int deletedCount = repository.deleteAllByExpiresAtBefore(Instant.now()).size();
+        int expiredTokens = 0;
+        
+        List<OneTimeTokenEntity> tokenList = repository.findByExpiresAtBefore(Instant.now());
+        
+        for (OneTimeTokenEntity oneTimeTokenEntity : tokenList) {
+            if (oneTimeTokenEntity.getState() == OneTimeTokenEntity.STATE_CREATED) {
+                oneTimeTokenEntity.setState(OneTimeTokenEntity.STATE_EXPIRED);
+                this.repository.saveAndFlush(oneTimeTokenEntity);
+                
+                expiredTokens++;
+            }
+        }
+        
+        System.out.println("Tokens expirados: " + expiredTokens);
     }
 
     @Override

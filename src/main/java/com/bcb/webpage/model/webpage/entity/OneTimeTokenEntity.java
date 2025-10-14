@@ -22,26 +22,54 @@ public class OneTimeTokenEntity implements Persistable<String> {
 
     private String email;
 
-    private Instant created;
-
     private Instant expiresAt;
+    
+    private Instant requestedDate;
+    
+    private String remoteIpAddressRequester;
+    
+    private String remoteUserAgentRequester;
+
+    private Instant processedDate;
+
+    private String remoteIpAddressProcessor;
+
+    private String remoteUserAgentProcessor;
+
+    private Integer state;
+
+    public static final Integer STATE_CREATED = 1;
+
+    public static final Integer STATE_CONSUMED = 2;
+
+    public static final Integer STATE_EXPIRED = 3;
+
+    public static final String[] states = {"Desconocido", "creado", "procesado", "caducado"};
 
     @Override
     @Nullable
     public String getId() {
         return this.id;
     }
+    
+    public void setId(String id) {
+        this.id = id;
+    }
 
     @Override
     public boolean isNew() {
-        return this.getCreated() == null;
+        return this.getRequestedDate() == null;
     }
 
     public OneTimeTokenEntity() {
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getContractNumber() {
+        return contractNumber;
+    }
+
+    public void setContractNumber(String contractNumber) {
+        this.contractNumber = contractNumber;
     }
 
     public String getEmail() {
@@ -52,14 +80,6 @@ public class OneTimeTokenEntity implements Persistable<String> {
         this.email = email;
     }
 
-    public Instant getCreated() {
-        return created;
-    }
-
-    public void setCreated(Instant created) {
-        this.created = created;
-    }
-
     public Instant getExpiresAt() {
         return expiresAt;
     }
@@ -68,12 +88,63 @@ public class OneTimeTokenEntity implements Persistable<String> {
         this.expiresAt = expiresAt;
     }
 
-    public String getContractNumber() {
-        return contractNumber;
+    public Instant getRequestedDate() {
+        return requestedDate;
     }
 
-    public void setContractNumber(String contractNumber) {
-        this.contractNumber = contractNumber;
+    public void setRequestedDate(Instant requestedDate) {
+        this.requestedDate = requestedDate;
+    }
+
+    public String getRemoteIpAddressRequester() {
+        return remoteIpAddressRequester;
+    }
+
+    public void setRemoteIpAddressRequester(String remoteIpAddressRequester) {
+        this.remoteIpAddressRequester = remoteIpAddressRequester;
+    }
+
+    public String getRemoteUserAgentRequester() {
+        return remoteUserAgentRequester;
+    }
+
+    public void setRemoteUserAgentRequester(String remoteUserAgentRequester) {
+        this.remoteUserAgentRequester = remoteUserAgentRequester;
+    }
+
+    public Instant getProcessedDate() {
+        return processedDate;
+    }
+
+    public void setProcessedDate(Instant processedDate) {
+        this.processedDate = processedDate;
+    }
+
+    public String getRemoteIpAddressProcessor() {
+        return remoteIpAddressProcessor;
+    }
+
+    public void setRemoteIpAddressProcessor(String remoteIpAddressProcessor) {
+        this.remoteIpAddressProcessor = remoteIpAddressProcessor;
+    }
+
+    public String getRemoteUserAgentProcessor() {
+        return remoteUserAgentProcessor;
+    }
+
+    public void setRemoteUserAgentProcessor(String remoteUserAgentProcessor) {
+        this.remoteUserAgentProcessor = remoteUserAgentProcessor;
+    }
+
+    public Integer getState() {
+        return state;
+    }
+
+    public void setState(Integer state) {
+        this.state = state;
     }
     
+    public String getStateAsString() {
+        return OneTimeTokenEntity.states[this.state];
+    }
 }

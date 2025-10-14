@@ -61,6 +61,7 @@ public class SecurityConfig {
             })
             .formLogin(frm -> frm
                 .loginPage("/inicio-de-sesion")
+                .usernameParameter("contract-number")
                 .loginProcessingUrl("/login")
                 .defaultSuccessUrl("/portal-clientes/dashboard", true)
                 .permitAll()

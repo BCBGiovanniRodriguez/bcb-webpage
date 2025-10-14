@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{public/fragments/commons :: head}"></head>
+    <body>
+        <div class="site_wrapper">
+            <div th:replace="~{public/fragments/commons :: header}"></div>
+            <div class="clearfix"></div>
+
+            <section>
+                <div class="pagination-holder">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <div class="pagination_links"><a th:href="@{/}">Inicio</a><i> / </i> Mapa del sitio</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+
+            <section class="sec-moreless-padding">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-12 col-xs-12 bmargin">
+                            <ul class="sitemap">
+                                <li><a th:href="@{/}"><i class="fa fa-caret-right"></i> <strong>Inicio</strong></a></li>
+                                <li><a th:href="@{/aviso-de-privacidad}"><i class="fa fa-caret-right"></i> <strong>Aviso de Privacidad</strong></a></li>
+                                <li><a th:href="@{/acerca-de-nosotros}"><i class="fa fa-caret-right"></i> <strong>Acerca de Nosotros</strong></a></li>
+                                <li>
+                                    <a th:href="@{/productos-y-servicios}"><i class="fa fa-caret-right"></i> <strong>Productos y Servicios</strong></a>
+                                    <ul>
+                                        <li><a th:href="@{/gestion-de-inversion-y-mandatos}"><i class="fa fa-caret-right"></i> Gestión de Inversiónes y Mandatos</a></li>
+                                        <li><a th:href="@{/mandatos}"><i class="fa fa-caret-right"></i> Mandatos</a></li>
+                                        <li><a th:href="@{/fiduciario}"><i class="fa fa-caret-right"></i> Fiduciario</a></li>
+                                        <li><a th:href="@{/fideicomisos-publicos}"><i class="fa fa-caret-right"></i> Fideicomisos Públicos</a></li>
+                                        <li><a th:href="@{/fideicomisos-personas-fisicas}"><i class="fa fa-caret-right"></i> Fideicomisos Personas Físicas</a></li>
+                                        <li><a th:href="@{/fideicomisos-personas-morales}"><i class="fa fa-caret-right"></i> Fideicomisos Personas Morales</a></li>
+                                        <li><a th:href="@{/alternativas-de-inversion}"><i class="fa fa-caret-right"></i> Alternativas de Inversión</a></li>
+                                        <li><a th:href="@{/divisas}"><i class="fa fa-caret-right"></i> Divisas</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a th:href="@{/personas-y-familias}"><i class="fa fa-caret-right"></i> <strong>Personas y Familias</strong></a>
+                                    <ul>
+                                        <li><a th:href="@{/planeacion-financiera}"><i class="fa fa-caret-right"></i> Planeación Financiera</a></li>
+                                        <li><a th:href="@{/estrategias-selectivas}"><i class="fa fa-caret-right"></i> Estrategias Selectivas</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a th:href="@{/inversionista-institucional}"><i class="fa fa-caret-right"></i> <strong>Inversionista Institucional</strong></a>
+                                    <ul>
+                                        <li><a th:href="@{/planes-de-prevision-social-pensiones-y-ahorro-institucional}"><i class="fa fa-caret-right"></i> Planes de Previsión Social, Pensiones y Ahorro Institucional</a></li>
+                                        <li><a th:href="@{/record-keeping}"><i class="fa fa-caret-right"></i> Record Keeping</a></li>
+                                        <li><a th:href="@{/tesorerias}"><i class="fa fa-caret-right"></i> Tesorerías</a></li>
+                                        <li><a th:href="@{/banca-de-inversion}"><i class="fa fa-caret-right"></i> Banca de Inversión</a></li>
+                                    </ul>
+                                </li>
+                                <li><a th:href="@{/une}"><i class="fa fa-caret-right"></i> <strong>UNE</strong></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- end section -->
+            <div class="clearfix"></div>
+
+            <section th:replace="~{public/fragments/commons :: section-organizations}"></section>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div th:replace="~{public/fragments/commons :: section-contact}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div th:replace="~{public/fragments/commons :: section-navigation}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+            
+            
+            <div th:replace="~{public/fragments/commons :: section-credits}"></div>
+            <!--end section -->
+            <div class="clearfix"></div>
+
+            <div class="contacto-pop colorBM"><a href="#" data-toggle="modal" data-target="#MainMenu-BM-contacto"><i class="fa fa-envelope"></i> Contáctanos</a></div>
+            <a href="#" class="scrollup colorBM"></a><!-- end scroll to top of the page--> 
+        </div>
+
+        <div th:replace="~{public/fragments/commons :: modals}"></div>
+        
+        <div th:replace="~{public/fragments/commons :: js-dependencies}"></div>
+    </body>
+</html>

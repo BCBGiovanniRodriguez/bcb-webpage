@@ -7,7 +7,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,9 +21,19 @@ import com.bcb.webpage.model.webpage.repository.ConfigurationEmailAccountReposit
 import com.bcb.webpage.model.webpage.repository.CustomerContractRepository;
 import com.bcb.webpage.model.webpage.repository.CustomerCustomerRepository;
 import com.bcb.webpage.model.webpage.repository.PasswordResetTokenRepository;
+import com.bcb.webpage.service.sisbur.SisBurService;
+
+import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class PasswordResetService {
+
+    @Autowired
+    HttpServletRequest httpServletRequest;
+
+    @Autowired
+    private SisBurService sisBurService;
 
     @Autowired
     private PasswordResetTokenRepository passwordResetTokenRepository;
@@ -41,72 +50,94 @@ public class PasswordResetService {
     @Autowired
     private ConfigurationEmailAccountRepository emailAccountRepository;
 
-    private JavaMailSender mailSender;
-
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     public void generateToken(String customerNumber) throws Exception {
         Optional<CustomerContract> contractFoundResult = contractRepository.findOneByContractNumber(customerNumber);
-
+        
         if (!contractFoundResult.isPresent()) {
             throw new Exception("Número de Contrato no encontrado");
         } else {
             CustomerContract customerContract = contractFoundResult.get();
-            String token = UUID.randomUUID().toString();
-    
-            PasswordResetToken passwordResetToken = new PasswordResetToken();
-            passwordResetToken.setToken(token);
-            passwordResetToken.setContract(customerContract);
-            passwordResetToken.setExpirationDate(LocalDateTime.now().plusMinutes(10));
 
-            passwordResetTokenRepository.saveAndFlush(passwordResetToken);
+            // Search for requested tokens
+            Optional<PasswordResetToken> passwordResetTokenOptional = passwordResetTokenRepository.findOneByCustomerContractAndStatus(customerContract, PasswordResetToken.STATUS_ENABLED);
 
-            String rootUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
-            String link = rootUrl + "/nuevo-password?token=" + token;
-
-            Optional<ConfigurationEmailAccountEntity> result = emailAccountRepository.findOneByTypeAndTargetAndMode(EmailInterface.TYPE_SYSTEM_NOTIFICATION, EmailInterface.TARGET_SYSTEM_NOTIFICATION, EmailInterface.MODE_SHIPMENT);
-            if (result.isPresent()) {
-                ConfigurationEmailAccountEntity systemEmail = result.get();
-
-                Map<String, String> params = new HashMap<>();
-                params.put("from", systemEmail.getName());
-                params.put("to", customerContract.getCustomer().getEmail());
-                params.put("subject", "Solicitud de Reestablecimiento de Contraseña - BCB Casa de Bolsa");
-
-                params.put("username", customerContract.getCustomer().getCustomerFullName());
-                params.put("expirationTime", "10 minutos");
-                params.put("resetPasswordLink", link);
-
-                emailService.sendRecoverPasswordMessage(emailService.getSystemEmailSender(systemEmail), EmailInterface.ROUTE_TEMPLATE_RECOVER_PASSWORD, params);
-
+            if (passwordResetTokenOptional.isPresent()) {
+                throw new Exception("Tiene un token activo");
+            } else {
+                Optional<ConfigurationEmailAccountEntity> configurationEmailAccountOptional = emailAccountRepository.findOneByTypeAndTargetAndMode(EmailInterface.TYPE_SYSTEM_NOTIFICATION, EmailInterface.TARGET_SYSTEM_NOTIFICATION, EmailInterface.MODE_SHIPMENT);
+                if (!configurationEmailAccountOptional.isPresent()) {
+                    throw new Exception("Cuenta de correo de envió no encontrada");
+                } else {
+                    String token = UUID.randomUUID().toString();
+            
+                    this.savePasswordResetToken(token, customerContract, 10);
+                    this.sendEmail(configurationEmailAccountOptional.get(), customerContract, token);
+                }
             }
         }
     }
 
+    private void savePasswordResetToken(String token, CustomerContract customerContract, Integer minutes) {
+        PasswordResetToken passwordResetToken = new PasswordResetToken();
+        passwordResetToken.setToken(token);
+        passwordResetToken.setCustomerContract(customerContract);
+        passwordResetToken.setExpirationDate(LocalDateTime.now().plusMinutes(minutes));
+        passwordResetToken.setStatus(PasswordResetToken.STATUS_ENABLED);
+        passwordResetToken.setRequestedDate(LocalDateTime.now());
+        passwordResetToken.setRemoteIpAddressRequester(httpServletRequest.getRemoteAddr());
+        passwordResetToken.setRemoteUserAgentRequester(httpServletRequest.getHeader("user-agent"));
+
+        passwordResetTokenRepository.saveAndFlush(passwordResetToken);
+    }
+
+    private void sendEmail(ConfigurationEmailAccountEntity systemEmail, CustomerContract customerContract, String token) throws MessagingException {
+        String rootUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+        String link = rootUrl + "/nuevo-password?token=" + token;
+        Map<String, String> params = new HashMap<>();
+        params.put("from", systemEmail.getName());
+        params.put("to", customerContract.getCustomer().getEmail());
+        params.put("subject", "Solicitud de Reestablecimiento de Contraseña - BCB Casa de Bolsa");
+        params.put("username", customerContract.getCustomer().getCustomerFullName());
+        params.put("expirationTime", "10 minutos");
+        params.put("resetPasswordLink", link);
+
+        emailService.sendRecoverPasswordMessage(emailService.getSystemEmailSender(systemEmail), EmailInterface.ROUTE_TEMPLATE_RECOVER_PASSWORD, params);
+    }
+
+
     public void resetPassword(String token, String password) throws Exception {
 
-        Optional<PasswordResetToken> resetTokenResult = passwordResetTokenRepository.findOneByToken(token);
+        Optional<PasswordResetToken> resetTokenResult = passwordResetTokenRepository.findOneByTokenAndStatus(token, PasswordResetToken.STATUS_ENABLED);
 
         if (!resetTokenResult.isPresent()) {
             throw new Exception("Token Inválido");
         } else {
             PasswordResetToken passwordResetToken = resetTokenResult.get();
 
-            if (passwordResetToken.isExpired()) {
-                throw new Exception("Token Expirado");
-            } else {
-                //!! -> Update on backend side
-                String newPassword = new BCryptPasswordEncoder().encode(password);
-                
-                CustomerContract customerContract = passwordResetToken.getContract();
-
+            if (!passwordResetToken.isExpired()) {
+                CustomerContract customerContract = passwordResetToken.getCustomerContract();
                 CustomerCustomer customerCustomer = customerContract.getCustomer();
+                //!! -> Update on backend side
+                sisBurService.updateCustomerContractPassword(customerCustomer.getCustomerKey(), customerContract.getContractNumber(), password);
+                //!! -> Update on frontend side
+                String newPassword = this.passwordEncoder.encode(password);
                 customerCustomer.setPassword(newPassword);
                 customerRepository.saveAndFlush(customerCustomer);
-                
             }
+            
+            passwordResetToken.setProcessedDate(LocalDateTime.now());
+            passwordResetToken.setStatus(PasswordResetToken.STATUS_DISABLED);
+            passwordResetToken.setRemoteIpAddressProcessor(httpServletRequest.getRemoteAddr());
+            passwordResetToken.setRemoteUserAgentProcessor(httpServletRequest.getHeader("user-agent"));
 
-            passwordResetTokenRepository.delete(passwordResetToken);
+            passwordResetTokenRepository.saveAndFlush(passwordResetToken);
+
+            if (passwordResetToken.isExpired()) {
+                throw new Exception("Token Expirado");
+            }
         }
     }
 

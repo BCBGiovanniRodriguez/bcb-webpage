@@ -14,6 +14,9 @@ import org.springframework.stereotype.Service;
 import com.bcb.webpage.model.webpage.entity.customers.CustomerContract;
 import com.bcb.webpage.model.webpage.entity.customers.CustomerCustomer;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class LegacyService {
 
@@ -99,6 +102,43 @@ public class LegacyService {
 
         return dataList;
     }
+
+    public List<Map<String,Object>> getCurrentCustomerBalance(CustomerContract customerContract) {
+        String sql;
+        List<Map<String,Object>> dataList = new ArrayList<>();
+
+        try {
+            sql = "SELECT * FROM SaldosEfectivo WHERE CveDivisa = 'MXN' ";
+            sql += "And Contrato = '" + customerContract.getContractNumber() + "' ORDER BY CveDivisa";
+
+            dataList = jdbcTemplate.queryForList(sql);
+        } catch (Exception e) {
+            log.error("Error", e);
+        }
+
+        return dataList;
+    }
+
+    public void getCurrentCustomerMoneyMarketPosition(CustomerContract customerContract) {
+        List<Map<String, Object>> positionList;
+        StringBuilder stringBuilder;
+
+        try {
+            stringBuilder = new StringBuilder("SELECT * FROM PosicionDiaV  ")
+                .append("WHERE Titulos <> 0 ")
+                .append("And Contrato = '").append(customerContract.getContractNumber()).append("' ")
+                .append("ORDER BY Mercado,Tenencia,Folioid,Folio2 ");
+            
+        } catch (Exception e) {
+            System.out.println("" + e.getLocalizedMessage());
+        }
+    }
+
+    public void getCustomerStockMarkertPosition() {
+
+    }
+
+
 
     public List<Map<String,Object>> getMovementTypeList() {
         String sql = null;

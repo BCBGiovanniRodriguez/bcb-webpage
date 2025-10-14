@@ -99,17 +99,17 @@
                             let tdPdfDownload = $("<td>", {"class": "text-center"});
                             let tdXml = $("<td>", {"class": "text-center"});
                             
-                            let searchPdfUrl = commonUrl + "consultarpdf?year=" + year + "&type=" + element.Tipo;
+                            let searchPdfUrl = commonUrl + "consultar?year=" + year + "&type=" + element.Tipo;
                             let buttonSearchPdf = $("<a>", {"class": "btn btn-primary", "href": searchPdfUrl, "target": "_blank", "text": "Consulta "});
                             
-                            let downloadPdfUrl = commonUrl + "descargarpdf?year=" + year + "&type=" + element.Tipo;
+                            let downloadPdfUrl = commonUrl + "descargar?year=" + year + "&type=" + element.Tipo + "&fileType=1";
                             let buttonDownloadPdf = $("<a>", {"class": "btn btn-success", "href": downloadPdfUrl, "text": "Descarga "});
                             let iSearchPdf = $("<i>", {"class": "fa fa-search"});
                             let iDownloadPdf = $("<i>", {"class": "fa fa-download"});
                             buttonSearchPdf.append(iSearchPdf);
                             buttonDownloadPdf.append(iDownloadPdf);
 
-                            let downloadXmlUrl = commonUrl + "descargarxml?year=" + year + "&type=" + element.Tipo;
+                            let downloadXmlUrl = commonUrl + "descargar?year=" + year + "&type=" + element.Tipo + "&fileType=2";
                             let buttonDownloadXml = $("<a>", {"class": "btn btn-success", "href": downloadXmlUrl, "text": "Descarga "});
                             let iDownloadXml = $("<i>", {"class": "fa fa-download"});
                             buttonDownloadXml.append(iDownloadXml);

@@ -5,12 +5,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
@@ -53,7 +51,8 @@ public class EmailService {
     public void sendMimeMessage2(JavaMailSender sender, String template, Map<String, String> params) throws IOException, MessagingException {
         MimeMessage mimeMessage = sender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
-        
+
+        mimeMessageHelper.setReplyTo("servicioaclientes@bcbcasadebolsa.com");
         mimeMessageHelper.setFrom(params.get("from"));
         mimeMessageHelper.setTo(params.get("to"));
         mimeMessageHelper.setSubject(params.get("subject"));

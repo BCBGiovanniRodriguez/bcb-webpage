@@ -1,9 +1,11 @@
 package com.bcb.webpage.model.webpage.entity.customers;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 import com.bcb.webpage.model.webpage.entity.CommonEntity;
+import com.bcb.webpage.model.webpage.entity.PasswordResetToken;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -36,8 +38,11 @@ public class CustomerContract extends CommonEntity {
     @Column(nullable = false, columnDefinition = "timestamp default current_timestamp")
     private LocalDateTime created;
 
-    @OneToMany(mappedBy = "")
+    @OneToMany(mappedBy = "customerContract")
     private Set<CustomerStatementAccount> statementAccounts;
+
+    @OneToMany(mappedBy = "customerContract")
+    private List<PasswordResetToken> passwordResetTokens;
 
     public static final Integer STATUS_ENABLED = 1;
 

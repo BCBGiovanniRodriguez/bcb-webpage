@@ -60,9 +60,9 @@
                                     </h5>
 
                                     <div class="card-tools">
-                                        <button class="btn btn-sm btn-primary">
+                                        <a class="btn btn-sm btn-primary" th:href="@{/portal-clientes/movimientos/descargar-reporte(fechaInicio=${startDate},fechaTermino=${endDate})}">
                                             <i class="fa fa-file-pdf"></i> Exportar
-                                        </button>
+                                        </a>
                                     </div>
                                 </div>
                                 <div class="card-body">
@@ -107,7 +107,7 @@
                                     </table>
                                 </div>
                             </div>
-                            <div th:unless="${movementsList.size() > 0}" class="text-center">
+                            <div th:unless="${movementReportList.size() > 0}" class="text-center">
                                 <h5 class="text-primary">No se encontraron movimientos</h5>
                             </div>
                         </div>

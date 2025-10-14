@@ -1,21 +1,47 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
- <head>
-     <title>     Error</title>
-     <link rel="stylesheet" th:href="@{/css/style.css}"/>
- </head>
- <body th:style="'background: url(/images/background1.jpg) 
- no-repeat center center fixed;'">
-     <div class="container" >
-       <h1>An error has occurred...</h1>
-       <img th:src="@{/images/error-icon.png}" 
-       width="100px" height="100px" />
-       <p>There seems to be a problem with the page you requested 
-       (<span th:text="${path}"></span>).</p>
-       <p th:text="${'The status code is ' + status 
-       + ', which means that the page was ' + error + '.'}"></p>
-       <p th:text="${'Further details: ' + message + '.'}"></p>
-       <a class="btn" href="/home">Back to home</a>
-     </div>
- </body>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+    <link rel="shortcut icon" th:href="@{/public/img/favicon.ico}">
+    <!-- Google fonts - witch you want to use - (rest you can just remove) -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic,700,700italic,800,800italic" rel="stylesheet" type="text/css" />
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,900&display=swap" rel="stylesheet" />
+    <!-- stylesheets -->
+    <link rel="stylesheet" th:href="@{/public/js/bootstrap/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/public/css/default.css}" />
+    <link rel="stylesheet" th:href="@{/public/css/shortcodes.css}" />
+    <link rel="stylesheet" th:href="@{/public/font-awesome/css/font-awesome.min.css}" />
+    <link rel="stylesheet" th:href="@{/public/css/responsive-layouts.css}" media="screen" />
+    <link rel="stylesheet" th:href="@{/public/js/animations/css/animations.min.css}" media="all" />
+    <link rel="stylesheet" th:href="@{/public/css/Simple-Line-Icons-Webfont/simple-line-icons.css}" media="screen" />
+    <link rel="stylesheet" th:href="@{/public/css/et-line-font/et-line-font.css}" media="all" />
+    <link rel="stylesheet" th:href="@{/public/js/tabs/assets/css/responsive-tabs.css}" />
+    <link rel="stylesheet" th:href="@{/public/js/owl-carousel/owl.carousel.css}" />
+    <link rel="stylesheet" th:href="@{/public/js/smart-forms/smart-forms.css}" type="text/css" />
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="jumbotron">
+        <div class="container" >
+          <h1>Ha ocurrido un error</h1>
+          <p>La página solicitada (<span th:text="${path}"></span>).</p>
+          <p th:text="${'El código HTTP es ' + status + ', lo que significa que la página: ' + error + '.'}"></p>
+          <p th:text="${'Información técnica: ' + message + '.'}"></p>
+          <a class="btn btn-info" th:href="@{/portal-clientes/dashboard}">
+            <i class="fa fa-arrow-circle-left"></i> Regresar a Dashboard</a>
+        </div>
+      </div>
+    </div>
+    
+    <script th:src="@{/public/js/universal/jquery.js}" type="text/javascript" ></script>
+    <script th:src="@{/public/js/bootstrap/bootstrap.min.js}" type="text/javascript"></script>
+    <script th:src="@{/public/js/tabs/smk-accordion.js}"></script>
+    <script th:src="@{/public/js/mainmenu/customeUI.js}"></script>
+    <script th:src="@{/public/js/mainmenu/jquery.sticky.js}"></script>
+    <script th:src="@{/public/js/scrolltotop/totop.js}"></script>
+    <script th:src="@{/public/js/owl-carousel/owl.carousel.js}"></script>
+    <script th:src="@{/public/js/owl-carousel/custom.js}"></script>
+    <script th:src="@{/public/js/scripts/functions.js}" type="text/javascript"></script>
+  </body>
 </html>

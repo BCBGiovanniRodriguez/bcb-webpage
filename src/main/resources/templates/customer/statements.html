@@ -25,7 +25,7 @@
                             </div>
                             <div class="card-body">
                                 <div class="container-fluid">
-                                    <h5><strong>Nota:</strong> Los estados de cuenta se generan durante los primeros 5 días de cada mes</h5>
+                                    <h5><strong>Nota:</strong> Los estados de cuenta se generan durante los primeros 5 días hábiles de cada mes</h5>
                                     <hr>
                                     <ul class="nav nav-tabs mb-3" id="statementsTab" role="tablist">
                                         <li class="nav-item" role="presentation">
@@ -51,31 +51,28 @@
                                                 <table class="table table-sm table-striped">
                                                     <thead>
                                                         <tr>
-                                                            <th>PERIODO</th>
                                                             <th>PDF</th>
                                                             <th>XML</th>
+                                                            <th>PERIODO</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         <tr>
                                                             <td>
+                                                                <a th:href="@{/portal-clientes/estados-cuenta/consultar/1?tipo=1}" class="btn btn-primary">
+                                                                    Consulta <i class="fa fa-search"></i>
+                                                                </a>
+                                                                <a th:href="@{/portal-clientes/estados-cuenta/descargar/1?tipo=1}" class="btn btn-success">
+                                                                    Descarga <i class="fa fa-download"></i>
+                                                                </a>
+                                                            </td>
+                                                            <td>
+                                                                <a th:href="@{/portal-clientes/estados-cuenta/descargar/1?tipo=2}" class="btn btn-success">
+                                                                    Descarga <i class="fa fa-download"></i>
+                                                                </a>
+                                                            </td>
+                                                            <td>
                                                                 [[${currentStatementAccount.getMesAsString()} + ' ' + ${currentStatementAccount.anio}]]
-                                                            </td>
-                                                            <td>
-                                                                <a th:href="@{/portal-clientes/estados-cuenta/consultarpdf/1}" class="btn btn-info">
-                                                                    <i class="fa fa-search"></i>
-                                                                </a>
-                                                                <a th:href="@{/portal-clientes/estados-cuenta/descargarpdf/1}" class="btn btn-primary">
-                                                                    <i class="fa fa-download"></i>
-                                                                </a>
-                                                            </td>
-                                                            <td>
-                                                                <a th:href="@{/portal-clientes/estados-cuenta/consultarxml/1}" class="btn btn-info">
-                                                                    <i class="fa fa-search"></i>
-                                                                </a>
-                                                                <a th:href="@{/portal-clientes/estados-cuenta/descargarxml/1}" class="btn btn-primary">
-                                                                    <i class="fa fa-download"></i>
-                                                                </a>
                                                             </td>
                                                         </tr>
                                                     </tbody>
@@ -91,28 +88,30 @@
                                                 <table class="table table-sm table-striped">
                                                     <thead>
                                                         <tr>
-                                                            <th>PERIODO</th>
-                                                            <th>PDF</th>
-                                                            <th>XML</th>
+                                                            <th style="width: 10%;">#</th>
+                                                            <th style="width: 30%;">PDF</th>
+                                                            <th style="width: 30%;">XML</th>
+                                                            <th style="width: 30%;">PERIODO</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr th:each="statementAccount, i: ${last12StatementAccounts}">
+                                                        <tr th:each="statementAccount, i : ${statementAccountList}">
+                                                            <td>[[${i.count}]]</td>
+                                                            <td>
+                                                                <a th:href="@{/portal-clientes/estados-cuenta/consultar/{document}(document=${i.count+1},tipo=1)}" class="btn btn-primary">
+                                                                    Consultar <i class="fa fa-search"></i>
+                                                                </a>
+                                                                <a th:href="@{/portal-clientes/estados-cuenta/descargar/{document}(document=${i.count+1},tipo=1)}" class="btn btn-success">
+                                                                    Descargar <i class="fa fa-download"></i>
+                                                                </a>
+                                                            </td>
+                                                            <td>
+                                                                <a th:href="@{/portal-clientes/estados-cuenta/descargar/{document}(document=${i.count+1},tipo=2)}" class="btn btn-success">
+                                                                    Descargar <i class="fa fa-download"></i>
+                                                                </a>
+                                                            </td>
                                                             <td class="text-left">
                                                                 [[${statementAccount.getMesAsString()} + ' ' + ${statementAccount.anio}]]
-                                                            </td>
-                                                            <td>
-                                                                <a th:href="@{/portal-clientes/estados-cuenta/consultarpdf/} + '' + ${i.count + 1}" class="btn btn-info">
-                                                                    <i class="fa fa-search"></i>
-                                                                </a>
-                                                                <a th:href="@{/portal-clientes/estados-cuenta/descargarpdf/} + '' + ${i.count + 1}" class="btn btn-primary">
-                                                                    <i class="fa fa-download"></i>
-                                                                </a>
-                                                            </td>
-                                                            <td>
-                                                                <a th:href="@{/portal-clientes/estados-cuenta/descargarxml/} + '' + ${i.count + 1}" class="btn btn-primary">
-                                                                    <i class="fa fa-download"></i>
-                                                                </a>
                                                             </td>
                                                         </tr>
                                                     </tbody>

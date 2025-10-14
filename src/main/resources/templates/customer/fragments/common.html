@@ -12,7 +12,8 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" integrity="sha512-dPXYcDub/aeb08c63jRq/k6GaKccl256JQy/AnOq7CAnEZ9FzSL9wSbcZkMp4R26vBsMLFYH4kQ67/bbV8XaCQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
         <script>
             const baseUrl = '/';
-        </script>
+            </script>
+        <link rel="stylesheet" type="text/css" th:href="@{/public/css/inactivity.css}" />
     </head>
 
     <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
@@ -26,11 +27,11 @@
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link" data-bs-toggle="dropdown" href="#">
-                            <i class="fa fa-list"></i>
-                            <span class="navbar-badge badge text-bg-warning" th:text="${customerContractList.size()}">N</span>
+                            <i class="bi bi-journals"></i>
+                            <span class="navbar-badge badge text-bg-info" th:text="${customerContractList.size()}">N</span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-start">
-                            <span class="dropdown-item dropdown-header"><span th:text="${customerContractList.size()}"></span> Contratos</span>
+                            <span class="dropdown-item dropdown-header"><span th:text="${customerContractList.size()}"></span> Contrato(s)</span>
                             <div th:each="customerContract: ${customerContractList}">
                                 <div class="dropdown-divider"></div>
                                 <a th:href="@{/portal-clientes/cambiar-contrato/} + ${customerContract.contractNumber}" class="dropdown-item">
@@ -52,12 +53,12 @@
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item dropdown">
                         <a class="nav-link" data-bs-toggle="dropdown" href="#">
-                            <i class="fa fa-list"></i>
+                            <i class="bi bi-gear"></i>
                         </a>
-                        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
+                        <div class="dropdown-menu dropdown-menu-md dropdown-menu-end">
                             <a th:href="@{/inicio-de-sesion?logout}" class="dropdown-item">
-                                <i class="bi bi-box-arrow-right"></i> Cerrar Sessión
                                 <span class="float-end text-secondary fs-7"></span>
+                                Cerrar Sessión <i class="bi bi-box-arrow-right"></i>
                             </a>
                         </div>
                     </li>
@@ -68,7 +69,7 @@
         <aside th:fragment="aside" class="app-sidebar bg-primary-subtle shadow" data-bs-theme="dark">
             <!-- Sidebar Brand-->
              <div class="sidebar-brand">
-                <a th:href="@{/}" class="brand-link">
+                <a th:href="@{/portal-clientes/dashboard}" class="brand-link">
                     <img th:src="@{/public/img/BCB-logo-whitev2.svg}" alt="Logo Admin" class="brand-image opacity-100 shadow" style="width: 100%; height: 100%;" />
                 </a>
              </div>
@@ -132,6 +133,8 @@
             <!-- Sidebar Wrapper-->
         </aside>
 
+
+
         <footer th:fragment="footer" class="app-footer">
             <span>
                 Entorno: <b>Development</b>
@@ -143,6 +146,10 @@
                     BCB CASA DE BOLSA TODOS LOS DERECHOS RESERVADOS
                 </strong>
             </div>
+            <div id="warning">
+                Has estado inactivo por un tiempo. <br>
+                La sesión se cerrará automáticamente en <span id="countdown">10</span> segundos.
+            </div>
         </footer>
 
         <div th:fragment="jsDependencies">
@@ -152,6 +159,7 @@
             <script th:src="@{/public/thirdparty/bootstrap/js/bootstrap.min.js}"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/js/all.min.js" integrity="sha512-b+nQTCdtTBIRIbraqNEwsjB6UvL3UEMkXnhzd8awtCYh0Kcsjl9uEgwVFVbhoj3uu1DO1ZMacNvLoyJJiNfcvg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
             <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js" integrity="sha256-Lye89HGy1p3XhJT24hcvsoRw64Q4IOL5a7hdOflhjTA=" crossorigin="anonymous"></script>
+            <script th:src="@{/public/js/inactivity.js}"></script>
         </div>
         
     </body>

@@ -2,6 +2,7 @@ package com.bcb.webpage.service.sisbur;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -31,6 +32,7 @@ import com.bcb.webpage.model.webpage.entity.customers.CustomerContract;
 import com.bcb.webpage.model.webpage.entity.customers.CustomerCustomer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -38,11 +40,15 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.json.data.JsonDataSource;
 
+@Slf4j
 @Service
 public class CustomerReportService {
 
     @Autowired
     private LegacyService legacyService;
+
+    @Autowired
+    private SisBurService sisBurService;
 
     private String rootOutputPath = "./contracts/";
 
@@ -71,6 +77,43 @@ public class CustomerReportService {
     private List<PositionInterface> generalList = new ArrayList<>();
 
     private List<MovementDTO> movementDataList = new ArrayList<>();
+
+    public void getOutputStreamReport(CustomerCustomer customer, List<PositionInterface> data, Integer type, OutputStream outputStream) {
+        ObjectMapper mapper = new ObjectMapper();
+        
+        // Always generate info from current contract
+        CustomerContract currentContract = null;
+        LocalDateTime now = LocalDateTime.now();
+
+        try {
+            currentContract = customer.getContracts().stream()
+                .filter(f -> f.isCurrent())
+                .findFirst()
+                .orElse(null);
+
+            if (currentContract == null) {
+                throw new Exception("Contrato no seleccionado");
+            } else {
+                File reportTemplate = ResourceUtils.getFile("classpath:" + typeFiles[type]);
+                JasperReport jasperReport = JasperCompileManager.compileReport(reportTemplate.getAbsolutePath());
+                
+                Map<String, Object> parameters = new HashMap<>();
+                parameters.put("P_SEARCH_DATE", now.format(mexFormatter));
+                parameters.put("P_CUSTOMER_NAME", customer.getCustomerFullName());
+                parameters.put("P_CUSTOMER_CONTRACT_NUMBER", currentContract.getContractNumber());
+                
+                String jsonData = mapper.writeValueAsString(data);
+
+                ByteArrayInputStream jsonDataInputStream = new ByteArrayInputStream(jsonData.getBytes());
+                JsonDataSource jsonDataSource = new JsonDataSource(jsonDataInputStream);
+
+                JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, jsonDataSource);
+                JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
+            }
+        } catch (Exception e) {
+            System.out.println("[ReportService][generateReport][" + e.getLocalizedMessage() + "]");
+        }
+    }
 
     public void generateReport(CustomerCustomer customer, List<PositionInterface> data, Integer type) {
         ObjectMapper mapper = new ObjectMapper();

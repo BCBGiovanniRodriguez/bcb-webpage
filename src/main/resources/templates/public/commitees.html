@@ -1,13 +1,70 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
     <head th:replace="~{public/fragments/commons :: head}"></head>
     <body>
         <div class="site_wrapper">
             <div th:replace="~{public/fragments/commons :: header}"></div>
+            <div class="clearfix"></div>
 
-            <main class="app-main">
-                
-            </main>
+            <section>
+                <div class="header-inner">
+                    <div class="inner text-center">
+                        <h2 class="text-white uppercase"><strong>Órganos de Control</strong></h2>
+                    </div>
+                    <div class="overlay bg-opacity-5"></div>
+                </div>
+            </section>
+            <!-- end section -->
+            <div class="clearfix"></div>
+
+            <section>
+                <div class="pagination-holder">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <div class="pagination_links"><a th:href="@{/}">Inicio</a><i> / </i> Órganos de Control</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+
+            <section class="sec-moreless-padding">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xs-12 text-left">
+                            <h2>Comité de Auditoría</h2>
+                            <p>
+                                Es el órgano que apoya al Consejo a la definición y seguimiento de objetivos, así como el puntual cumplimiento de políticas y sistema de control interno. Este comité dará seguimiento a las actividades de auditoria interna y externa de la Casa de Bolsa y es el principal canal de comunicación entre el Consejo y los auditores externos.
+                            </p>
+
+                            <h2>Comité de Comunicación y Control</h2>
+                            <p>
+                                Ser el órgano rector con el facultamiento corporativo necesario, que le permita liderar todos los esfuerzos de prevención de lavado de dinero y financiamiento al terrorismo, dentro de Bursamétrica Casa de Bolsa, S.A. de C.V., normando y vigilando la actuación de todas las áreas que la conforman, a efecto de que estén en cumplimiento tanto con la regulación nacional e internacional aplicable en la materia, como con las mejores prácticas mundiales, así como supervisar la actuación del área de Oficialía de Cumplimiento y su titular.
+                            </p>
+
+                            <h2>Comité de Riesgos</h2>
+                            <p>
+                                Es el órgano creado por el Consejo para implementar una administración de riesgos de las actividades realizadas por la Casa de Bolsa, asegurando el cumplimiento de las disposiciones aplicables en la materia. Adicionalmente, una función primordial será el vigilar que la realización de operaciones sea congruente con los objetivos, políticas y procedimientos para la administración integral de riesgos, así como los limites globales de exposición al riesgo que hayan sido aprobados por el Consejo.
+                            </p>
+
+                            <h2>Comité de Remuneraciones</h2>
+                            <p>
+                                Comité constituido por el Consejo de Administración, a fin de apoyar al mencionado órgano de gobierno en sus funciones relativas al sistema de remuneración, y cuyo objeto será la implementación, mantenimiento y evaluación del sistema de remuneración.
+                            </p>
+
+                            <h2>Comité de Análisis de Productos Financieros (CAPF)</h2>
+                            <p>
+                                Comité encargado de realizar las funciones que se detallan en el Anexo 8 de las Disposiciones de Carácter General Aplicables a las Entidades Financieras y demás personas que proporcionen servicios de inversión emitidas por la Comisión Nacional Bancaria y de Valores y deberá apoyarse en la unidad para la administración integral de riesgos u otras áreas técnicas de la Entidad financiera, según la naturaleza de la función a desempeñar.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
 
             <section th:replace="~{public/fragments/commons :: section-organizations}"></section>
             <!--end section -->

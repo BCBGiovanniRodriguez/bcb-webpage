@@ -2,6 +2,8 @@ package com.bcb.webpage.model.webpage.entity.customers;
 
 import java.time.LocalDateTime;
 
+import com.bcb.webpage.model.webpage.entity.CustomerSession;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,12 +31,22 @@ public class CustomerStatementAccount {
 
     private String path;
 
+    private Integer type;
+
+    private String filename;
+
     @Column(nullable = false, columnDefinition = "timestamp default current_timestamp")
     private LocalDateTime downloadedDate;
+
+    @ManyToOne
+    @JoinColumn(name = "SessionId", nullable = false)
+    private CustomerSession session;
 
     public static int STATEMENT_ACCOUNT_TYPE_PDF = 1;
     
     public static int STATEMENT_ACCOUNT_TYPE_XML = 2;
+
+    public static String[] types = {"", "pdf", "xml"};
 
     public CustomerStatementAccount() {
     }
@@ -92,6 +104,34 @@ public class CustomerStatementAccount {
         return "CustomerStatementAccount [statementAccountId=" + statementAccountId + ", customerContract="
                 + customerContract + ", year=" + year + ", month=" + month + ", path=" + path + ", downloadedDate="
                 + downloadedDate + "]";
+    }
+
+    public CustomerSession getSession() {
+        return session;
+    }
+
+    public void setSession(CustomerSession session) {
+        this.session = session;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public String getTypeAsString() {
+        return CustomerStatementAccount.types[this.getType()];
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
     
 }

@@ -55,9 +55,9 @@
                                 <div class="tab-pane fade active show" id="detail-tab-pane" role="tabpanel" aria-labelledby="detail-tab" tabindex="0">
                                     <div class="row g-3">
                                         <div class="col-12 text-end">
-                                            <button id="generalButton" class="btn btn-sm btn-primary">
-                                                <i class="fa fa-file-pdf"></i> Generar Reporte
-                                            </button>
+                                            <a id="generalReportButton" class="btn btn-sm btn-primary" th:href="@{/portal-clientes/posicion/descargar-reporte?type=1}" target="_blank">
+                                                <i class="fa fa-file-pdf"></i> Ver Reporte
+                                            </a>
                                         </div>
                                     </div>
                                     <hr>
@@ -104,9 +104,9 @@
                                 <div class="tab-pane fade" id="cash-tab-pane" role="tabpanel" aria-labelledby="cash-tab" tabindex="3">
                                     <div class="row g-3">
                                         <div class="col-12 text-end">
-                                            <button id="cashButton" class="btn btn-sm btn-primary">
+                                            <a id="cashButton" class="btn btn-sm btn-primary" hidden>
                                                 <i class="fa fa-file-pdf"></i> Generar Reporte
-                                            </button>
+                                            </a>
                                         </div>
                                     </div>
                                     <hr>
@@ -150,9 +150,9 @@
                                 <div class="tab-pane fade" id="stock-market-tab-pane" role="tabpanel" aria-labelledby="stock-market-tab" tabindex="2">
                                     <div class="row g-3">
                                         <div class="col-12 text-end">
-                                            <button id="stockMarketButton" class="btn btn-sm btn-primary">
-                                                <i class="fa fa-file-pdf"></i> Generar Reporte
-                                            </button>
+                                            <a id="stockMarketButton" class="btn btn-sm btn-primary" th:href="@{/portal-clientes/posicion/descargar-reporte?type=3}" target="_blank">
+                                                <i class="fa fa-file-pdf"></i> Ver Reporte
+                                            </a>
                                         </div>
                                     </div>
                                     <hr>
@@ -189,9 +189,9 @@
                                 <div class="tab-pane fade" id="money-market-tab-pane" role="tabpanel" aria-labelledby="money-market-tab" tabindex="1">
                                     <div class="row g-3">
                                         <div class="col-12 text-end">
-                                            <button id="moneyMarketButton" class="btn btn-sm btn-primary">
-                                                <i class="fa fa-file-pdf"></i> Generar Reporte
-                                            </button>
+                                            <a id="moneyMarketButton" class="btn btn-sm btn-primary" th:href="@{/portal-clientes/posicion/descargar-reporte?type=4}" target="_blank">
+                                                <i class="fa fa-file-pdf"></i> Ver Reporte
+                                            </a>
                                         </div>
                                     </div>
                                     <hr>

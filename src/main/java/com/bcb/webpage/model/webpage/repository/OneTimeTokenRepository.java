@@ -14,4 +14,6 @@ import jakarta.transaction.Transactional;
 public interface OneTimeTokenRepository extends JpaRepository<OneTimeTokenEntity, String> {
     @Transactional
     List<OneTimeTokenEntity> deleteAllByExpiresAtBefore(Instant expiresAtBefore);
+
+    List<OneTimeTokenEntity> findByExpiresAtBefore(Instant expiresAtBefore);
 }

@@ -2,6 +2,8 @@ package com.bcb.webpage.model.webpage.entity.customers;
 
 import java.time.LocalDateTime;
 
+import com.bcb.webpage.model.webpage.entity.CustomerSession;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -35,6 +37,10 @@ public class CustomerTaxCertificate {
 
     @Column(nullable = false, columnDefinition = "timestamp default current_timestamp")
     private LocalDateTime downloadedDate;
+
+    @ManyToOne
+    @JoinColumn(name = "SessionId", nullable = false)
+    private CustomerSession session;
 
     public static final String TAX_CERTIFICATE_INVOICE_STRING = "Factura";
 
@@ -169,6 +175,12 @@ public class CustomerTaxCertificate {
         return CustomerTaxCertificate.fileTypes[this.getFileType()];
     }
     
+    public CustomerSession getSession() {
+        return session;
+    }
 
+    public void setSession(CustomerSession session) {
+        this.session = session;
+    }
     
 }
