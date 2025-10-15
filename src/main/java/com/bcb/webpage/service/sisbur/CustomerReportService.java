@@ -95,7 +95,7 @@ public class CustomerReportService {
             if (currentContract == null) {
                 throw new Exception("Contrato no seleccionado");
             } else {
-                File reportTemplate = ResourceUtils.getFile("classpath:" + typeFiles[type]);
+                File reportTemplate = ResourceUtils.getFile("classpath:reports/" + typeFiles[type]);
                 JasperReport jasperReport = JasperCompileManager.compileReport(reportTemplate.getPath());
                 
                 Map<String, Object> parameters = new HashMap<>();
@@ -136,7 +136,7 @@ public class CustomerReportService {
                 throw new Exception("Contrato no seleccionado");
             } else {
                 typeAsString = getTypeAsString(type);
-                File reportTemplate = ResourceUtils.getFile("classpath:" + typeFiles[type]);
+                File reportTemplate = ResourceUtils.getFile("classpath:reports/" + typeFiles[type]);
                 JasperReport jasperReport = JasperCompileManager.compileReport(reportTemplate.getAbsolutePath());
 
                 outputPath += currentContract.getContractNumber() + "/position_reports";
@@ -315,7 +315,7 @@ public class CustomerReportService {
             if (currentContract == null) {
                 throw new Exception("Contrato no seleccionado");
             } else {
-                File reportTemplate = ResourceUtils.getFile("classpath:Movements_Letter_Landscape.jrxml");
+                File reportTemplate = ResourceUtils.getFile("classpath:reports/Movements_Letter_Landscape.jrxml");
                 JasperReport jasperReport = JasperCompileManager.compileReport(reportTemplate.getPath());
                 
                 Map<String, Object> parameters = new HashMap<>();
@@ -355,7 +355,7 @@ public class CustomerReportService {
                 throw new Exception("Contrato no seleccionado");
             } else {
                 movementDataList = this.getDataList(customer, startDate, endDate);
-                //File reportTemplate = ResourceUtils.getFile("classpath:Movements_Letter_Landscape.jrxml");
+                //File reportTemplate = ResourceUtils.getFile("classpath:reports/Movements_Letter_Landscape.jrxml");
                 File reportTemplate = new ClassPathResource("Movements_Letter_Landscape.jrxml").getFile();
                 JasperReport jasperReport = JasperCompileManager.compileReport(reportTemplate.getPath());
 
