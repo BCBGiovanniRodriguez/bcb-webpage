@@ -2,7 +2,6 @@ package com.bcb.webpage.service.sisbur;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,10 +10,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.stereotype.Service;
 
-import com.bcb.webpage.dto.response.position.Posicion;
 import com.bcb.webpage.model.webpage.dto.GeneralDTO;
 import com.bcb.webpage.model.webpage.dto.interfaces.PositionInterface;
 import com.bcb.webpage.service.sisbur.model.CustomerCashBalance;
@@ -44,8 +41,6 @@ public class SisBurService {
     private static final String[] marketTypes = {"", "Mercado de Capitales", "Mercado de Dinero", "Fondos de Inversión"};
 
     private static final String dailyPositionTable = "PosicionDiaV";
-
-
 
     public Double getPendingBalance(Integer contractNumber) {
         String sqlQuery;
@@ -127,7 +122,6 @@ public class SisBurService {
 
     public Double getCurrentBalanceFromPendingMovements(String contractNumber) {
         String sqlQuery;
-        List<Map<String, Object>> resultList;
         Double balance = 0D;
 
         try {

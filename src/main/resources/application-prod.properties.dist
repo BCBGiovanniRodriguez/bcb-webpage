@@ -1,5 +1,13 @@
 # Puerto en producción
-server.port=20000
+server.port=8443
+# TLS Configuration
+server.ssl.enabled=true
+server.ssl.key-store=classpath:keystore.p12
+server.ssl.key-store-type=PKCS12
+server.ssl.key-store-password=${SSL_KEYSTORE_PASSWORD}
+server.ssl.key-alias=webpage-crt
+server.ssl.protocol=TLS
+server.ssl.enabled-protocols=TLSv1.2,TLSv1.3
 
 # WEBPAGE Base de datos MariaDB (producción)
 spring.datasource.webpage.jdbc-url=jdbc:mariadb://webpagedb:3306/webpage

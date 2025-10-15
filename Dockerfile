@@ -21,6 +21,7 @@ ENV TZ=America/Mexico_City
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 COPY --from=build /app/target/*.jar app.jar
 
-EXPOSE 20000
+ENV SSL_KEYSTORE_PASSWORD=BcbW3bp4g3_2025-+*$
+EXPOSE 8443
 
 ENTRYPOINT ["java", "-jar", "app.jar"]

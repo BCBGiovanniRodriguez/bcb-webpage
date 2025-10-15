@@ -95,7 +95,7 @@ public class CustomerReportService {
                 throw new Exception("Contrato no seleccionado");
             } else {
                 File reportTemplate = ResourceUtils.getFile("classpath:" + typeFiles[type]);
-                JasperReport jasperReport = JasperCompileManager.compileReport(reportTemplate.getAbsolutePath());
+                JasperReport jasperReport = JasperCompileManager.compileReport(reportTemplate.getPath());
                 
                 Map<String, Object> parameters = new HashMap<>();
                 parameters.put("P_SEARCH_DATE", now.format(mexFormatter));
@@ -299,6 +299,44 @@ public class CustomerReportService {
 
     }
 
+    public void getOutputStreamMovementsReport(CustomerCustomer customer, List<MovementDTO> movementDataList, LocalDate startDate, LocalDate endDate, OutputStream outputStream) {
+        ObjectMapper mapper = new ObjectMapper();
+        
+        // Always generate info from current contract
+        CustomerContract currentContract = null;
+
+        try {
+            currentContract = customer.getContracts().stream()
+                .filter(f -> f.isCurrent())
+                .findFirst()
+                .orElse(null);
+
+            if (currentContract == null) {
+                throw new Exception("Contrato no seleccionado");
+            } else {
+                File reportTemplate = ResourceUtils.getFile("classpath:Movements_Letter_Landscape.jrxml");
+                JasperReport jasperReport = JasperCompileManager.compileReport(reportTemplate.getPath());
+                
+                Map<String, Object> parameters = new HashMap<>();
+                parameters.put("P_START_DATE", startDate.format(mexFormatter));
+                parameters.put("P_END_DATE", endDate.format(mexFormatter));
+                parameters.put("P_CUSTOMER_NAME", customer.getCustomerFullName());
+                parameters.put("P_CUSTOMER_CONTRACT_NUMBER", currentContract.getContractNumber());
+                
+                String jsonData = mapper.writeValueAsString(movementDataList);
+
+                ByteArrayInputStream jsonDataInputStream = new ByteArrayInputStream(jsonData.getBytes());
+                JsonDataSource jsonDataSource = new JsonDataSource(jsonDataInputStream);
+
+                JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, jsonDataSource);
+                JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
+            }
+            
+        } catch (Exception e) {
+            System.out.println("[ReportService][generateMovementsReport][" + e.getLocalizedMessage() + "]");
+        }
+    }
+
     public void generateMovementsReport(CustomerCustomer customer, LocalDate startDate, LocalDate endDate) {
         ObjectMapper mapper = new ObjectMapper();
         String outputPath = rootOutputPath;
@@ -318,7 +356,7 @@ public class CustomerReportService {
                 movementDataList = this.getDataList(customer, startDate, endDate);
 
                 File reportTemplate = ResourceUtils.getFile("classpath:Movements_Letter_Landscape.jrxml");
-                JasperReport jasperReport = JasperCompileManager.compileReport(reportTemplate.getAbsolutePath());
+                JasperReport jasperReport = JasperCompileManager.compileReport(reportTemplate.getPath());
 
                 outputPath += currentContract.getContractNumber() + "/movement_reports";
                 Path path = Paths.get(outputPath);

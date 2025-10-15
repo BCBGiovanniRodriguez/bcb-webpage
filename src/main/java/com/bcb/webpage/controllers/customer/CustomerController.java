@@ -150,6 +150,8 @@ public class CustomerController {
 
     private DateTimeFormatter fileFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
 
+    private DateTimeFormatter fileCompleteFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+
     private DateTimeFormatter isoFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     private LocalDate today = LocalDate.now();
@@ -401,25 +403,9 @@ public class CustomerController {
 
         return "customer/position";
     }
-    
-
-    @GetMapping("/posicion/reporte-general")
-    public String customerPositionGeneralReport() {
-        return new String();
-    }
-
-    @GetMapping("/posicion/reporte-capitales")
-    public String customerPositionStockMarketReport() {
-        return new String();
-    }
-    
-    @GetMapping("/posicion/reporte-dinero")
-    public String customerPositionMoneyMarketReport() {
-        return new String();
-    }
 
     @GetMapping("/posicion/descargar-reporte")
-    public void getMethodName(@RequestParam Integer type, Authentication authentication, HttpServletResponse response) throws IOException {
+    public void customerPositionDownload(@RequestParam Integer type, Authentication authentication, HttpServletResponse response) throws IOException {
         response.setContentType("application/pdf");
         
         CustomerSession currentSession;
@@ -427,6 +413,7 @@ public class CustomerController {
         OutputStream outputStream = response.getOutputStream();
         String fileName = "";
         List<PositionInterface> positionList = new ArrayList<>();
+        LocalDateTime now = LocalDateTime.now();
 
         try {
             currentCustomerContract = getCurrentCustomerContract(authentication);
@@ -436,59 +423,36 @@ public class CustomerController {
                 .orElse(null);
 
             contractNumber = currentCustomerContract.getContractNumber();
-            CustomerPositionReportRequests positionReportRequests = new CustomerPositionReportRequests();
-            positionReportRequests.setRequestedDate(LocalDateTime.now());
-            positionReportRequests.setData(fileName);
-            positionReportRequests.setSession(currentSession);
-            positionReportRequests.setContractNumber(contractNumber);
+            fileName = contractNumber + "_";
             
             if (type == CustomerReportService.TYPE_GENERAL) {
-                
-                fileName = "ReportePosicionGeneral.pdf";
-                response.setHeader("Content-Disposition", "attachment; filename=" + fileName + "");
-                
+                fileName += "ReportePosicionGeneral_" + now.format(fileCompleteFormatter) + ".pdf";
+
                 List<PositionInterface> stockMarketList =  sisBurService.getMarketPosition(contractNumber, SisBurService.MARKET_TYPE_STOCK_MARKET);
                 List<PositionInterface> moneyMarketList =  sisBurService.getMarketPosition(contractNumber, SisBurService.MARKET_TYPE_MONEY_MARKET);
                 // Create position
-                for (PositionInterface positionInterface : stockMarketList) {
-                    positionList.add(positionInterface);
-                }
-                for (PositionInterface positionInterface : moneyMarketList) {
-                    positionList.add(positionInterface);
-                }
-                
-                
-                
-                positionReportRequests.setType(CustomerPositionReportRequests.TYPE_GENERAL);
-                positionReportRequests.setData(mapper.writeValueAsString(positionList));
-                positionReportRequestRepository.saveAndFlush(positionReportRequests);
-
-                customerReportService.getOutputStreamReport(currentCustomerContract.getCustomer(), positionList, CustomerReportService.TYPE_GENERAL, outputStream);
+                positionList.addAll(stockMarketList);
+                positionList.addAll(moneyMarketList);
             } else if (type == CustomerReportService.TYPE_STOCK_MARKET) {
-                
-                fileName = "ReportePosicionMercadoCapitales.pdf";
-                response.setHeader("Content-Disposition", "attachment; filename=" + fileName + "");
-                List<PositionInterface> stockMarketList =  sisBurService.getMarketPosition(contractNumber, SisBurService.MARKET_TYPE_STOCK_MARKET);
-                
-                positionReportRequests.setType(CustomerPositionReportRequests.TYPE_STOCK_MARKET);
-                positionReportRequests.setData(mapper.writeValueAsString(stockMarketList));
-                positionReportRequestRepository.saveAndFlush(positionReportRequests);
+                fileName += "ReportePosicionMercadoCapitales_"+ now.format(fileCompleteFormatter) + ".pdf";
+                positionList =  sisBurService.getMarketPosition(contractNumber, SisBurService.MARKET_TYPE_STOCK_MARKET);
 
-                customerReportService.getOutputStreamReport(currentCustomerContract.getCustomer(), stockMarketList, CustomerReportService.TYPE_STOCK_MARKET, outputStream);
-            } else if (type == CustomerReportService.TYPE_MONEY_MARKET) { 
-                
-                fileName = "ReportePosicionMercadoDinero.pdf";
-                response.setHeader("Content-Disposition", "attachment; filename=" + fileName + "");
-                
-                List<PositionInterface> moneyMarketList =  sisBurService.getMarketPosition(contractNumber, SisBurService.MARKET_TYPE_MONEY_MARKET);
-                
-                positionReportRequests.setType(CustomerPositionReportRequests.TYPE_MONEY_MARKET);
-                positionReportRequests.setData(mapper.writeValueAsString(moneyMarketList));
-                positionReportRequestRepository.saveAndFlush(positionReportRequests);
-                
-                customerReportService.getOutputStreamReport(currentCustomerContract.getCustomer(), moneyMarketList, CustomerReportService.TYPE_MONEY_MARKET, outputStream);
+            } else if (type == CustomerReportService.TYPE_MONEY_MARKET) {
+                fileName += "ReportePosicionMercadoDinero_" + now.format(fileCompleteFormatter) + ".pdf";
+                positionList =  sisBurService.getMarketPosition(contractNumber, SisBurService.MARKET_TYPE_MONEY_MARKET);
+
             }
-            
+
+            CustomerPositionReportRequests positionReportRequests = new CustomerPositionReportRequests();
+            positionReportRequests.setRequestedDate(LocalDateTime.now());
+            positionReportRequests.setSession(currentSession);
+            positionReportRequests.setContractNumber(contractNumber);
+            positionReportRequests.setType(type);
+            positionReportRequests.setData(mapper.writeValueAsString(positionList));
+            positionReportRequestRepository.saveAndFlush(positionReportRequests);
+
+            response.setHeader("Content-Disposition", "attachment; filename=" + fileName + "");
+            customerReportService.getOutputStreamReport(currentCustomerContract.getCustomer(), positionList, type, outputStream);
 
         } catch (Exception e) {
             log.error("", e);
@@ -496,8 +460,6 @@ public class CustomerController {
         
     }
     
-    
-
     @GetMapping("/movimientos")
     public String customerMovements(
         @RequestParam(name = "startDate", required = false) LocalDate startDate, 
@@ -548,15 +510,7 @@ public class CustomerController {
             customerReportService.generateMovementsReport(customer, startDate, endDate);
             movementReportList = customerReportService.getMovementDataList();
 
-            CustomerMovementReport movementReport = new CustomerMovementReport();
-            movementReport.setSession(currentSession);
-            movementReport.setContractNumber(currentCustomerContract.getContractNumber());
-            movementReport.setStarDate(startDate);
-            movementReport.setEndDate(endDate);
-            movementReport.setRequestedDate(LocalDateTime.now());
-            movementReport.setReportData(mapper.writeValueAsString(movementReportList));
-
-            customerMovementReportRepository.saveAndFlush(movementReport);
+            
 
         } catch (Exception e) {
             System.out.println("Error on CustomerController::customerMovements " + e.getLocalizedMessage());
@@ -570,12 +524,52 @@ public class CustomerController {
         return "customer/movements";
     }
     
+    @GetMapping("/movimientos/descargar-reporte")
+    public void downloadMovementReport(@RequestParam LocalDate fechaInicio, @RequestParam LocalDate fechaTermino, 
+        Authentication authentication, HttpServletResponse response) {
+        
+        response.setContentType("application/pdf");
+        String contractNumber;
+        String fileName;
+        CustomerSession currentSession;
+        List<MovementDTO> data;
+
+        try {
+            currentCustomerContract = getCurrentCustomerContract(authentication);
+            contractNumber = currentCustomerContract.getContractNumber();
+
+            currentSession = currentCustomerContract.getCustomer().getSessions().stream()
+                .filter(cs -> cs.isCurrent())
+                .findFirst()
+                .orElse(null);
+
+            data = customerReportService.getDataList(currentCustomerContract.getCustomer(), fechaInicio, fechaTermino);
+            
+            fileName = contractNumber + "_ReporteMovimientos_" + fechaInicio.format(fileFormatter) + "_" + fechaTermino.format(fileFormatter) + ".pdf";
+            response.setHeader("Content-Disposition", "attachment; filename=" + fileName + "");
+
+            // Audit
+            CustomerMovementReport movementReport = new CustomerMovementReport();
+            movementReport.setSession(currentSession);
+            movementReport.setContractNumber(currentCustomerContract.getContractNumber());
+            movementReport.setStarDate(fechaInicio);
+            movementReport.setEndDate(fechaTermino);
+            movementReport.setRequestedDate(LocalDateTime.now());
+            movementReport.setReportData(mapper.writeValueAsString(data));
+            customerMovementReportRepository.saveAndFlush(movementReport);
+
+            customerReportService.getOutputStreamMovementsReport(currentCustomerContract.getCustomer(), data, fechaInicio, fechaTermino, response.getOutputStream());
+        } catch (Exception e) {
+            log.error("", e);
+        }
+    }
 
     @GetMapping("/resultados")
     public String customerResults() {
 
         return "customer/results";
     }
+
 
     @GetMapping("/estados-cuenta")
     public String customerStatements(Authentication authentication, Model model) {
