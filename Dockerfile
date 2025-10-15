@@ -1,5 +1,5 @@
 # ====== Etapa 1: Construcción ======
-FROM maven:3.9.9-eclipse-temurin-21 AS build
+FROM maven:3.9.11-eclipse-temurin-21 AS build
 WORKDIR /app
 
 # Copiar pom.xml y resolver dependencias primero
@@ -21,7 +21,6 @@ ENV TZ=America/Mexico_City
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 COPY --from=build /app/target/*.jar app.jar
 
-#ENV SSL_KEYSTORE_PASSWORD=BcbW3bp4g3_2025-+*$
 EXPOSE 8443
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
