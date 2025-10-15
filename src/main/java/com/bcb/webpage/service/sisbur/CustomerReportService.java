@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
@@ -354,8 +355,8 @@ public class CustomerReportService {
                 throw new Exception("Contrato no seleccionado");
             } else {
                 movementDataList = this.getDataList(customer, startDate, endDate);
-
-                File reportTemplate = ResourceUtils.getFile("classpath:Movements_Letter_Landscape.jrxml");
+                //File reportTemplate = ResourceUtils.getFile("classpath:Movements_Letter_Landscape.jrxml");
+                File reportTemplate = new ClassPathResource("Movements_Letter_Landscape.jrxml").getFile();
                 JasperReport jasperReport = JasperCompileManager.compileReport(reportTemplate.getPath());
 
                 outputPath += currentContract.getContractNumber() + "/movement_reports";
