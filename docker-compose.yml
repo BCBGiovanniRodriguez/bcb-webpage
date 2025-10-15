@@ -24,7 +24,7 @@ services:
   webpage:
     build: .
     ports:
-      - "20000:20000"
+      - "8443:8443"
     depends_on:
       webpagedb:
         condition: service_healthy

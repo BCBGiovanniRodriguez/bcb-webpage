@@ -1,5 +1,5 @@
 # Puerto de la app en desarrollo
-server.port=20000
+server.port=8443
 
 # Base de datos MariaDB (en Docker)
 spring.datasource.webpage.jdbc-url=jdbc:mariadb://localhost:3307/webpage?createDatabaseIfNotExist=true
