@@ -46,12 +46,12 @@
                              </p>
                              <br>
                              <br>
-                             <a href="" class="btn btn-white btn-border">
+                             <a th:href="@{/administracion-de-riesgos/descargar?tipo=1}" class="btn btn-white btn-border">
                                 Administración de Riesgos
                              </a>
                              <br><br>
                              <br><br>
-                             <a href="" class="btn btn-white btn-border">
+                             <a th:href="@{/administracion-de-riesgos/descargar?tipo=2}" class="btn btn-white btn-border">
                                 CALIFICACIONES
                              </a>
                              <br><br>
@@ -80,8 +80,7 @@
             <!--end section -->
             <div class="clearfix"></div>
 
-            <div class="contacto-pop colorBM"><a href="#" data-toggle="modal" data-target="#MainMenu-BM-contacto"><i class="fa fa-envelope"></i> Contáctanos</a></div>
-            <a href="#" class="scrollup colorBM"></a><!-- end scroll to top of the page--> 
+            <div th:replace="~{public/fragments/commons :: contact}"></div>
         </div>
 
         <div th:replace="~{public/fragments/commons :: modals}"></div>

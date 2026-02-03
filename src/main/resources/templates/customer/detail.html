@@ -3,7 +3,7 @@
 
     <head th:replace="~{customer/fragments/common :: head}"></head>
 
-    <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+    <body class="layout-fixed sidebar-expand-lg bg-body-tertiary sidebar-collapse">
 
         <div class="app-wrapper">
             <nav th:replace="~{customer/fragments/common :: nav}"></nav>
@@ -11,20 +11,24 @@
             <aside th:replace="~{customer/fragments/common :: aside}"></aside>
 
             <main class="app-main">
-                <div class="app-content-header">
-                    <div class="container-fluid">
+                <section>
+                    <div class="header-inner">
+                        <div class="inner text-center">
+                            <h3 class="text-white uppercase"><strong>INFORMACIÓN DEL CLIENTE</strong></h3>
+                        </div>
+                        <div class="overlay bg-opacity-5"></div>
                     </div>
-                </div>
+                </section>
+                <!-- end section -->
+                 <br>
 
                 <div class="app-content">
                     <div class="container-fluid">
-                        <div class="card card-primary">
-                            <div class="card-header">
-                                <h5 class="card-title"><strong>DATOS DEL CLIENTE</strong></h5>
-                            </div>
-                            <div class="card-body">
+                        <div class="row">
+                            <div class="col-2"></div>
+                            <div class="col-8">
                                 <div class="table-responsive">
-                                    <table class="table table-sm table-hover">
+                                    <table class="table table-xl table-hover">
                                         <tbody>
                                             <tr>
                                                 <td><strong>NOMBRE</strong></td>
@@ -34,9 +38,9 @@
                                             <tr>
                                                 <td><strong>BENEFICIARIOS</strong></td>
                                                 <td>
-                                                    <div th:unless="${listaBeneficiaros == null}">
+                                                    <div th:unless="${beneficiaryList == null}">
                                                         <ul>
-                                                            <li th:each="beneficiario : ${listaBeneficiaros}" th:text="${beneficiario.nombre}"></li>
+                                                            <li th:each="beneficiary : ${beneficiaryList}" th:text="${beneficiary.fullName}"></li>
                                                         </ul>
                                                     </div>
                                                 </td>
@@ -44,21 +48,21 @@
 
                                             <tr>
                                                 <td><strong>EMAIL</strong></td>
-                                                <td><span th:unless="${customerDetailResponse == null}" th:text="${customerDetailResponse.email}"></span></td>
+                                                <td><span th:unless="${customer == null}" th:text="${customer.email}"></span></td>
                                             </tr>
 
                                             <tr>
                                                 <td><strong>DIRECCIÓN</strong></td>
-                                                <td><span th:unless="${customerDetailResponse == null}" th:text="${customerDetailResponse.direccion}"></span></td>
+                                                <td><span th:unless="${customer == null}" th:text="${customer.fullAddress}"></span></td>
                                             </tr>
 
                                             <tr>
                                                 <td><strong>TELEFONOS CONTACTO</strong></td>
                                                 <td>
                                                     <ul>
-                                                        <li>Teléfono Domicilio: <span th:unless="${customerDetailResponse == null}" th:text="${customerDetailResponse.telDom}"></span></li>
-                                                        <li>Teléfono Oficina: <span th:unless="${customerDetailResponse == null}" th:text="${customerDetailResponse.telOfi}"></span></li>
-                                                        <li>Teléfono Móvil: <span th:unless="${customerDetailResponse == null}" th:text="${customerDetailResponse.telCel}"></span></li>
+                                                        <li>Teléfono Domicilio: <span th:unless="${customer == null}" th:text="${customer.homePhoneNumber}"></span></li>
+                                                        <li>Teléfono Oficina: <span th:unless="${customer == null}" th:text="${customer.workPhoneNumber}"></span></li>
+                                                        <li>Teléfono Móvil: <span th:unless="${customer == null}" th:text="${customer.phoneNumber}"></span></li>
                                                     </ul>
                                                     
                                                 </td>
@@ -67,10 +71,10 @@
                                             <tr>
                                                 <td><strong>CUENTAS BANCARIAS</strong></td>
                                                 <td>
-                                                    <div th:unless="${listaCuenta == null}">
+                                                    <div th:unless="${bankAccountList == null}">
                                                         <ul>
-                                                            <li th:each="cuenta : ${listaCuenta}">
-                                                                [[${cuenta.clabe}]] - [[${cuenta.banco}]]
+                                                            <li th:each="bankAccount : ${bankAccountList}">
+                                                                [[${bankAccount.accountNumber}]] - [[${bankAccount.institutionName}]]
                                                             </li>
                                                         </ul>
                                                     </div>
@@ -79,27 +83,28 @@
 
                                             <tr>
                                                 <td><strong>RFC</strong></td>
-                                                <td><span th:unless="${customerDetailResponse == null}" th:text="${customerDetailResponse.rFC}"></span></td>
+                                                <td><span th:unless="${customer == null}" th:text="${customer.rfc}"></span></td>
                                             </tr>
 
                                             <tr>
                                                 <td><strong>CURP</strong></td>
-                                                <td><span th:unless="${customerDetailResponse == null}" th:text="${customerDetailResponse.cURP}"></span></td>
+                                                <td><span th:unless="${customer == null}" th:text="${customer.curp}"></span></td>
                                             </tr>
 
                                             <tr>
                                                 <td><strong>TIPO DE SERVICIO</strong></td>
-                                                <td><span th:unless="${customerDetailResponse == null}" th:text="${customerDetailResponse.servicio}"></span></td>
+                                                <td><span th:unless="${customer == null}" th:text="${customer.getServiceAsString()}"></span></td>
                                             </tr>
 
                                             <tr>
                                                 <td><strong>PERFIL DE INVERSIÓN</strong></td>
-                                                <td><span th:unless="${customerDetailResponse == null}" th:text="${customerDetailResponse.perfil}"></span></td>
+                                                <td><span th:unless="${customer == null}" th:text="${customer.profile}"></span></td>
                                             </tr>
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
+                            <div class="col-2"></div>
                         </div>
                     </div>
                 </div>

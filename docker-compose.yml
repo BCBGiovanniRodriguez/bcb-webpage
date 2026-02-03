@@ -1,43 +1,32 @@
 services:
-  webpagedb:
-    image: mariadb:lts
-    ports:
-      - "53300:3306"
-    environment:
-      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
-      MARIADB_DATABASE: ${MARIADB_DATABASE}
-      MARIADB_USER: ${MARIADB_USER}
-      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
-    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
-    healthcheck:
-      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
-      start_period: 10s
-      interval: 10s
-      timeout: 5s
-      retries: 3
-    restart: always
-    volumes:
-      - volume-db-webpage:/var/lib/mysql
-    networks:
-      - network_webpage
-
   webpage:
     build: .
     ports:
       - "8443:8443"
-    depends_on:
-      webpagedb:
-        condition: service_healthy
     environment:
-      SPRING_DB_USER: ${SPRING_DB_USER}
-      SPRING_DB_PASSWORD: ${SPRING_DB_PASSWORD}
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
+      SERVER_PORT: ${SERVER_PORT}
+      SERVER_HOSTNAME: ${SERVER_HOSTNAME}
+      SERVER_SSL_ENABLED: ${SERVER_SSL_ENABLED}
+      SERVER_SSL_KEY_STORE: ${SERVER_SSL_KEY_STORE}
+      SERVER_SSL_KEY_STORE_TYPE: ${SERVER_SSL_KEY_STORE_TYPE}
+      SERVER_SSL_KEY_ALIAS: ${SERVER_SSL_KEY_ALIAS}
+      SSL_KEYSTORE_PASSWORD: ${SSL_KEYSTORE_PASSWORD}
+
+      DATABASE_JDBC_URL: ${DATABASE_JDBC_URL}
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      
+      SISBUR_JDBC_URL: ${SISBUR_JDBC_URL}
+      SISBUR_USERNAME: ${SISBUR_USERNAME}
+      SISBUR_PASSWORD: ${SISBUR_PASSWORD}
+      
+      SISFISCAL_JDBC_URL: ${SISFISCAL_JDBC_URL}
+      SISFISCAL_USERNAME: ${SISFISCAL_USERNAME}
+      SISFISCAL_PASSWORD: ${SISFISCAL_PASSWORD}
     networks:
       - network_webpage
 
-volumes:
-  volume-db-webpage:
-
 networks:
   network_webpage:
-    driver: bridge
+    external: true

@@ -34,9 +34,9 @@ public class DatabaseUserDetailsService implements UserDetailsService {
     HttpServletRequest httpServletRequest;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String contractNumber) throws UsernameNotFoundException {
 
-        Optional<CustomerContract> result = contractRepository.findOneByContractNumber(username);
+        Optional<CustomerContract> result = contractRepository.findOneByContractNumber(contractNumber);
 
         if (!result.isPresent()) {
             throw new UsernameNotFoundException("Registro no encontrado");
@@ -45,6 +45,11 @@ public class DatabaseUserDetailsService implements UserDetailsService {
             CustomerCustomer customer = contract.getCustomer();
             
             try {
+                if (contract.isInitial()) {
+                    // Redirect to change password
+                    //throw new UsernameNotFoundException("INITIAL_PASSWORD");
+                    System.out.println("Initial password change required.");
+                }
                 // Invalidate last session
                 List<CustomerSession> customerSessionList = customer.getSessions();
                 if (customerSessionList != null && customerSessionList.size() > 0) {
@@ -64,7 +69,7 @@ public class DatabaseUserDetailsService implements UserDetailsService {
                 newCustomerSession.setCurrent(true);
                 newCustomerSession.setCustomer(customer);
                 newCustomerSession.setTimestamp(now);
-                newCustomerSession.setContractNumber(username);
+                newCustomerSession.setContractNumber(contractNumber);
 
                 newCustomerSession.setRemoteAddress(httpServletRequest.getRemoteAddr());
                 newCustomerSession.setUserAgent(httpServletRequest.getHeader("user-agent"));
@@ -86,7 +91,7 @@ public class DatabaseUserDetailsService implements UserDetailsService {
                 System.out.println("Error: " + e.getLocalizedMessage());
             }
 
-            return new CustomerAuthenticated(customer, contract);
+            return new CustomerAuthenticated(contract);
         }
     }
 

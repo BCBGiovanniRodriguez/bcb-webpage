@@ -140,7 +140,9 @@
                 <div class="row">
                     <div class="clearfix"></div>
                     <div class="col-md-4 col-sm-4 col-sm-push-4">
-                        <div class="feature-box7 text-center bmargin"> <img th:src="@{public/images/iconos/fideicomiso-fisica-0.svg}" alt=""/><br/>
+                        <div class="feature-box7 text-center bmargin fideicomiso-fisica">
+                            <img th:src="@{public/images/iconos/fideicomiso-fisica-a.svg}" alt=""/>
+                            <br/>
                             <br/>
                             <h4>Fideicomisos <br/>
                             Personas Físicas</h4>
@@ -168,7 +170,9 @@
             <section class="sec-moreless-padding section-colorBM-2">
                 <div class="container">
                     <div class="row">
-                        <div class="col-md-12 text-center"> <a class="btn btn-border white-2 btn-large btn-round" href="#">Contacto Planeación Financiera</a></div>
+                        <div class="col-md-12 text-center">
+                            <a class="btn btn-border white-2 btn-large btn-round btn-send-email" href="#" data-toggle="modal" data-target="#MainMenu-BM-contacto" data-origin="2">Contacto Planeación Financiera</a>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -192,8 +196,7 @@
             <!--end section -->
             <div class="clearfix"></div>
 
-            <div class="contacto-pop colorBM"><a href="#" data-toggle="modal" data-target="#MainMenu-BM-contacto"><i class="fa fa-envelope"></i> Contáctanos</a></div>
-            <a href="#" class="scrollup colorBM"></a><!-- end scroll to top of the page--> 
+            <div th:replace="~{public/fragments/commons :: contact}"></div>
         </div>
 
         <div th:replace="~{public/fragments/commons :: modals}"></div>

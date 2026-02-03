@@ -11,13 +11,10 @@ public class CustomerAuthenticated implements UserDetails {
 
     private CustomerContract contract;
 
-    private CustomerCustomer customer;
-
     public CustomerAuthenticated() {
     }
 
-    public CustomerAuthenticated(CustomerCustomer customer, CustomerContract contract) {
-        this.customer = customer;
+    public CustomerAuthenticated(CustomerContract contract) {
         this.contract = contract;
     }
 
@@ -28,21 +25,15 @@ public class CustomerAuthenticated implements UserDetails {
 
     @Override
     public String getPassword() {
-        return customer.getPassword();
+        return contract.getPassword();
     }
 
     @Override
     public String getUsername() {
         return this.contract.getContractNumber();
-        //return customer.getCustomerKey();
     }
 
     public CustomerContract getContract() {
         return contract;
     }
-
-    public CustomerCustomer getCustomer() {
-        return customer;
-    }
-    
 }

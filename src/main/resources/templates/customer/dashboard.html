@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://thymeleaf.org">
     <head th:replace="~{customer/fragments/common :: head}"></head>
 
-    <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+    <body class="layout-fixed sidebar-expand-lg bg-body-tertiary sidebar-collapse">
         <div class="app-wrapper">
             <nav th:replace="~{customer/fragments/common :: nav}"></nav>
 
@@ -17,7 +17,7 @@
                                 class="brand-image opacity-100 shadow" style="width: 70%; height: 70%;" />
                             </div>
                             <div class="col-10">
-                                <h4>Bienvenido <span th:text="${customerFullName}"></span> </h4>
+                                <h4>Bienvenido <strong th:text="${customerFullName}"></strong> </h4>
                                 <h3></h3>
                                 <hr>
                                 <div class="container-fluid">
@@ -36,73 +36,72 @@
                         </div>
                     </div>
                 </div>
+                <hr>
+
 
                 <div class="app-content">
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-12">
-                                <div class="card card-outline card-primary">
-                                    <div class="card-header">
-                                        <h3 class="card-title"><strong>RESUMEN DE SU SALDO</strong></h3>
-                                    </div>
-                                    <div class="card-body row">
-                                        <div class="col-3">
-                                            <canvas id="myChart">
-                                            </canvas>
-                                        </div>
+                                <div class="row">
+                                    <h3><strong>RESUMEN DE SU SALDO</strong></h3>
 
-                                        <div class="col-9 table-responsive">
-                                            <table class="table table-bordered table-hover">
-                                                <thead>
-                                                    <tr>
-                                                        <th class="text-center" style="width: 40%;">MERCADO</th>
-                                                        <th class="text-end">MONTO</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td style="width: 20%;">
-                                                            <strong>MERCADO DE DINERO</strong>
-                                                        </td>
-                                                        <td class="text-end" style="width: 20%;">
-                                                            <span th:unless="${totalBalanceMoneyMarket == null}" th:text="${#numbers.formatCurrency(totalBalanceMoneyMarket)}"></span>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td style="width: 20%;">
-                                                            <strong>MERCADO DE CAPITALES</strong>
-                                                        </td>
-                                                        <td class="text-end" style="width: 20%;">
-                                                            <span th:unless="${totalBalanceStockMarket == null}" th:text="${#numbers.formatCurrency(totalBalanceStockMarket)}"></span>
-                                                        </td>
-                                                    </tr>
-                                                    <tr hidden>
-                                                        <td style="width: 20%;">
-                                                            <strong>FONDOS DE INVERSIÓN</strong>
-                                                        </td>
-                                                        <td class="text-end" style="width: 20%;">
-                                                            <!--<span th:text="${positionDetail} != null AND ${positionDetail.subtotalFon} != null ? ${positionDetail.subtotalFon} : '0'"></span>-->
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td style="width: 20%;">
-                                                            <strong>SALDO MN</strong>
-                                                        </td>
-                                                        <td class="text-end" style="width: 20%;">
-                                                            <span th:unless="${totalBalanceMN == null}" th:text="${#numbers.formatCurrency(totalBalanceMN)}"></span>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td style="width: 20%;">
-                                                            <strong>TOTAL INVERSIÓN</strong>
-                                                        </td>
-                                                        <td class="text-end" style="width: 20%;">
-                                                            <strong><span th:text="${#numbers.formatCurrency(totalBalanceMoneyMarket + totalBalanceStockMarket + totalBalanceMN)}"></span></strong>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                    <div class="col-3">
+                                        <canvas id="myChart">
+                                        </canvas>
+                                    </div>
+
+                                    <div class="col-9 table-responsive">
+                                        <table class="table table-bordered table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center" style="width: 40%;">MERCADO</th>
+                                                    <th class="text-end">MONTO</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td style="width: 20%;">
+                                                        <strong>MERCADO DE DINERO</strong>
+                                                    </td>
+                                                    <td class="text-end" style="width: 20%;">
+                                                        <span th:unless="${totalBalanceMoneyMarket == null}" th:text="${#numbers.formatDecimal(totalBalanceMoneyMarket, 1, 'COMMA', 2, 'POINT')}"></span>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="width: 20%;">
+                                                        <strong>MERCADO DE CAPITALES</strong>
+                                                    </td>
+                                                    <td class="text-end" style="width: 20%;">
+                                                        <span th:unless="${totalBalanceStockMarket == null}" th:text="${#numbers.formatDecimal(totalBalanceStockMarket, 1, 'COMMA', 2, 'POINT')}"></span>
+                                                    </td>
+                                                </tr>
+                                                <tr hidden>
+                                                    <td style="width: 20%;">
+                                                        <strong>FONDOS DE INVERSIÓN</strong>
+                                                    </td>
+                                                    <td class="text-end" style="width: 20%;">
+                                                        <!--<span th:text="${positionDetail} != null AND ${positionDetail.subtotalFon} != null ? ${positionDetail.subtotalFon} : '0'"></span>-->
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="width: 20%;">
+                                                        <strong>SALDO MN</strong>
+                                                    </td>
+                                                    <td class="text-end" style="width: 20%;">
+                                                        <span th:unless="${totalBalanceMN == null}" th:text="${#numbers.formatDecimal(totalBalanceMN, 1, 'COMMA', 2, 'POINT')}"></span>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="width: 20%;">
+                                                        <strong>TOTAL INVERSIÓN</strong>
+                                                    </td>
+                                                    <td class="text-end" style="width: 20%;">
+                                                        <strong><span th:text="${#numbers.formatDecimal(totalBalanceMoneyMarket + totalBalanceStockMarket + totalBalanceMN, 1, 'COMMA', 2, 'POINT')}"></span></strong>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
@@ -110,6 +109,8 @@
                     </div>
                 </div>
             </main>
+
+            <div th:replace="~{customer/fragments/common :: modals}"></div>
 
             <footer th:replace="~{customer/fragments/common :: footer}"></footer>
         </div>
@@ -120,8 +121,6 @@
             let totalBalanceMN = [[${cashPercentage}]];
             let totalBalanceMoneyMarket = [[${moneyMarketPercentage}]];
             let totalBalanceStockMarket = [[${stockMarketPercentage}]];
-
-            //const ctx = document.getElementById('myChart');
 
             new Chart(document.getElementById('myChart'), {
                 type: 'pie',

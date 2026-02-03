@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
@@ -27,14 +28,35 @@ public class SisFiscalService {
 
     private DateTimeFormatter isoFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    public List<Map<String,Object>> getStatementAccountPeriods(String contractNumber) {
-        List<Map<String,Object>> result = new ArrayList<>();
+    public List<String> getPeriodList() {
+        List<String> result = new ArrayList<>();
         String sqlQuery;
 
         try {
-            sqlQuery = "SELECT * FROM EstadosdeCuenta WHERE CONTRATO = '" + contractNumber + "' ";
-            sqlQuery += " ORDER BY FECHA DESC FETCH FIRST 13 ROWS ONLY";
+            sqlQuery = "SELECT DISTINCT TO_CHAR(FECHA, 'YYYY-MM-DD') AS PERIODO FROM EstadosdeCuenta ";
+            sqlQuery += "ORDER BY PERIODO DESC FETCH FIRST 13 ROWS ONLY";
 
+            result = jdbcTemplate.queryForList(sqlQuery, String.class);
+
+        } catch (Exception e) {
+            log.error("SisFiscalService", e);
+        }
+
+        return result;
+    }
+
+    public List<Map<String,Object>> getStatementAccountPeriods(String contractNumber) {
+        List<Map<String,Object>> result = new ArrayList<>();
+        String sqlQuery;
+        LocalDate aYearAgo = LocalDate.now();
+        // A year and a month back in time
+        aYearAgo = aYearAgo.minusYears(1).minusMonths(1);
+
+        try {
+            sqlQuery = "SELECT * FROM EstadosdeCuenta WHERE CONTRATO = '" + contractNumber + "' ";
+            sqlQuery += "AND FECHA >= TO_DATE('" + aYearAgo.format(isoFormatter) + "', 'YYYY-MM-DD') ";
+            sqlQuery += " ORDER BY FECHA DESC FETCH FIRST 13 ROWS ONLY";
+            System.out.println(sqlQuery);
             result = jdbcTemplate.queryForList(sqlQuery);
 
         } catch (Exception e) {
@@ -47,16 +69,18 @@ public class SisFiscalService {
     public List<SisfiscalStatementAccount> getStatementAccountList(String contractNumber) {
         String sqlQuery;
         List<SisfiscalStatementAccount> statementAccountList = new ArrayList<>();
+        LocalDate currentDate = LocalDate.now();
 
         try {
             sqlQuery = "SELECT * FROM EstadosdeCuenta WHERE CONTRATO = '" + contractNumber + "' ";
+            sqlQuery += "AND FECHA <= TO_DATE('" + currentDate.format(isoFormatter) + "', 'YYYY-MM-DD') ";
             sqlQuery += " ORDER BY FECHA DESC FETCH FIRST 13 ROWS ONLY";
 
             statementAccountList = jdbcTemplate.query(sqlQuery, new RowMapper<SisfiscalStatementAccount>() {
 
                 @Override
                 @Nullable
-                public SisfiscalStatementAccount mapRow(ResultSet rs, int rowNum) throws SQLException {
+                public SisfiscalStatementAccount mapRow(@NonNull ResultSet rs, int rowNum) throws SQLException {
                     SisfiscalStatementAccount statementAccount = new SisfiscalStatementAccount();
                     statementAccount.setContractNumber(rs.getString("CONTRATO"));
                     statementAccount.setDate(LocalDate.parse(rs.getString("FECHA").substring(0, 10)));

@@ -9,16 +9,20 @@
             <aside th:replace="~{customer/fragments/common :: aside}"></aside>
 
             <main class="app-main">
-                <div class="app-content-header">
-                    <div class="container-fluid">
+                <section>
+                    <div class="header-inner">
+                        <div class="inner text-center">
+                            <h3 class="text-white uppercase"><strong>POSICIÓN ACTUAL CLIENTE</strong></h3>
+                        </div>
+                        <div class="overlay bg-opacity-5"></div>
                     </div>
-                </div>
+                </section>
+                <!-- end section -->
+                 <br>
 
                 <div class="app-content">
                     <div class="container-fluid">
-                        <h5 class="card-header"><strong>POSICIÓN ACTUAL CLIENTE</strong></h5>
-
-                        <div class="container-fluid">
+                        <div class="col-12">
                             <ul class="nav nav-tabs mb-3" id="positionTab" role="tablist">
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link active" id="detail-tab" data-bs-toggle="tab" data-bs-target="#detail-tab-pane" 
@@ -84,17 +88,29 @@
                                                                 <strong><span th:text="${element.emmiter}"></span></strong>
                                                                 <span th:text="${element.serie}"></span>
                                                             </td>
-                                                            <td class="text-end" th:text="${element.securities}"></td>
+                                                            <td class="text-end" th:text="${#numbers.formatDecimal(element.securities, 1, 'COMMA', 0, 'POINT')}"></td>
                                                             <td class="text-end" th:text="${#numbers.formatDecimal(element.averageAmount, 1, 'COMMA', 6, 'POINT')}"></td>
-                                                            <td class="text-end" th:text="${#numbers.formatDecimal(element.price, 1, 'COMMA', 6, 'POINT')}"></td>
-                                                            <td class="text-end" th:text="${#numbers.formatDecimal(element.value, 1, 'COMMA', 6, 'POINT')}"></td>
-                                                            <td class="text-end" th:text="${#numbers.formatDecimal(element.percentage, 1, 2)}"></td>
+                                                            <td class="text-end" th:text="${#numbers.formatDecimal(element.marketPrice, 1, 'COMMA', 6, 'POINT')}"></td>
+                                                            <td class="text-end" th:text="${#numbers.formatDecimal(element.marketValue, 1, 'COMMA', 2, 'POINT')}"></td>
+                                                            <td class="text-end" th:text="${#numbers.formatDecimal(element.percentage, 1, 'COMMA', 6, 'POINT')}"></td>
                                                             <td class="text-end">
                                                                 <strong>
                                                                     <span th:class="${element.cssStyle}" th:text="${#numbers.formatDecimal(element.capitalGainLoss, 1, 'COMMA', 2, 'POINT')}"></span>
                                                                 </strong>
                                                             </td>
                                                         </th>
+                                                        <tr>
+                                                            <td class="text-end" colspan="5"><strong>TOTAL</strong></td>
+                                                            <td class="text-end">
+                                                                <strong><span th:text="${#numbers.formatDecimal(#aggregates.sum(generalList.![marketValue]), 1, 'COMMA', 2, 'POINT')}"></span></strong>
+                                                            </td>
+                                                            <td class="text-end">
+                                                                <strong><span th:text="${#numbers.formatDecimal(#aggregates.sum(generalList.![percentage]), 1, 'COMMA', 6, 'POINT')}"></span></strong>
+                                                            </td>
+                                                            <td class="text-end">
+                                                                <strong><span th:text="${#numbers.formatDecimal(#aggregates.sum(generalList.![capitalGainLoss]), 1, 'COMMA', 2, 'POINT')}"></span></strong>
+                                                            </td>
+                                                        </tr>
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -115,30 +131,23 @@
                                             <div class="table-responsive">
                                                 <table class="table table-sm table-striped table-bordered">
                                                     <thead>
-                                                        <th class="text-center">MONEDA</th>
+                                                        <th class="text-center" style="width: 70%;">MONEDA</th>
                                                         <th class="text-center">SALDO POR LIQUIDAR</th>
                                                         <th class="text-center">SALDO ACTUAL</th>
                                                     </thead>
                                                     <tbody>
                                                         <tr th:each="saldo : ${cashList}">
-                                                            <td class="text-start" th:text="${saldo.cveDivisa}"></td>
-                                                            <td class="text-end" th:text="${saldo.saldoXLiquidar}"></td>
-                                                            <td class="text-end" th:text="${saldo.saldoActual}"></td>
+                                                            <td class="text-start" th:text="${saldo.currencyName}"></td>
+                                                            <td class="text-end" th:text="${#numbers.formatDecimal(saldo.pendingBalance, 1, 'COMMA', 2, 'POINT')}"></td>
+                                                            <td class="text-end" th:text="${#numbers.formatDecimal(saldo.currentBalance, 1, 'COMMA', 2, 'POINT')}"></td>
                                                         </tr>
                                                         <tr>
-                                                            <td></td>
-                                                            <td></td>
-                                                            <td></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td></td>
+                                                            <td class="text-end"><strong>TOTAL</strong></td>
                                                             <td class="text-end">
-                                                                <strong>SUBTOTAL: </strong>
+                                                                <strong><span th:text="${#numbers.formatDecimal(#aggregates.sum(cashList.![pendingBalance]), 1, 'COMMA', 2, 'POINT')}"></span></strong>
                                                             </td>
                                                             <td class="text-end">
-                                                                <strong>
-                                                                    <span th:text="${#numbers.formatCurrency(cashTotalBalance)}"></span>
-                                                                </strong>
+                                                                <strong><span th:text="${#numbers.formatDecimal(#aggregates.sum(cashList.![currentBalance]), 1, 'COMMA', 2, 'POINT')}"></span></strong>
                                                             </td>
                                                         </tr>
                                                     </tbody>
@@ -172,14 +181,27 @@
                                                 <tbody>
                                                     <tr th:each="posicion : ${positionStockList}">
                                                         <td>
-                                                            <strong><span th:text="${posicion.emisora}"></span></strong>
+                                                            <strong><span th:text="${posicion.emmiter}"></span></strong>
                                                             <span th:text="${posicion.serie}"></span>
                                                         </td>
-                                                        <td class="text-end" th:text="${posicion.titulos}"></td>
-                                                        <td class="text-end" th:text="${posicion.costoPromedio}"></td>
-                                                        <td class="text-end" th:text="${posicion.costoXTitulos}"></td>
-                                                        <td class="text-end" th:text="${posicion.valorMercado}"></td>
-                                                        <td class="text-end" th:text="${posicion.plusMinusvalia}"></td>
+                                                        <td class="text-end" th:text="${#numbers.formatDecimal(posicion.securities, 1, 'COMMA', 0, 'POINT')}"></td>
+                                                        <td class="text-end" th:text="${#numbers.formatDecimal(posicion.averageAmount, 1, 'COMMA', 6, 'POINT')}"></td>
+                                                        <td class="text-end" th:text="${#numbers.formatDecimal(posicion.marketPrice, 1, 'COMMA', 6, 'POINT')}"></td>
+                                                        <td class="text-end" th:text="${#numbers.formatDecimal(posicion.marketValue, 1, 'COMMA', 2, 'POINT')}"></td>
+                                                        <td class="text-end">
+                                                            <strong>
+                                                                <span th:class="${posicion.cssStyle}" th:text="${#numbers.formatDecimal(posicion.capitalGainLoss, 1, 'COMMA', 2, 'POINT')}"></span>
+                                                            </strong>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="4" class="text-end"><strong>TOTAL</strong></td>
+                                                        <td class="text-end">
+                                                            <strong><span th:text="${#numbers.formatDecimal(#aggregates.sum(positionStockList.![marketValue]), 1, 'COMMA', 2, 'POINT')}"></span></strong>
+                                                        </td>
+                                                        <td class="text-end">
+                                                            <strong><span th:text="${#numbers.formatDecimal(#aggregates.sum(positionStockList.![capitalGainLoss]), 1, 'COMMA', 2, 'POINT')}"></span></strong>
+                                                        </td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -196,6 +218,7 @@
                                     </div>
                                     <hr>
                                     <div class="row g-3">
+                                        <h5>POSICIÓN EN DIRECTO</h5>
                                         <div class="col-12 table-responsive">
                                             <table class="table table-sm table-striped table-bordered">
                                                 <thead>
@@ -209,23 +232,87 @@
                                                     <th class="text-right">PLUSVALÍA / MINUSVALÍA</th>
                                                 </thead>
                                                 <tbody>
-                                                    <tr th:each="posicion : ${positionMoneyList}">
+                                                    <tr th:each="posicion : ${moneyMarketDirectPositionList}">
                                                         <td class="text-start">
-                                                            <strong><span th:text="${posicion.emisora}"></span></strong>
+                                                            <strong><span th:text="${posicion.emmiter}"></span></strong>
                                                             <span th:text="${posicion.serie}"></span>
                                                         </td>
-                                                        <td th:text="${posicion.plazo}" class="text-center"></td>
-                                                        <td th:text="${#numbers.formatDecimal(posicion.tasa, 2, 2)}" class="text-end"></td>
-                                                        <td th:text="${posicion.titulos}" class="text-end"></td>
-                                                        <td th:text="${posicion.costoPromedio}" class="text-end"></td>
-                                                        <td th:text="${posicion.costoXTitulos}" class="text-end"></td>
-                                                        <td th:text="${posicion.valorMercado}" class="text-end"></td>
-                                                        <td th:text="${posicion.plusMinusvalia}" class="text-end"></td>
+                                                        <td th:text="${posicion.period}" class="text-center"></td>
+                                                        <td th:text="${#numbers.formatDecimal(posicion.rate, 1, 'COMMA', 2, 'POINT')}" class="text-end"></td>
+                                                        <td th:text="${#numbers.formatDecimal(posicion.securities, 1, 'COMMA', 0, 'POINT')}" class="text-end"></td>
+                                                        <td th:text="${#numbers.formatDecimal(posicion.averageAmount, 1, 'COMMA', 6, 'POINT')}" class="text-end"></td>
+                                                        <td th:text="${#numbers.formatDecimal(posicion.marketPrice, 1, 'COMMA', 6, 'POINT')}" class="text-end"></td>
+                                                        <td th:text="${#numbers.formatDecimal(posicion.marketValue, 1, 'COMMA', 2, 'POINT')}" class="text-end"></td>
+                                                        <td class="text-end">
+                                                            <strong>
+                                                                <span th:class="${posicion.cssStyle}" th:text="${#numbers.formatDecimal(posicion.capitalGainLoss, 1, 'COMMA', 2, 'POINT')}"></span>
+                                                            </strong>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="6" class="text-end"><strong>TOTAL</strong></td>
+                                                        <td class="text-end">
+                                                            <strong><span th:text="${#numbers.formatDecimal(#aggregates.sum(moneyMarketDirectPositionList.![marketValue]), 1, 'COMMA', 2, 'POINT')}"></span></strong>
+                                                        </td>
+                                                        <td class="text-end">
+                                                            <strong><span th:text="${#numbers.formatDecimal(#aggregates.sum(moneyMarketDirectPositionList.![capitalGainLoss]), 1, 'COMMA', 2, 'POINT')}"></span></strong>
+                                                        </td>
                                                     </tr>
                                                 </tbody>
                                             </table>
                                         </div>
                                     </div>
+                                    <hr>
+                                    <div class="row g-3">
+                                        <h5>POSICIÓN EN REPORTO</h5>
+                                        <div class="col-12 table-responsive">
+                                            <table class="table table-sm table-striped table-bordered">
+                                                <thead>
+                                                    <th class="text-center">EMISORA - SERIE</th>
+                                                    <th class="text-center">PLAZO</th>
+                                                    <th class="text-center">FECHA INICIAL</th>
+                                                    <th class="text-center">TASA (Cupón)</th>
+                                                    <th class="text-center">TÍTULOS</th>
+                                                    <th class="text-center">COSTO PROMEDIO</th>
+                                                    <th class="text-center">VALOR A COSTO</th>
+                                                    <th class="text-center">VALOR A MERCADO ACTUAL</th>
+                                                    <th class="text-right">PLUSVALÍA / MINUSVALÍA</th>
+                                                </thead>
+                                                <tbody>
+                                                    <tr th:each="posicion : ${moneyMarketReportPositionList}">
+                                                        <td class="text-start">
+                                                            <strong><span th:text="${posicion.emmiter}"></span></strong>
+                                                            <span th:text="${posicion.serie}"></span>
+                                                        </td>
+                                                        <td th:text="${posicion.period}" class="text-center"></td>
+                                                        <td th:if="${posicion.emmiter == 'REPORTO'}"></td>
+                                                        <td th:unless="${posicion.emmiter == 'REPORTO'}" th:text="${posicion.averageDate}" class="text-center"></td>
+                                                        <td th:text="${#numbers.formatDecimal(posicion.rate, 1, 'COMMA', 2, 'POINT')}" class="text-end"></td>
+                                                        <td th:text="${#numbers.formatDecimal(posicion.securities, 1, 'COMMA', 0, 'POINT')}" class="text-end"></td>
+                                                        <td th:text="${#numbers.formatDecimal(posicion.averageAmount, 1, 'COMMA', 6, 'POINT')}" class="text-end"></td>
+                                                        <td th:text="${#numbers.formatDecimal(posicion.amount, 1, 'COMMA', 2, 'POINT')}" class="text-end"></td>
+                                                        <td th:text="${#numbers.formatDecimal(posicion.marketValue, 1, 'COMMA', 2, 'POINT')}" class="text-end"></td>
+                                                        <td class="text-end">
+                                                            <strong>
+                                                                <span th:class="${posicion.cssStyle}" th:text="${#numbers.formatDecimal(posicion.capitalGainLoss, 1, 'COMMA', 2, 'POINT')}"></span>
+                                                            </strong>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="7" class="text-end"><strong>TOTAL</strong></td>
+                                                        <td class="text-end">
+                                                            <strong><span th:text="${#numbers.formatDecimal(#aggregates.sum(moneyMarketReportPositionList.![marketValue]), 1, 'COMMA', 2, 'POINT')}"></span></strong>
+                                                        </td>
+                                                        <td class="text-end">
+                                                            <strong><span th:text="${#numbers.formatDecimal(#aggregates.sum(moneyMarketReportPositionList.![capitalGainLoss]), 1, 'COMMA', 2, 'POINT')}"></span></strong>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    
                                 </div>
                                 <div hidden class="tab-pane fade" id="investment-funds-tab-pane" role="tabpanel" aria-labelledby="investment-funds-tab" tabindex="4">
                                     <div class="row g-3 text-end" hidden>
@@ -251,9 +338,9 @@
                                                 </thead>
                                                 <tbody>
                                                     <tr th:each="posicion : ${positionFundsList}">
-                                                        <td th:text="${saldo.cveDivisa}"></td>
-                                                        <td th:text="${saldo.saldoActual}"></td>
-                                                        <td th:text="${saldo.saldoXLiquidar}"></td>
+                                                        <td th:text="${posicion.emmiter}"></td>
+                                                        <td th:text="${posicion.serie}"></td>
+                                                        <td th:text="${posicion.marketPrice}"></td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -261,6 +348,9 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div class="container-fluid">
+                            
                             
                         </div>
                     </div>

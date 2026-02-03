@@ -27,6 +27,7 @@ import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -39,21 +40,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.bcb.webpage.dto.request.CustomerDetailRequest;
-import com.bcb.webpage.dto.request.CustomerMovementPositionRequest;
-import com.bcb.webpage.dto.response.customer.CustomerDetailResponse;
-import com.bcb.webpage.dto.response.customer.ListaBeneficiaro;
-import com.bcb.webpage.dto.response.customer.ListaCuentum;
-import com.bcb.webpage.dto.response.position.CustomerMovementPositionResponse;
 import com.bcb.webpage.dto.response.position.Movimiento;
-import com.bcb.webpage.dto.response.position.Posicion;
-import com.bcb.webpage.dto.response.position.Saldo;
 import com.bcb.webpage.dto.response.statement.StatementAccount;
 import com.bcb.webpage.dto.response.taxcertificate.TaxCertificate;
-import com.bcb.webpage.model.sisbur.service.LegacyService;
+import com.bcb.webpage.model.webpage.dto.CashDTO;
+import com.bcb.webpage.model.webpage.dto.GeneralDTO;
 import com.bcb.webpage.model.webpage.dto.MovementDTO;
+import com.bcb.webpage.model.webpage.dto.customer.CustomerAttorney;
+import com.bcb.webpage.model.webpage.dto.customer.CustomerBankAccount;
+import com.bcb.webpage.model.webpage.dto.customer.CustomerBeneficiary;
 import com.bcb.webpage.model.webpage.dto.interfaces.PositionInterface;
-import com.bcb.webpage.model.webpage.entity.CustomerData;
 import com.bcb.webpage.model.webpage.entity.CustomerMovementReport;
 import com.bcb.webpage.model.webpage.entity.CustomerSession;
 import com.bcb.webpage.model.webpage.entity.customers.CustomerContract;
@@ -64,16 +60,12 @@ import com.bcb.webpage.model.webpage.entity.customers.CustomerStatementAccountRe
 import com.bcb.webpage.model.webpage.entity.customers.CustomerTaxCertificate;
 import com.bcb.webpage.model.webpage.entity.customers.CustomerTaxCertificateRequests;
 import com.bcb.webpage.model.webpage.repository.CustomerContractRepository;
-import com.bcb.webpage.model.webpage.repository.CustomerCustomerRepository;
-import com.bcb.webpage.model.webpage.repository.CustomerDataRepository;
 import com.bcb.webpage.model.webpage.repository.CustomerMovementReportRepository;
 import com.bcb.webpage.model.webpage.repository.CustomerPositionReportRequestRepository;
-import com.bcb.webpage.model.webpage.repository.CustomerSessionRepository;
 import com.bcb.webpage.model.webpage.repository.CustomerStatementAccountRepository;
 import com.bcb.webpage.model.webpage.repository.CustomerStatementAccountRequestRepository;
 import com.bcb.webpage.model.webpage.repository.CustomerTaxCertificateRepository;
 import com.bcb.webpage.model.webpage.repository.CustomerTaxCertificateRequestRepository;
-import com.bcb.webpage.model.webpage.services.BackendService;
 import com.bcb.webpage.service.sisbur.CustomerReportService;
 import com.bcb.webpage.service.sisbur.SisBurService;
 import com.bcb.webpage.service.sisfiscal.SisFiscalService;
@@ -81,6 +73,7 @@ import com.bcb.webpage.service.sisfiscal.SisfiscalStatementAccount;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -90,16 +83,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/portal-clientes")
 public class CustomerController {
 
-    private final Integer ENVIRONTMENT_MODE = 0;
-
-    private final Integer ENVIRONTMENT_MODE_DEVELOPMENT = 0;
-
-    private final Integer ENVIRONTMENT_MODE_TESTING = 1;
-
-    private final Integer ENVIRONTMENT_MODE_PRODUCTION = 2;
-
-    private final Integer ENVIRONTMENT_MODE_MAINTENANCE = 3;
-
     @Autowired
     private SisBurService sisBurService;
 
@@ -107,22 +90,7 @@ public class CustomerController {
     private SisFiscalService sisFiscalService;
 
     @Autowired
-    private LegacyService legacyService;
-
-    @Autowired
-    private BackendService backendService;
-
-    @Autowired
     private CustomerContractRepository contractRepository;
-
-    @Autowired
-    private CustomerCustomerRepository customerRepository;
-
-    @Autowired
-    private CustomerDataRepository customerDataRepository;
-
-    @Autowired
-    private CustomerSessionRepository customerSessionRepository;
 
     @Autowired
     private CustomerTaxCertificateRepository customerTaxCertificateRepository;
@@ -160,9 +128,11 @@ public class CustomerController {
 
     private CustomerContract currentCustomerContract = null;
 
-    private CustomerCustomer customer;
-
     private ObjectMapper mapper = new ObjectMapper();
+
+    public CustomerController() {
+        mapper.registerModule(new JavaTimeModule());
+    }
 
     @Autowired
     private CustomerReportService customerReportService;
@@ -185,20 +155,22 @@ public class CustomerController {
         String currentSessionTimeStr = "N/A";
         String lastSessionDateStr = "N/A";
         String lastSessionTimeStr = "N/A";
-        // Balance detail
-        Posicion positionDetail = null;
-
-        Double totalBalanceMN = 0D;
-        Double totalBalanceMoneyMarket = 0D;
-        Double totalBalanceStockMarket = 0D;
         
         Double grandTotal = 0D;
         Double cashPercentage = 0D;
         Double moneyMarketPercentage = 0D;
         Double stockMarketPercentage = 0D;
-        // Request Response objects
-        //CustomerDetailResponse customerDetailResponse = null;
-        CustomerMovementPositionResponse customerMovementPositionResponse = null;
+        Double investmentFundsMarketPercentage = 0D;
+
+        List<CashDTO> cashBalanceList = new ArrayList<>();
+        List<PositionInterface> stockMarketPositionList = new ArrayList<>();
+        List<PositionInterface> moneyMarketPositionList = new ArrayList<>();
+        List<PositionInterface> investmentFundsPositionList = new ArrayList<>();
+        
+        Double cashTotalBalance = 0D;
+        Double stockMarketBalance = 0D;
+        Double moneyMarketBalance = 0D;
+        Double investmentFundsMarketBalance = 0D;
 
         try {
             currentCustomerContract = getCurrentCustomerContract(authentication);
@@ -226,45 +198,36 @@ public class CustomerController {
             lastSessionDateStr = WordUtils.capitalizeFully(userSessionFormatter.format(lastSession.getTimestamp()));
             lastSessionTimeStr = timeFormatter.format(lastSession.getTimestamp());
 
-            // TODO User Detail !! Change, already local!!!!
-            //CustomerDetailRequest customerDetailRequest = new CustomerDetailRequest();
-            //customerDetailRequest.setContrato(currentCustomerContract.getContractNumber());
+            cashBalanceList = sisBurService.getCashBalance(currentCustomerContract.getContractNumber());
+            stockMarketPositionList = sisBurService.getMarketPosition(currentCustomerContract.getContractNumber(), SisBurService.MARKET_TYPE_STOCK_MARKET);
+            moneyMarketPositionList = sisBurService.getMarketPosition(currentCustomerContract.getContractNumber(), SisBurService.MARKET_TYPE_MONEY_MARKET);
+            investmentFundsPositionList = sisBurService.getMarketPosition(currentCustomerContract.getContractNumber(), SisBurService.MARKET_TYPE_INVESTMENT_FUNDS);
 
-            // Get Balance Detail
-            CustomerMovementPositionRequest customerMovementPositionRequest = new CustomerMovementPositionRequest();
-            customerMovementPositionRequest.setContrato(currentCustomerContract.getContractNumber());
-            customerMovementPositionRequest.setTipo("2");
-            
-            //customerDetailResponse = backendService.customerDetail(customerDetailRequest);
+            for (CashDTO element : cashBalanceList) {
+                cashTotalBalance += element.getCurrentBalance();
+            }
+            // 
+            for (PositionInterface positionInterface : stockMarketPositionList) {
+                stockMarketBalance += ((GeneralDTO) positionInterface).getSecurities() * ((GeneralDTO) positionInterface).getDirtyPrice24();
+            }
 
-            customerMovementPositionResponse = backendService.customerMovements(customerMovementPositionRequest);
-            ArrayList<Posicion> listPositions = customerMovementPositionResponse.getPosicion();
-            
-            if (listPositions == null) {
-                
-            } else {
-                if (listPositions.size() > 0) {
-                    positionDetail = listPositions.getLast();
-                    totalBalanceMoneyMarket = getDoubleValue(positionDetail.getSubtotalDin());
-                    totalBalanceStockMarket = getDoubleValue(positionDetail.getSubtotalCap());
+            for (PositionInterface positionInterface : moneyMarketPositionList) {
+                if (((GeneralDTO) positionInterface).getHolding().equals("REP") && !((GeneralDTO) positionInterface).getEmmiter().equals("REPORTO")) {
+                    moneyMarketBalance += ((GeneralDTO) positionInterface).getAward() + ((GeneralDTO) positionInterface).getAmount();
+                } else {
+                    moneyMarketBalance += ((GeneralDTO) positionInterface).getSecurities() * ((GeneralDTO) positionInterface).getDirtyPrice24();
                 }
             }
-            
-            ArrayList<Saldo> listBalance = customerMovementPositionResponse.getSaldo();
-            
-            if (listBalance != null && listBalance.size() > 0) {
-                for (Saldo saldo : listBalance) {
-                    if (!saldo.getCveDivisa().equals("Por Asignar Indeval")) {
-                        totalBalanceMN += getDoubleValue(saldo.getSubTotal());
-                    }
-                }
-            }
-            // Get percentages
-            grandTotal = getDoubleValue(customerMovementPositionResponse.getTotal());
-            cashPercentage = (totalBalanceMN * 100) / grandTotal;
-            moneyMarketPercentage = (totalBalanceMoneyMarket * 100) / grandTotal;
-            stockMarketPercentage = (totalBalanceStockMarket * 100) / grandTotal;
 
+            for (PositionInterface positionInterface : investmentFundsPositionList) {
+                investmentFundsMarketBalance += ((GeneralDTO) positionInterface).getSecurities() * ((GeneralDTO) positionInterface).getDirtyPrice();
+            }
+            System.out.println("CashTotalBalance: " + cashTotalBalance);
+            grandTotal = cashTotalBalance + stockMarketBalance + moneyMarketBalance + investmentFundsMarketBalance;
+            cashPercentage = (cashTotalBalance * 100) / grandTotal;
+            stockMarketPercentage = (stockMarketBalance * 100) / grandTotal;
+            moneyMarketPercentage = (moneyMarketBalance * 100) / grandTotal;
+            investmentFundsMarketPercentage = (investmentFundsMarketBalance * 100) / grandTotal;
         } catch (Exception e) {
             System.out.println("Error on CustomerController::dashboard " + e.getLocalizedMessage());
         }
@@ -278,12 +241,14 @@ public class CustomerController {
 
         model.addAttribute("grandTotal", grandTotal);
         model.addAttribute("cashPercentage", cashPercentage);
-        model.addAttribute("moneyMarketPercentage", moneyMarketPercentage);
         model.addAttribute("stockMarketPercentage", stockMarketPercentage);
+        model.addAttribute("moneyMarketPercentage", moneyMarketPercentage);
+        model.addAttribute("investmentFundsMarketPercentage", investmentFundsMarketPercentage);
 
-        model.addAttribute("totalBalanceMN", totalBalanceMN);
-        model.addAttribute("totalBalanceMoneyMarket", totalBalanceMoneyMarket);
-        model.addAttribute("totalBalanceStockMarket", totalBalanceStockMarket);
+        model.addAttribute("totalBalanceMN", cashTotalBalance);
+        model.addAttribute("totalBalanceStockMarket", stockMarketBalance);
+        model.addAttribute("totalBalanceMoneyMarket", moneyMarketBalance);
+        model.addAttribute("investmentFundsMarketBalance", investmentFundsMarketBalance);
 
         return "customer/dashboard";
     }
@@ -296,48 +261,26 @@ public class CustomerController {
         }
         
         CustomerCustomer customer = null;
-        CustomerDetailResponse customerDetailResponse = null;
-        CustomerDetailRequest customerDetailRequest = null;
-        Boolean hasError = false;
-        String errorMessage = "";
-        
-        List<ListaBeneficiaro> listaBeneficiaros = new ArrayList<>();
-        List<ListaCuentum> listaCuenta = new ArrayList<>();
+        List<CustomerBeneficiary> beneficiaryList = new ArrayList<>();
+        List<CustomerAttorney> attorneyList = new ArrayList<>();
+        List<CustomerBankAccount> bankAccountList = new ArrayList<>();
 
         try {
             currentCustomerContract = getCurrentCustomerContract(authentication);
             customer = currentCustomerContract.getCustomer();
 
-            customerDetailRequest = new CustomerDetailRequest();
-            customerDetailRequest.setContrato(currentCustomerContract.getContractNumber());
-            
-            customerDetailResponse = backendService.customerDetail(customerDetailRequest);
-            //System.out.println(customerDetailResponse);
-
-            listaBeneficiaros = customerDetailResponse.getBeneficiarios().getListaBeneficiaros();
-            listaCuenta = customerDetailResponse.getCuenta().getListaCuenta();
+            beneficiaryList = sisBurService.getBeneficiaries(currentCustomerContract.getContractNumber());
+            attorneyList = sisBurService.getAttorneys(currentCustomerContract.getContractNumber());
+            bankAccountList = sisBurService.getBankAccounts(currentCustomerContract.getContractNumber());
         } catch (Exception e) {
-            // Inform of error!
             System.out.println("Error on CustomerController::customerDetail " + e.getLocalizedMessage());
-            // Get last saved if exists
-            Long contractNumber = Long.parseLong(currentCustomerContract.getContractNumber());
-            CustomerData customerData = customerDataRepository.findTopByCustomerNumberAndRequestType(contractNumber, CustomerData.REQUEST_CUSTOMER_DETAIL);
-            customerDetailResponse = mapper.readValue(customerData.getData(), CustomerDetailResponse.class);
-            listaBeneficiaros = customerDetailResponse.getBeneficiarios().getListaBeneficiaros();
-            listaCuenta = customerDetailResponse.getCuenta().getListaCuenta();
-
-            hasError = true;
-            errorMessage = "Ocurrio un error, detalle técnico: " + e.getLocalizedMessage();
         }
 
-        model.addAttribute("hasError", hasError);
-        model.addAttribute("errorMessage", errorMessage);
-
-        model.addAttribute("customerDetailResponse", customerDetailResponse);
-        model.addAttribute("listaBeneficiaros", listaBeneficiaros);
-        model.addAttribute("listaCuenta", listaCuenta);
         model.addAttribute("customer", customer);
-        
+        model.addAttribute("attorneyList", attorneyList);
+        model.addAttribute("beneficiaryList", beneficiaryList);
+        model.addAttribute("bankAccountList", bankAccountList);
+
         return "customer/detail";
     }
 
@@ -347,61 +290,131 @@ public class CustomerController {
         if (authentication == null) {
             return "redirect:/inicio-de-sesion";
         }
-
-        CustomerCustomer customer = null;
         
         List<PositionInterface> generalList = new ArrayList<>();
-        List<Posicion> positionStockList = new ArrayList<Posicion>();
-        List<Posicion> positionMoneyList = new ArrayList<Posicion>();
-        List<Posicion> positionFundsList = new ArrayList<Posicion>();
-        List<Saldo> cashList = new ArrayList<>();
+        List<CashDTO> cashBalanceList = new ArrayList<>();
+        List<PositionInterface> stockMarketPositionList = new ArrayList<>();
+        List<PositionInterface> moneyMarketPositionList = new ArrayList<>();
+        List<PositionInterface> investmentFundsPositionList = new ArrayList<>();
         
-        CustomerMovementPositionResponse customerPositionResponse = null;
-        CustomerMovementPositionRequest customerPositionRequest = null;
+        List<PositionInterface> moneyMarketDirectPositionList = new ArrayList<>();
+        List<PositionInterface> moneyMarketReportPositionList = new ArrayList<>();
+
         Double cashTotalBalance = 0D;
-        Double grandTotal = 0D;
 
         try {
             currentCustomerContract = getCurrentCustomerContract(authentication);
-            customer = currentCustomerContract.getCustomer();
-
-            customerPositionRequest = new CustomerMovementPositionRequest();
-            customerPositionRequest.setContrato(currentCustomerContract.getContractNumber());
-            customerPositionRequest.setTipo("2"); // 1: Movimientos - 2: - Posición
-
-            customerPositionResponse = backendService.customerPosition(customerPositionRequest);
             
-            List<Posicion> positionList = customerPositionResponse.getPosicion();
-            for (Posicion posicion : positionList) {
-                if (posicion.isStockMarket()) positionStockList.add(posicion);
-                if (posicion.isMoneyMarket()) positionMoneyList.add(posicion);
-                if (posicion.isFundsMarket()) positionFundsList.add(posicion);
-            }
-            
-            List<Saldo> balanceList = customerPositionResponse.getSaldo();
-            for(int cont = 0; cont < 2; cont++) {
-                Saldo saldoTmp = balanceList.get(cont);
-                cashTotalBalance += getDoubleValue(saldoTmp.getSaldoActual());
-                cashList.add(saldoTmp);
+            cashBalanceList = sisBurService.getCashBalance(currentCustomerContract.getContractNumber());
+            for (CashDTO element : cashBalanceList) {
+                cashTotalBalance = element.getCurrentBalance();
             }
 
-            customerReportService.generatePositionReports(customerPositionResponse, customer);
-            generalList = customerReportService.getGeneralList();
-
+            stockMarketPositionList = sisBurService.getMarketPosition(currentCustomerContract.getContractNumber(), SisBurService.MARKET_TYPE_STOCK_MARKET);
+            moneyMarketPositionList = sisBurService.getMarketPosition(currentCustomerContract.getContractNumber(), SisBurService.MARKET_TYPE_MONEY_MARKET);
+            investmentFundsPositionList = sisBurService.getMarketPosition(currentCustomerContract.getContractNumber(), SisBurService.MARKET_TYPE_INVESTMENT_FUNDS);
+            generalList = this.getGeneralPosition(cashBalanceList, stockMarketPositionList, moneyMarketPositionList, investmentFundsPositionList);
+ 
+            for (PositionInterface element : moneyMarketPositionList) {
+                if (((GeneralDTO) element).getHolding().equals("REP")) {
+                    moneyMarketReportPositionList.add(element);
+                } else {
+                    moneyMarketDirectPositionList.add(element);
+                }
+            }
+            
         } catch (Exception e) {
             System.out.println("Error on CustomerController::customerPosition " + e.getLocalizedMessage());
         }
 
         model.addAttribute("cashTotalBalance", cashTotalBalance);
         model.addAttribute("today", today);
-        model.addAttribute("positionStockList", positionStockList);
-        model.addAttribute("positionMoneyList", positionMoneyList);
-        model.addAttribute("positionFundsList", positionFundsList);
-        model.addAttribute("cashList", cashList);
-        model.addAttribute("customerPositionResponse", customerPositionResponse);
+        model.addAttribute("positionStockList", stockMarketPositionList);
+        model.addAttribute("positionMoneyList", moneyMarketPositionList);
+        model.addAttribute("moneyMarketReportPositionList", moneyMarketReportPositionList);
+        model.addAttribute("moneyMarketDirectPositionList", moneyMarketDirectPositionList);
+        model.addAttribute("positionFundsList", investmentFundsPositionList);
+        model.addAttribute("cashList", cashBalanceList);
         model.addAttribute("generalList", generalList);
 
         return "customer/position";
+    }
+
+    public List<PositionInterface> getGeneralPosition(List<CashDTO> cashBalanceList, List<PositionInterface> stockMarketPosition, List<PositionInterface> moneyMarketPosition, List<PositionInterface> investmentFundsMarketPosition) {
+        Double grandTotal = 0D;
+        Double percentage;
+        Double cashTotalBalance = 0D;
+        
+        List<PositionInterface> generalList = new ArrayList<>();
+
+        try {
+            // Calculate grand balance
+            for (CashDTO element : cashBalanceList) {
+                cashTotalBalance += element.getCurrentBalance();
+                grandTotal += element.getCurrentBalance();
+            }
+
+            for (PositionInterface element : stockMarketPosition) {
+                grandTotal += ((GeneralDTO) element).getSecurities() * ((GeneralDTO) element).getDirtyPrice();
+            }
+
+            for (PositionInterface element : moneyMarketPosition) {
+                if (((GeneralDTO) element).getHolding().equals("REP")) {
+                    grandTotal += ((GeneralDTO) element).getAmount() + ((GeneralDTO) element).getAward();
+                } else {
+                    grandTotal += ((GeneralDTO) element).getSecurities() * ((GeneralDTO) element).getDirtyPrice24();
+                }
+            }
+
+            for (PositionInterface element : investmentFundsMarketPosition) {
+                grandTotal += ((GeneralDTO) element).getSecurities() * ((GeneralDTO) element).getDirtyPrice();
+            }
+
+            System.out.println("GrandTotal Calculated: " + grandTotal);
+
+            GeneralDTO cashGeneralDTO = new GeneralDTO();    
+            cashGeneralDTO.setMarket("Saldo MN");
+            cashGeneralDTO.setEmmiter("");
+            cashGeneralDTO.setSerie("");
+            cashGeneralDTO.setSecurities(0D);
+            cashGeneralDTO.setAverageAmount(0D);
+            cashGeneralDTO.setMarketPrice(0D);
+            cashGeneralDTO.setMarketValue(cashTotalBalance);
+            cashGeneralDTO.setPercentage((cashTotalBalance * 100) / grandTotal); // Se sabe hasta el final
+            cashGeneralDTO.setCapitalGainLoss(0D);
+            generalList.add(cashGeneralDTO);
+
+            //System.out.println("GrandTotal: " + grandTotal);
+            
+            for (PositionInterface element : stockMarketPosition) {
+                percentage = (((GeneralDTO) element).getSecurities() * ((GeneralDTO) element).getDirtyPrice24() * 100) / grandTotal;
+                ((GeneralDTO) element).setPercentage(percentage);
+            }
+
+            for (PositionInterface element : moneyMarketPosition) {
+                if (((GeneralDTO) element).getHolding().equals("REP")) {
+                    percentage = (((GeneralDTO) element).getAward() + ((GeneralDTO) element).getAmount() * 100) / grandTotal;
+                } else {
+                    percentage = (((GeneralDTO) element).getSecurities() * ((GeneralDTO) element).getDirtyPrice24() * 100) / grandTotal;
+                }
+
+                ((GeneralDTO) element).setPercentage(percentage);
+            }
+
+            for (PositionInterface element : investmentFundsMarketPosition) {
+                percentage = (((GeneralDTO) element).getMarketValue() * 100) / grandTotal;
+                ((GeneralDTO) element).setPercentage(percentage);
+            }
+
+            generalList.addAll(stockMarketPosition);
+            generalList.addAll(moneyMarketPosition);
+            generalList.addAll(investmentFundsMarketPosition);
+
+        } catch (Exception e) {
+            log.error("CustomerController::getGeneralPosition", e);
+        }
+
+        return generalList;
     }
 
     @GetMapping("/posicion/descargar-reporte")
@@ -414,6 +427,11 @@ public class CustomerController {
         String fileName = "";
         List<PositionInterface> positionList = new ArrayList<>();
         LocalDateTime now = LocalDateTime.now();
+        List<PositionInterface> moneyMarketDirectPositionList = new ArrayList<>();
+        List<PositionInterface> moneyMarketReportPositionList = new ArrayList<>();
+        String jsonData = "";
+        
+        String moneyMarketReportJsonData = "";
 
         try {
             currentCustomerContract = getCurrentCustomerContract(authentication);
@@ -428,11 +446,12 @@ public class CustomerController {
             if (type == CustomerReportService.TYPE_GENERAL) {
                 fileName += "ReportePosicionGeneral_" + now.format(fileCompleteFormatter) + ".pdf";
 
+                List<CashDTO> cashBalanceList = sisBurService.getCashBalance(contractNumber);
                 List<PositionInterface> stockMarketList =  sisBurService.getMarketPosition(contractNumber, SisBurService.MARKET_TYPE_STOCK_MARKET);
                 List<PositionInterface> moneyMarketList =  sisBurService.getMarketPosition(contractNumber, SisBurService.MARKET_TYPE_MONEY_MARKET);
-                // Create position
-                positionList.addAll(stockMarketList);
-                positionList.addAll(moneyMarketList);
+                List<PositionInterface> investmentFundsMarketList =  sisBurService.getMarketPosition(contractNumber, SisBurService.MARKET_TYPE_INVESTMENT_FUNDS);
+
+                positionList = this.getGeneralPosition(cashBalanceList, stockMarketList, moneyMarketList, investmentFundsMarketList);
             } else if (type == CustomerReportService.TYPE_STOCK_MARKET) {
                 fileName += "ReportePosicionMercadoCapitales_"+ now.format(fileCompleteFormatter) + ".pdf";
                 positionList =  sisBurService.getMarketPosition(contractNumber, SisBurService.MARKET_TYPE_STOCK_MARKET);
@@ -441,6 +460,20 @@ public class CustomerController {
                 fileName += "ReportePosicionMercadoDinero_" + now.format(fileCompleteFormatter) + ".pdf";
                 positionList =  sisBurService.getMarketPosition(contractNumber, SisBurService.MARKET_TYPE_MONEY_MARKET);
 
+                for (PositionInterface element : positionList) {
+                    if (((GeneralDTO) element).getHolding().equals("REP")) {
+                        moneyMarketReportPositionList.add(element);
+                    } else {
+                        moneyMarketDirectPositionList.add(element);
+                    }
+                }
+
+                jsonData = mapper.writeValueAsString(moneyMarketDirectPositionList);
+                moneyMarketReportJsonData = mapper.writeValueAsString(moneyMarketReportPositionList);
+            }
+
+            if (type != CustomerReportService.TYPE_MONEY_MARKET) {
+                jsonData = mapper.writeValueAsString(positionList);
             }
 
             CustomerPositionReportRequests positionReportRequests = new CustomerPositionReportRequests();
@@ -448,14 +481,14 @@ public class CustomerController {
             positionReportRequests.setSession(currentSession);
             positionReportRequests.setContractNumber(contractNumber);
             positionReportRequests.setType(type);
-            positionReportRequests.setData(mapper.writeValueAsString(positionList));
+            positionReportRequests.setData(jsonData);
             positionReportRequestRepository.saveAndFlush(positionReportRequests);
 
             response.setHeader("Content-Disposition", "attachment; filename=" + fileName + "");
-            customerReportService.getOutputStreamReport(currentCustomerContract.getCustomer(), positionList, type, outputStream);
+            customerReportService.getOutputStreamReport(currentCustomerContract.getCustomer(), type, outputStream, jsonData, moneyMarketReportJsonData);
 
         } catch (Exception e) {
-            log.error("", e);
+            log.error("CustomerController::customerPositionDownload", e);
         }
         
     }
@@ -501,17 +534,9 @@ public class CustomerController {
         try {
             currentCustomerContract = getCurrentCustomerContract(authentication);
             customer = currentCustomerContract.getCustomer();
-
-            CustomerSession currentSession = customer.getSessions().stream()
-                .filter(cs -> cs.isCurrent())
-                .findFirst()
-                .orElse(null);
             
             customerReportService.generateMovementsReport(customer, startDate, endDate);
             movementReportList = customerReportService.getMovementDataList();
-
-            
-
         } catch (Exception e) {
             System.out.println("Error on CustomerController::customerMovements " + e.getLocalizedMessage());
         }
@@ -560,7 +585,7 @@ public class CustomerController {
 
             customerReportService.getOutputStreamMovementsReport(currentCustomerContract.getCustomer(), data, fechaInicio, fechaTermino, response.getOutputStream());
         } catch (Exception e) {
-            log.error("", e);
+            log.error("CustomerController::downloadMovementReport", e);
         }
     }
 
@@ -570,13 +595,13 @@ public class CustomerController {
         return "customer/results";
     }
 
-
     @GetMapping("/estados-cuenta")
     public String customerStatements(Authentication authentication, Model model) {
         if (authentication == null) {
             return "redirect:/inicio-de-sesion";
         }
 
+        List<String> periodList;
         List<Map<String,Object>> statementPeriodList;
         StatementAccount currentStatementAccount = null;
         List<StatementAccount> statementAccountList = new ArrayList<>();
@@ -584,22 +609,39 @@ public class CustomerController {
 
         try {
             currentCustomerContract = getCurrentCustomerContract(authentication);
+
+            periodList = sisFiscalService.getPeriodList();
             statementPeriodList = sisFiscalService.getStatementAccountPeriods(currentCustomerContract.getContractNumber());
 
-            for (Map<String,Object> statementObj : statementPeriodList) {
-                dateString = statementObj.get("FECHA").toString().substring(0, 10);
-                LocalDate localDate = LocalDate.parse(dateString);
+            for (String datePeriod : periodList) {
+                Map<String,Object> element = statementPeriodList
+                    .stream()
+                    .filter(
+                        e -> e.get("FECHA")
+                            .toString()
+                            .substring(0, 10)
+                            .equals(datePeriod))
+                    .findFirst()
+                    .orElse(null);
 
-                StatementAccount statementAccount = new StatementAccount();
-                statementAccount.setContrato(currentCustomerContract.getContractNumber());
-                statementAccount.setAnio(localDate.getYear() + "");
-                statementAccount.setMes(localDate.getMonthValue() + "");
-                statementAccount.setFecha(dateString);
-
-                statementAccountList.add(statementAccount);
+                if (element == null) {
+                    statementAccountList.add(null);
+                } else {
+                    StatementAccount statementAccount = new StatementAccount();
+                    statementAccount.setContrato(currentCustomerContract.getContractNumber());
+                    dateString = element.get("FECHA").toString().substring(0, 10);
+                    LocalDate localDate = LocalDate.parse(dateString);
+                    statementAccount.setAnio(localDate.getYear() + "");
+                    statementAccount.setMes(localDate.getMonthValue() + "");
+                    statementAccount.setFecha(dateString);
+    
+                    statementAccountList.add(statementAccount);
+                }
             }
+            statementAccountList = statementAccountList.subList(0, statementPeriodList.size());
 
             currentStatementAccount = statementAccountList.getFirst();
+
             statementAccountList.remove(0);
 
         } catch (Exception e) {
@@ -643,7 +685,7 @@ public class CustomerController {
             month += statementAccount.getDate().getMonthValue() < 10 ? "0" + statementAccount.getDate().getMonthValue() : statementAccount.getDate().getMonthValue();
 
             // Check on DB
-            customerStatementAccountOptional = customerStatementAccountRepository.findOneByCustomerContractAndYearAndMonth(currentCustomerContract, year, month);
+            customerStatementAccountOptional = customerStatementAccountRepository.findOneByCustomerContractAndYearAndMonthAndType(currentCustomerContract, year, month, tipo);
 
             if (customerStatementAccountOptional.isPresent()) {
                 statementAccountId = customerStatementAccountOptional.get().getStatementAccountId();
@@ -669,7 +711,7 @@ public class CustomerController {
     }
 
     @GetMapping("/estados-cuenta/ver-pdf/{statementAccountId}")
-    public ResponseEntity<PathResource> showPdf(@PathVariable Long statementAccountId, Authentication authentication) throws IOException {
+    public ResponseEntity<PathResource> showPdf(@NonNull @PathVariable Long statementAccountId, Authentication authentication) throws IOException {
         if (authentication == null) {
             //return "redirect:/inicio-de-sesion";
         }
@@ -692,7 +734,7 @@ public class CustomerController {
             System.out.println("Error on: " + e.getLocalizedMessage());
         }
 
-        PathResource res = new PathResource(path);
+        PathResource res = new PathResource(path + fileName);
         HttpHeaders headers = new org.springframework.http.HttpHeaders();
 
         headers.set("X-Frame-Options", "ALLOW-FROM origin");
@@ -814,6 +856,7 @@ public class CustomerController {
             currentCustomerContract = getCurrentCustomerContract(authentication);
             
             resultList = sisBurService.getPeriodList(currentCustomerContract.getContractNumber());
+            
             for (Map<String, Object> element : resultList) {
                 TaxCertificate taxCertificate = new TaxCertificate();
                 taxCertificate.setPeriodo(element.get("PERIODO").toString());
@@ -839,7 +882,7 @@ public class CustomerController {
     }
 
     @GetMapping("/constancia-fiscal/consultar")
-    public String customerTaxCertificatesQuery(@RequestParam String year, @RequestParam Integer type, 
+    public String customerTaxCertificatesQuery(@RequestParam String year, @RequestParam Integer type, @RequestParam Integer owner, 
         Authentication authentication, Model model) {
         
         String contractNumber = null;
@@ -856,18 +899,18 @@ public class CustomerController {
                 .findFirst()
                 .orElse(null);
 
-            Optional<CustomerTaxCertificate> result = customerTaxCertificateRepository.findOneByYearAndTypeAndFileTypeAndCustomerContract(year.toString(), type, CustomerTaxCertificate.FILE_TYPE_PDF, currentCustomerContract);
+            Optional<CustomerTaxCertificate> result = customerTaxCertificateRepository.findOneByYearAndTypeAndOwnerAndFileTypeAndCustomerContract(year.toString(), owner, type, CustomerTaxCertificate.FILE_TYPE_PDF, currentCustomerContract);
 
             if (result.isPresent()) { // Already downloaded, get and send taxCertificateId
                 customerTaxCertificate = result.get();
                 customerTaxCertificateId = customerTaxCertificate.getTaxCertificateId();
             } else {
-                byte[] data = sisBurService.getTaxCertificateFile(contractNumber, year, type, CustomerTaxCertificate.FILE_TYPE_PDF);
+                byte[] data = sisBurService.getTaxCertificateFile(contractNumber, year, type, owner, CustomerTaxCertificate.FILE_TYPE_PDF);
                 String filePath = "contracts/" + contractNumber  + "/tax_certificates/";
                 String fileName = contractNumber + "_" + year + "_" + CustomerTaxCertificate.taxCertificateTypes[type] + ".pdf";
 
                 this.saveFile(contractNumber, filePath, fileName, data);
-                customerTaxCertificate = this.registerTaxCertificate(currentCustomerContract, currentSession, filePath, fileName, year, type, CustomerTaxCertificate.FILE_TYPE_PDF);
+                customerTaxCertificate = this.registerTaxCertificate(currentCustomerContract, currentSession, filePath, fileName, year, type, owner, CustomerTaxCertificate.FILE_TYPE_PDF);
                 customerTaxCertificateId = customerTaxCertificate.getTaxCertificateId();
             }
 
@@ -880,12 +923,13 @@ public class CustomerController {
         return "customer/tax-certificate-view";
     }
 
-    private CustomerTaxCertificate registerTaxCertificate(CustomerContract customerContract, CustomerSession session, String path, String filename, String year, Integer type, Integer fileType) {
+    private CustomerTaxCertificate registerTaxCertificate(CustomerContract customerContract, CustomerSession session, String path, String filename, String year, Integer type, Integer owner, Integer fileType) {
         CustomerTaxCertificate customerTaxCertificate = new CustomerTaxCertificate();
         customerTaxCertificate.setCustomerContract(customerContract);
         customerTaxCertificate.setSession(session);
         customerTaxCertificate.setYear(year);
         customerTaxCertificate.setType(type);
+        customerTaxCertificate.setOwner(owner);
         customerTaxCertificate.setFileType(fileType);
         customerTaxCertificate.setPath(path);
         customerTaxCertificate.setFilename(filename);
@@ -897,7 +941,8 @@ public class CustomerController {
     }
 
     @GetMapping("/constancia-fiscal/descargar")
-    public void customerTaxCertificateDownload(@RequestParam String year, @RequestParam Integer type, @RequestParam Integer fileType, 
+    public void customerTaxCertificateDownload(@RequestParam String year, @RequestParam Integer type, 
+        @RequestParam Integer owner, @RequestParam Integer fileType, 
         Authentication authentication, HttpServletResponse response, Model model) throws IOException {
 
         String contractNumber;
@@ -914,18 +959,18 @@ public class CustomerController {
                 .orElse(null);
             
         contractNumber = currentCustomerContract.getContractNumber();
-        customerTaxCertificateOptional = customerTaxCertificateRepository.findOneByYearAndTypeAndFileTypeAndCustomerContract(year, type, fileType, currentCustomerContract);
+        customerTaxCertificateOptional = customerTaxCertificateRepository.findOneByYearAndTypeAndOwnerAndFileTypeAndCustomerContract(year, type, owner, fileType, currentCustomerContract);
 
         if (customerTaxCertificateOptional.isPresent()) {
             customerTaxCertificate = customerTaxCertificateOptional.get();
         } else {
-            byte[] data = sisBurService.getTaxCertificateFile(contractNumber, year, type, fileType);
+            byte[] data = sisBurService.getTaxCertificateFile(contractNumber, year, type, owner, fileType);
             String extension = fileType == 1 ? "PDF" : "XML";
             String filePath = "contracts/" + contractNumber  + "/tax_certificates/";
             String fileName = contractNumber + "_" + year + "_" + CustomerTaxCertificate.taxCertificateTypes[type] + "." + extension.toLowerCase();
 
             this.saveFile(contractNumber, filePath, fileName, data);
-            customerTaxCertificate = this.registerTaxCertificate(currentCustomerContract, currentSession, filePath, fileName, year, type, fileType);
+            customerTaxCertificate = this.registerTaxCertificate(currentCustomerContract, currentSession, filePath, fileName, year, type, owner, fileType);
         }
 
         // Audit
@@ -950,7 +995,7 @@ public class CustomerController {
     }
 
     @GetMapping("/constancia-fiscal/ver-pdf/{customerTaxCertificateId}")
-    public ResponseEntity<PathResource> showTaxCertificate(@PathVariable Integer customerTaxCertificateId, Authentication authentication) {
+    public ResponseEntity<PathResource> showTaxCertificate(@NonNull @PathVariable Long customerTaxCertificateId, Authentication authentication) {
 
         Optional<CustomerTaxCertificate> result;
         CustomerTaxCertificate taxCertificate;
@@ -958,7 +1003,7 @@ public class CustomerController {
         String customerTaxCertificateFilePath = null;
 
         try {
-            result = customerTaxCertificateRepository.findById(Long.valueOf(customerTaxCertificateId));
+            result = customerTaxCertificateRepository.findById(customerTaxCertificateId);
 
             if (result.isPresent()) {
                 taxCertificate = result.get();
@@ -1031,14 +1076,16 @@ public class CustomerController {
     public List<CustomerContract> customerContractList(Authentication authentication) {
         List<CustomerContract> customerContractsList = new ArrayList<>();
 
-        try {
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            //
-            CustomerContract contract = contractRepository.findOneByContractNumber(userDetails.getUsername()).get();
-            customerContractsList = contract.getCustomer().getContracts();
-
-        } catch (Exception e) {
-            System.out.println(e.getLocalizedMessage());
+        if (authentication != null) {
+            try {
+                UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+                //
+                CustomerContract contract = contractRepository.findOneByContractNumber(userDetails.getUsername()).get();
+                customerContractsList = contract.getCustomer().getContracts();
+    
+            } catch (Exception e) {
+                System.out.println(e.getLocalizedMessage());
+            }
         }
 
         return customerContractsList;
@@ -1048,22 +1095,26 @@ public class CustomerController {
     public CustomerContract getCurrentCustomerContract(Authentication authentication) {
         CustomerContract currentCustomerContract = null;
 
-        try {
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            CustomerContract contract = contractRepository.findOneByContractNumber(userDetails.getUsername()).get();
-            
-            if (contract.isCurrent()) {
-                currentCustomerContract = contract;
-            } else {
-                for (CustomerContract customerContract : contract.getCustomer().getContracts()) {
-                    if(customerContract.isCurrent()) {
-                        currentCustomerContract = customerContract;
-                        break;
+        if (authentication != null) {
+            try {
+                UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+                CustomerContract contract = contractRepository.findOneByContractNumber(userDetails.getUsername()).get();
+                System.out.println("Current contract: " + contract.getContractNumber());
+                System.out.println("Value of isCurrent(): " + contract.isCurrent());
+
+                if (contract.isCurrent()) {
+                    currentCustomerContract = contract;
+                } else {
+                    for (CustomerContract customerContract : contract.getCustomer().getContracts()) {
+                        if(customerContract.isCurrent()) {
+                            currentCustomerContract = customerContract;
+                            break;
+                        }
                     }
                 }
+            } catch (Exception e) {
+                System.out.println(e.getLocalizedMessage());
             }
-        } catch (Exception e) {
-            System.out.println(e.getLocalizedMessage());
         }
 
         return currentCustomerContract;

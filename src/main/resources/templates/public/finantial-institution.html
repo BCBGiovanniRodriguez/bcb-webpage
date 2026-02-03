@@ -9,7 +9,12 @@
             <section>
                 <div class="header-inner">
                     <div class="inner text-center">
-                        <h3 class="text-white uppercase"><strong>BURÓ DE ENTIDADES FINANCIERAS</strong></h3>
+                        <h3 class="text-white uppercase">
+                            <strong>BURÓ DE ENTIDADES FINANCIERAS</strong>
+                            <a class="external-link" href="#" data-toggle="modal" data-target="#MainMenu-BM-salir" data-link="https://www.buro.gob.mx">
+                                <img th:src="@{/public/images/iconos-genericos/Logo-Buro.png.jpeg}" alt="" style="height: 5%; width: 5%;">
+                            </a>
+                        </h3>
                     </div>
                     <div class="overlay bg-opacity-5"></div>
                 </div>
@@ -52,7 +57,7 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-md-12 text-center">
-                            <a class="btn btn-border btn-white btn-large btn-round" href="https://www.buro.gob.mx" target="_blank">www.buro.gob.mx</a>
+                            <a class="btn btn-border btn-white btn-large btn-round external-link" href="#" data-toggle="modal" data-target="#MainMenu-BM-salir" data-link="https://www.buro.gob.mx">www.buro.gob.mx</a>
                         </div>
                     </div>
                 </div>
@@ -77,8 +82,7 @@
             <!--end section -->
             <div class="clearfix"></div>
 
-            <div class="contacto-pop colorBM"><a href="#" data-toggle="modal" data-target="#MainMenu-BM-contacto"><i class="fa fa-envelope"></i> Contáctanos</a></div>
-            <a href="#" class="scrollup colorBM"></a><!-- end scroll to top of the page--> 
+            <div th:replace="~{public/fragments/commons :: contact}"></div>
         </div>
 
         <div th:replace="~{public/fragments/commons :: modals}"></div>

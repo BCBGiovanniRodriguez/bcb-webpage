@@ -33,13 +33,35 @@ public class CustomerCustomer {
 
     private String phoneNumber;
 
+    private String homePhoneNumber;
+
+    private String workPhoneNumber;
+
+    private String fullAddress;
+
     private String email;
 
     private Integer initial;
 
     private Integer locked;
 
-    private String password;
+    private String rfc;
+
+    private String curp;
+
+    private Integer service;
+
+    private String profile;
+
+    public static final Integer SERVICE_ADVICE = 1;
+
+    public static final Integer SERVICE_SPECIALICED_ADVICE = 2;
+
+    public static final Integer SERVICE_MANAGEMENT = 3;
+
+    public static final Integer SERVICE_EXECUTION = 4;
+
+    public static final String[] services = {"NO DEFINIDO", "Asesoria", "Asesoria Especializada", "Gestión", "Ejecución"};
 
     @Column(nullable = false, columnDefinition = "timestamp default current_timestamp")
     private LocalDateTime created;
@@ -125,14 +147,6 @@ public class CustomerCustomer {
         this.locked = locked;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public LocalDateTime getCreated() {
         return created;
     }
@@ -161,8 +175,8 @@ public class CustomerCustomer {
     public String toString() {
         return "CustomerCustomer [customerId=" + customerId + ", customerKey=" + customerKey + ", name=" + name
                 + ", lastName=" + lastName + ", secondLastName=" + secondLastName + ", phoneNumber=" + phoneNumber
-                + ", email=" + email + ", initial=" + initial + ", locked=" + locked + ", password=" + password
-                + ", created=" + created + "]";
+                + ", email=" + email + ", initial=" + initial + ", locked=" + locked + ", created=" + created
+                + ", contracts=" + contracts + ", sessions=" + sessions + "]";
     }
 
     public String getCustomerFullName() {
@@ -183,4 +197,63 @@ public class CustomerCustomer {
         return fullName;
     }
 
+    public String getRfc() {
+        return rfc;
+    }
+
+    public void setRfc(String rfc) {
+        this.rfc = rfc;
+    }
+
+    public String getCurp() {
+        return curp;
+    }
+
+    public void setCurp(String curp) {
+        this.curp = curp;
+    }
+
+    public Integer getService() {
+        return service;
+    }
+
+    public void setService(Integer service) {
+        this.service = service;
+    }
+
+    public String getProfile() {
+        return profile;
+    }
+
+    public void setProfile(String profile) {
+        this.profile = profile;
+    }
+
+    public String getServiceAsString() {
+        return services[this.service];
+    }
+
+    public String getHomePhoneNumber() {
+        return homePhoneNumber;
+    }
+
+    public void setHomePhoneNumber(String homePhoneNumber) {
+        this.homePhoneNumber = homePhoneNumber;
+    }
+
+    public String getWorkPhoneNumber() {
+        return workPhoneNumber;
+    }
+
+    public void setWorkPhoneNumber(String workPhoneNumber) {
+        this.workPhoneNumber = workPhoneNumber;
+    }
+
+    public String getFullAddress() {
+        return fullAddress;
+    }
+
+    public void setFullAddress(String fullAddress) {
+        this.fullAddress = fullAddress;
+    }
 }

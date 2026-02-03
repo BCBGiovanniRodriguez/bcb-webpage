@@ -3,16 +3,21 @@
     <head th:fragment="head">
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Portal Cliente</title>
+        <title>BCB Casa de Bolsa - Portal Cliente</title>
         <link rel="icon" th:href="@{/public/img/favicon.ico}">
         <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
+         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
         <link rel="stylesheet" type="text/css" th:href="@{/public/adminlte/css/adminlte.min.css}" />
-        <link rel="stylesheet" type="text/css" th:href="@{/public/adminlte/plugins/fontawesome/fontawesome.min.css}" />
+        <!--<link rel="stylesheet" type="text/css" th:href="@{/public/adminlte/plugins/fontawesome/fontawesome.min.css}" />-->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/2.11.0/styles/overlayscrollbars.min.css" integrity="sha512-PBzouFB1XtDMHX9kVQ3rh7MDwvHFyD5FflRNcuMk7Q9BR9v8DgwjZWu++yrIxOjsdW3j+sj9KnnY59Jjzx5hWQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" integrity="sha512-dPXYcDub/aeb08c63jRq/k6GaKccl256JQy/AnOq7CAnEZ9FzSL9wSbcZkMp4R26vBsMLFYH4kQ67/bbV8XaCQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        
+        <link rel="stylesheet" type="text/css" th:href="@{/public/thirdparty/bootstrap/css/bootstrap.min.css}" />
+        <link rel="stylesheet" th:href="@{/public/css/default.css}" />
         <script>
             const baseUrl = '/';
             </script>
+        <link rel="stylesheet" type="text/css" th:href="@{/public/css/start.css}" />
         <link rel="stylesheet" type="text/css" th:href="@{/public/css/inactivity.css}" />
     </head>
 
@@ -133,22 +138,48 @@
             <!-- Sidebar Wrapper-->
         </aside>
 
+        <div th:fragment="modals">
+            <!-- Modal -->
+            <div class="modal fade" id="warningModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="warningModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="warningModalLabel">Cerrando Sesión</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>
+                                
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
+        </div>
 
         <footer th:fragment="footer" class="app-footer">
-            <span>
+            <span class="hidden" hidden>
                 Entorno: <b>Development</b>
             </span>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <p id="warning">
+                            La sesión se cerrará automáticamente en <span id="countdown">10</span> segundos.
+                        </p>
+                    </div>
+                </div>
+            </div>
 
             <div class="float-end d-none d-sm-inline">
                 <strong>
                     Copyright &copy; 2025 &nbsp;
                     BCB CASA DE BOLSA TODOS LOS DERECHOS RESERVADOS
                 </strong>
-            </div>
-            <div id="warning">
-                Has estado inactivo por un tiempo. <br>
-                La sesión se cerrará automáticamente en <span id="countdown">10</span> segundos.
             </div>
         </footer>
 
@@ -157,8 +188,10 @@
             <script th:src="@{/public/adminlte/plugins/jquery/jquery-3.7.1.min.js}"></script>
             <script th:src="@{/public/adminlte/js/adminlte.min.js}"></script>
             <script th:src="@{/public/thirdparty/bootstrap/js/bootstrap.min.js}"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/js/all.min.js" integrity="sha512-b+nQTCdtTBIRIbraqNEwsjB6UvL3UEMkXnhzd8awtCYh0Kcsjl9uEgwVFVbhoj3uu1DO1ZMacNvLoyJJiNfcvg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/js/all.min.js" integrity="sha512-b+nQTCdtTBIRIbraqNEwsjB6UvL3UEMkXnhzd8awtCYh0Kcsjl9uEgwVFVbhoj3uu1DO1ZMacNvLoyJJiNfcvg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>-->
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/js/all.min.js" integrity="sha512-6BTOlkauINO65nLhXhthZMtepgJSghyimIalb+crKRPhvhmsCdnIuGcVbR5/aQY2A+260iC1OPy1oCdB6pSSwQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
             <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js" integrity="sha256-Lye89HGy1p3XhJT24hcvsoRw64Q4IOL5a7hdOflhjTA=" crossorigin="anonymous"></script>
+            <script th:src="@{/public/js/start.js}"></script>
             <script th:src="@{/public/js/inactivity.js}"></script>
         </div>
         

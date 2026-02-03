@@ -100,7 +100,7 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-md-12 text-center">
-                            <a class="btn btn-border white-2 btn-large btn-round" href="#">Contacto Fiduciario</a>
+                            <a class="btn btn-border white-2 btn-large btn-round btn-send-email" href="#" data-toggle="modal" data-target="#MainMenu-BM-contacto" data-origin="4">Contacto Fiduciario</a>
                         </div>
                     </div>
                 </div>
@@ -125,8 +125,7 @@
             <!--end section -->
             <div class="clearfix"></div>
 
-            <div class="contacto-pop colorBM"><a href="#" data-toggle="modal" data-target="#MainMenu-BM-contacto"><i class="fa fa-envelope"></i> Contáctanos</a></div>
-            <a href="#" class="scrollup colorBM"></a><!-- end scroll to top of the page--> 
+            <div th:replace="~{public/fragments/commons :: contact}"></div>
         </div>
 
         <div th:replace="~{public/fragments/commons :: modals}"></div>

@@ -1,0 +1,147 @@
+<!-- Created with Jaspersoft Studio version 7.0.2.final using JasperReports Library version 7.0.2-31532122640f516c6d17238ae0e41a08113d5ac0  -->
+<jasperReport name="GeneralPosition_Letter_Landscape" language="java" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3a35090a-98a9-41d1-a367-bc070e33511b">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="net.sf.jasperreports.data.adapter" value="DataAdapter.jrdax"/>
+	<parameter name="P_SEARCH_DATE" class="java.lang.String"/>
+	<parameter name="P_CUSTOMER_NAME" class="java.lang.String"/>
+	<parameter name="P_CUSTOMER_CONTRACT_NUMBER" class="java.lang.String"/>
+	<query language="sql"><![CDATA[]]></query>
+	<field name="mercado" class="java.lang.String"/>
+	<field name="emisora" class="java.lang.String"/>
+	<field name="serie" class="java.lang.String"/>
+	<field name="plazo" class="java.math.BigDecimal"/>
+	<field name="tasa" class="java.math.BigDecimal"/>
+	<field name="titulos" class="java.math.BigDecimal"/>
+	<field name="precio" class="java.math.BigDecimal"/>
+	<field name="costoPromedio" class="java.math.BigDecimal"/>
+	<field name="valorACosto" class="java.math.BigDecimal"/>
+	<field name="valor" class="java.math.BigDecimal"/>
+	<field name="porcentaje" class="java.lang.Double"/>
+	<field name="plusMinusValia" class="java.math.BigDecimal"/>
+	<variable name="totalAmount" calculation="Sum" class="java.lang.Double">
+		<expression><![CDATA[$F{valor}]]></expression>
+		<initialValueExpression><![CDATA[0.0]]></initialValueExpression>
+	</variable>
+	<variable name="capitalGainLossSum" calculation="Sum" class="java.lang.Double">
+		<expression><![CDATA[$F{plusMinusValia}]]></expression>
+		<initialValueExpression><![CDATA[0.0]]></initialValueExpression>
+	</variable>
+	<variable name="percentageTotal" calculation="Sum" class="java.lang.Double">
+		<expression><![CDATA[$F{porcentaje}]]></expression>
+		<initialValueExpression><![CDATA[0.0]]></initialValueExpression>
+	</variable>
+	<background splitType="Stretch"/>
+	<title height="90" splitType="Stretch">
+		<element kind="image" uuid="c9467117-610e-4520-91e6-a05b417a10d9" x="0" y="0" width="251" height="50">
+			<expression><![CDATA["BCB-logo-blue.svg"]]></expression>
+		</element>
+		<element kind="staticText" uuid="ad221f22-fcf6-4d2d-8726-7ded3144c201" x="392" y="0" width="348" height="40" forecolor="#003B72" fontSize="25.0" hTextAlign="Right">
+			<text><![CDATA[REPORTE DE POSICIÓN]]></text>
+		</element>
+		<element kind="staticText" uuid="87d34989-b90c-4c46-a2e4-fa0b75769c5e" x="392" y="73" width="126" height="14" forecolor="#003B72" bold="true">
+			<text><![CDATA[FECHA CONSULTA]]></text>
+		</element>
+		<element kind="textField" uuid="bebf6f53-6168-462c-9724-94e555190289" x="560" y="72" width="180" height="16" hTextAlign="Right">
+			<expression><![CDATA[$P{P_SEARCH_DATE}]]></expression>
+		</element>
+		<element kind="staticText" uuid="de870c85-bf64-46ee-997b-275c8ae2e333" x="392" y="41" width="64" height="14" forecolor="#003B72" bold="true">
+			<text><![CDATA[CLIENTE]]></text>
+		</element>
+		<element kind="staticText" uuid="28774125-309b-40c9-ba7a-f5dbf21d4ffd" x="392" y="57" width="64" height="14" forecolor="#003B72" bold="true">
+			<text><![CDATA[CONTRATO]]></text>
+		</element>
+		<element kind="textField" uuid="bd0deb65-26ca-452e-ada0-302a825e4cac" x="456" y="40" width="284" height="16" hTextAlign="Right">
+			<expression><![CDATA[$P{P_CUSTOMER_NAME}]]></expression>
+		</element>
+		<element kind="textField" uuid="a160450b-89a5-4d7a-b021-8ad4a55003aa" x="500" y="56" width="240" height="16" hTextAlign="Right">
+			<expression><![CDATA[$P{P_CUSTOMER_CONTRACT_NUMBER}]]></expression>
+		</element>
+		<property name="com.jaspersoft.studio.unit.height" value="px"/>
+	</title>
+	<pageHeader height="31" splitType="Stretch">
+		<element kind="staticText" uuid="220e65bb-f011-4b34-9367-1ac86320c265" x="275" y="6" width="210" height="22" forecolor="#003B72" fontSize="13.0" bold="true" italic="false" hTextAlign="Center">
+			<text><![CDATA[RESUMEN GENERAL]]></text>
+		</element>
+	</pageHeader>
+	<columnHeader height="34" splitType="Stretch">
+		<element kind="staticText" uuid="58910d0f-bb8a-4544-bf0f-6ee6bfeb1646" x="110" y="15" width="100" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Left">
+			<text><![CDATA[EMISORA - SERIE]]></text>
+		</element>
+		<element kind="staticText" uuid="f55a634a-c00e-4bc9-a580-89032965ae92" x="210" y="15" width="70" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Right">
+			<text><![CDATA[TÍTULOS]]></text>
+		</element>
+		<element kind="staticText" uuid="51b59c80-22c8-4e28-93c2-de95388fc713" x="280" y="15" width="100" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Right">
+			<text><![CDATA[COSTO PROMEDIO]]></text>
+		</element>
+		<element kind="staticText" uuid="314c963d-f8bd-4e20-9d9c-d6c88c27bad8" x="380" y="15" width="100" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Right">
+			<text><![CDATA[PRECIO MERCADO]]></text>
+		</element>
+		<element kind="staticText" uuid="94eb7665-67a2-418b-a75c-1053aa5ab668" x="480" y="15" width="90" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Right">
+			<text><![CDATA[VALOR MERCADO]]></text>
+		</element>
+		<element kind="staticText" uuid="43845205-e88b-462f-8049-60db15ecc235" x="640" y="15" width="100" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Right">
+			<text><![CDATA[PLUS/MINUSVALÍA]]></text>
+		</element>
+		<element kind="staticText" uuid="692fc29b-dca7-41e3-910f-e1412d15b9ec" x="20" y="15" width="90" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Left">
+			<text><![CDATA[MERCADO]]></text>
+		</element>
+		<element kind="staticText" uuid="68d6ef4f-225b-4215-8e14-a1a94547c1ad" x="570" y="15" width="70" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Right">
+			<text><![CDATA[% PORTAFOLIO]]></text>
+		</element>
+	</columnHeader>
+	<detail>
+		<band height="16">
+			<element kind="textField" uuid="2d23b5b4-ece5-476d-936c-800be77fec37" x="20" y="0" width="90" height="16" fontSize="8.0" hTextAlign="Left">
+				<expression><![CDATA[$F{mercado}]]></expression>
+			</element>
+			<element kind="textField" uuid="fe342811-e4f0-4268-adab-ff39df2d57e0" x="210" y="0" width="70" height="16" fontSize="8.0" pattern="#,##0;-#,##0" hTextAlign="Right">
+				<expression><![CDATA[$F{titulos}]]></expression>
+			</element>
+			<element kind="textField" uuid="9bccdcb6-3ef0-4917-ac91-1d1f49f4f745" x="280" y="0" width="100" height="16" fontSize="8.0" pattern=" #,##0.000000;-#,##0.000000" hTextAlign="Right">
+				<expression><![CDATA[$F{costoPromedio}]]></expression>
+			</element>
+			<element kind="textField" uuid="4e05c415-5248-4520-af55-5ac8189cf739" x="380" y="0" width="100" height="16" fontSize="8.0" pattern=" #,##0.000000;-#,##0.000000" hTextAlign="Right">
+				<expression><![CDATA[$F{precio}]]></expression>
+			</element>
+			<element kind="textField" uuid="6bcc70a4-fc67-4fde-b972-c1c607982369" x="480" y="0" width="90" height="16" fontSize="8.0" pattern="#,##0.00;-#,##0.00" hTextAlign="Right">
+				<expression><![CDATA[$F{valor}]]></expression>
+			</element>
+			<element kind="textField" uuid="95bcbae6-7edf-4c08-b02c-7c71344b726e" x="640" y="0" width="100" height="16" fontSize="8.0" pattern="#,##0.00;-#,##0.00" hTextAlign="Right">
+				<expression><![CDATA[$F{plusMinusValia}]]></expression>
+			</element>
+			<element kind="textField" uuid="3b06dc75-bf63-4b2d-b4b4-89cc79e82107" x="110" y="0" width="100" height="16" fontSize="8.0">
+				<expression><![CDATA[$F{emisora} + " " + $F{serie}]]></expression>
+			</element>
+			<element kind="textField" uuid="c19a809d-2af3-47e2-af9a-4ea1d9b10e96" x="570" y="0" width="70" height="16" fontSize="8.0" pattern="#,##0.000000;(#,##0.000000)" hTextAlign="Right">
+				<expression><![CDATA[$F{porcentaje}]]></expression>
+			</element>
+		</band>
+	</detail>
+	<pageFooter height="70" splitType="Stretch">
+		<element kind="staticText" uuid="880d06a7-758b-46d8-bcd7-1cd8e060b48e" x="20" y="20" width="480" height="18" fontSize="8.0">
+			<text><![CDATA[La información presentada en este documento es para fines informativos, por lo que no tiene validez oficial.  ]]></text>
+		</element>
+		<element kind="staticText" uuid="098f2bec-8a3a-4c59-99d9-a291e3eb39d7" x="20" y="30" width="720" height="30" fontSize="8.0">
+			<text><![CDATA[Para cualquier duda, aclaración o para obtener información oficial, deberá contactar a: Bursamétrica Casa de Bolsa, S.A. de C.V., con domicilio en Insurgentes Sur 1605, Piso 17, San José Insurgentes, Alcaldía Benito Juárez, Ciudad de México, C.P. 03900, Tel. 55 1328 3930, www.bcbcasadebolsa.com]]></text>
+		</element>
+		<element kind="textField" uuid="31db1a39-121c-4c85-8ece-645b944315cb" x="600" y="47" width="100" height="13" fontName="SansSerif" fontSize="8.0" hTextAlign="Right">
+			<expression><![CDATA["Página " + $V{PAGE_NUMBER}]]></expression>
+		</element>
+		<element kind="textField" uuid="12101eec-06d7-4ea2-9b30-c09f86753d4b" x="700" y="47" width="42" height="13" fontName="SansSerif" fontSize="8.0" evaluationTime="Report" hTextAlign="Left">
+			<expression><![CDATA[" de " + $V{PAGE_NUMBER}]]></expression>
+		</element>
+		<element kind="textField" uuid="eb19ee2b-da87-48ea-8bbc-758649a3f342" x="480" y="0" width="100" height="19" fontSize="8.0" pattern="#,##0.##;-#,##0.##" bold="true" hTextAlign="Right">
+			<expression><![CDATA[$V{totalAmount}]]></expression>
+		</element>
+		<element kind="textField" uuid="189bc55f-6cc4-41bd-8e5f-02b360160844" x="640" y="0" width="100" height="19" fontSize="8.0" pattern="¤#,##0.##;¤-#,##0.##" bold="true" hTextAlign="Right">
+			<expression><![CDATA[$V{capitalGainLossSum}]]></expression>
+		</element>
+		<element kind="textField" uuid="5a08d178-69e7-483b-9456-cac25e0cd622" x="580" y="0" width="60" height="19" fontSize="8.0" pattern="#,##0.000000;(#,##0.000000)" bold="true" hTextAlign="Right">
+			<expression><![CDATA[$V{percentageTotal}]]></expression>
+		</element>
+		<element kind="staticText" uuid="c2eb6a6b-b9f0-4580-bf68-1239242d6acb" x="380" y="0" width="100" height="19" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Right">
+			<text><![CDATA[TOTALES]]></text>
+		</element>
+		<property name="com.jaspersoft.studio.unit.height" value="px"/>
+	</pageFooter>
+</jasperReport>

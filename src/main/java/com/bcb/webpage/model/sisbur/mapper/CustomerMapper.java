@@ -24,7 +24,7 @@ public class CustomerMapper implements RowMapper<CustomerCustomer>{
         customer.setEmail(rs.getString("EMAIL"));
         customer.setInitial(rs.getInt(rs.getInt("INICIAL")));
         customer.setLocked(rs.getInt("BLOQUEADO"));
-        customer.setPassword(rs.getString("PASSWORD"));
+        //customer.setPassword(rs.getString("PASSWORD"));
 
         return customer;
     }

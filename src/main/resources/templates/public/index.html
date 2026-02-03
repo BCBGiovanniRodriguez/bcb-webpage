@@ -6,22 +6,96 @@
     <body>
         <div class="site_wrapper">
             <div th:replace="~{public/fragments/commons :: header}"></div>
-            <div class="clearfix"></div>
             
-            <div th:replace="~{public/fragments/commons :: slider}"></div>
+            <section>
+                <video id="mainVideo" width="100%" height="auto" muted autoplay loop>
+                    <source th:src="@{/public/video/HomeBCB220728.mp4}" type="video/mp4">
+                </video>
+            </section>
+            <!-- end section -->
             <div class="clearfix"></div>
+            <br><br><br><br>
             
-            <main class="app-main">
-                <div class="app-content-header">
-                    <div class="container-fluid">
-                    </div>
-                </div>
+            <section class="sec-bpadding-1">
+                <div class="container">
+                    <div class="row">
+                        <div class="clearfix"></div>
+                        <div class="col-md-4 col-sm-4">
+                            <div class="feature-box7 text-center bmargin productos-servicios">
+                                <img th:src="@{/public/images/iconos/Productos-Servicios-Bursametrica.svg}" alt="Productos y Servicios Bursamétrica" />
+                                <br />
+                                <br />
+                                <h4 class="uppercase">Productos<br /> &amp; Servicios</h4>
+                                <br />
+                                <a class="btn btn-border light btn-round" th:href="@{/productos-y-servicios}">Más información</a>
+                            </div>
+                        </div>
+                        <!--end item-->
 
-                <div class="app-content">
-                    <div class="container-fluid">
+                        <div class="col-md-4 col-sm-4">
+                            <div class="feature-box7 text-center bmargin personas-familias">
+                                <img th:src="@{/public/images/iconos/Personas-Familias-Bursametrica.svg}" alt="Personas y Familias Bursamétrica" />
+                                <br />
+                                <br />
+                                <h4 class="uppercase"> PERSONAS<br /> &amp; FAMILIAS </h4>
+                                <br />
+                                <a class="btn btn-border light btn-round" th:href="@{/personas-y-familias}" >Más información</a >
+                            </div>
+                        </div>
+                        <!--end item-->
+
+                        <div class="col-md-4 col-sm-4">
+                            <div class="feature-box7 text-center bmargin inversionista-institucional">
+                                <img th:src="@{/public/images/iconos/Inversionista-Institucional-Bursametrica.svg}" alt="Inversionista Institucional Bursamétrica" />
+                                <br />
+                                <br />
+                                <h4 class="uppercase">INVERSIONISTA INSTITUCIONAL</h4>
+                                <br />
+                                <a class="btn btn-border light btn-round" th:href="@{/inversionista-institucional}" >Más información</a >
+                            </div>
+                        </div>
+                        <!--end item-->
+                    </div>
+                    <br><br><br><br>
+                    <div class="row">
+                        <div class="clearfix"></div>
+                        <div class="col-md-12 text-center">
+                            <h1><strong>NUESTRA EXPERIENCIA SIGUE HACIENDO HISTORIA</strong></h1>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="clearfix"></div>
+                        <div class="col-md-12 text-center">
+                            <p>Somos una casa de bolsa con alto nivel de especialización en el manejo de inversiones y financiamiento bursátil por más de 25 años en la industria financiera de México.</p>
+                        </div>
                     </div>
                 </div>
-            </main>
+            </section>
+            <!--end section-->
+
+            <section>
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12 nopadding">
+                            <div class="feature-box21">
+                                <div class="background-imgholder back-img-PS-02">
+                                    <div class="overlay bg-opacity-6"></div>
+                                </div>
+                                <div class="text-box text-center"> <br/>
+                                    <br/>
+                                    <h3 class="text-white section-title">MANTENEMOS UNA SÓLIDA CULTURA DE CUMPLIMIENTO Y GOBIERNO CORPORATIVO</h3>
+                                        <p class="text-light">Que nos permite ofrecer integridad en servicios y productos que generan la confianza de nuestros clientes.</p>
+                                        <br>
+                                        <p class="text-light">Trabajamos con necesidades, objetivos y desafíos financieros del cliente para convertirlos en soluciones e ideas personalizadas a su favor.</p>
+                                    <br/>
+                                    <a class="btn btn-border white btn-round" th:href="@{/acerca-de-nosotros}">Te invitamos a conocer más sobre nosotros</a>
+                                </div>
+                            </div>
+                        </div>
+                        <!--end item-->
+                    </div>
+                </div>
 
             <section th:replace="~{public/fragments/commons :: section-organizations}"></section>
             <!--end section -->
@@ -40,12 +114,19 @@
             <!--end section -->
             <div class="clearfix"></div>
 
-            <div class="contacto-pop colorBM"><a href="#" data-toggle="modal" data-target="#MainMenu-BM-contacto"><i class="fa fa-envelope"></i> Contáctanos</a></div>
-            <a href="#" class="scrollup colorBM"></a><!-- end scroll to top of the page--> 
+            <div th:replace="~{public/fragments/commons :: contact}"></div>
         </div>
         
         <div th:replace="~{public/fragments/commons :: modals}"></div>
         
         <div th:replace="~{public/fragments/commons :: js-dependencies}"></div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const video = document.getElementById("mainVideo");
+
+                video.play();
+            });
+        </script>
     </body>
 </html>

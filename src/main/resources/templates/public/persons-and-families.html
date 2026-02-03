@@ -39,7 +39,7 @@
                             <h5>Ayudamos a nuestros clientes a administrar su patrimonio de la misma forma que los informamos de todas las alternativas a su alcance.</h5>
                             <h5>Nuestro enfoque personalizado ayuda a construir los logros de sus metas financieras, siempre acompañados por una guía profesional y especializada para seleccionar los productos más eficientes y alternativas de inversión acordes a su perfil de inversión.</h5>
                             <br/>
-                            <a class="btn btn-border dark btn-round" href="#">Ver Guía de servicios de inversión</a>
+                            <a class="btn btn-border dark btn-round" th:href="@{/servicios-inversion/descargar?tipo=1}">Ver Guía de servicios de inversión</a>
                         </div>
                     </div>
                 </div>
@@ -105,8 +105,7 @@
             <!--end section -->
             <div class="clearfix"></div>
 
-            <div class="contacto-pop colorBM"><a href="#" data-toggle="modal" data-target="#MainMenu-BM-contacto"><i class="fa fa-envelope"></i> Contáctanos</a></div>
-            <a href="#" class="scrollup colorBM"></a><!-- end scroll to top of the page--> 
+            <div th:replace="~{public/fragments/commons :: contact}"></div>
         </div>
 
         <div th:replace="~{public/fragments/commons :: modals}"></div>

@@ -16,6 +16,103 @@
             </section>
             <!-- end section -->
             <div class="clearfix"></div>
+            
+            <section>
+                <div class="pagination-holder">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <div class="pagination_links"><a th:href="@{/}">Inicio</a><i> / </i> Fiduciario</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+
+            <section class="sec-moreless-padding">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-2 col-sm-push-5 col-xs-6 col-xs-push-3"> <img th:src="@{public/images/iconos/logo-bursametrica-fiduciario.svg}" alt=""/> </div>
+                        <div class="col-xs-12 text-left">
+                            <h4 class="text-center">“El conocimiento que fortalece la transparencia y protección patrimonial”</h4>
+                            <br/>
+                            <p>Nuestro servicio fiduciario se caracteriza por su integralidad en el servicio, siempre de la mano de nuestros profesionistas ampliamente experimentados que se especializan en estructurar y constituir diversos tipos de fideicomisos para individuos, familias, empresas, gobiernos y organizaciones, entre otros.</p><br>
+                            <p>Constituimos una variada oferta de fideicomisos a su disposición:</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+
+            <section class="sec-bpadding-1">
+                <div class="container">
+                    <div class="row">
+                        <div class="clearfix"></div>
+                        <div class="col-md-4 col-sm-4">
+                            <div class="feature-box7 text-center bmargin fideicomiso-fisica">
+                                <img th:src="@{public/images/iconos/fideicomiso-fisica-a.svg}" alt=""/>
+                                <br/>
+                                <h4>Fideicomisos <br>Personas Físicas</h4>
+                                <br/>
+                                <a class="btn btn-border light btn-round" th:href="@{/fideicomisos-personas-fisicas}">Más información</a>
+                            </div>
+                        </div>
+                        <!--end item-->
+
+                        <div class="col-md-4 col-sm-4">
+                            <div class="feature-box7 text-center bmargin fideicomiso-moral">
+                                <img th:src="@{public/images/iconos/fideicomiso-moral-a.svg}" alt=""/>
+                                <br/>
+                                <h4>Fideicomisos <br>Personas Morales </h4>
+                                <br/>
+                                <a class="btn btn-border light btn-round" th:href="@{/fideicomisos-personas-morales}">Más información</a>
+                            </div>
+                        </div>
+                        <!--end item-->
+                        
+                        <div class="col-md-4 col-sm-4">
+                            <div class="feature-box7 text-center bmargin fideicomiso-publico">
+                                <img th:src="@{public/images/iconos/fideicomiso-publico-a.svg}" alt=""/>
+                                <br/>
+                                <h4>Fideicomisos <br>Públicos</h4>
+                                <br/>
+                                <a class="btn btn-border light btn-round" th:href="@{/fideicomisos-publicos}">Más información</a>
+                            </div>
+                        </div>
+                        <!--end item-->
+                    </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
+
+            <section class="sec-moreless-padding">
+                <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                    <p class="text-center">Para mayor información de nuestros servicios de Fiduciario como una solución para sus necesidades, estamos para servirle.</p>
+                    </div>
+                </div>
+                </div>
+            </section>
+            <!-- end section -->
+            <div class="clearfix"></div>
+
+
+            <section class="sec-moreless-padding section-colorBM-2">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <a class="btn btn-border white-2 btn-large btn-round btn-send-email" href="#" data-toggle="modal" data-target="#MainMenu-BM-contacto" data-origin="4">Contacto Fiduciario</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--end section-->
+            <div class="clearfix"></div>
 
             <section th:replace="~{public/fragments/commons :: section-organizations}"></section>
             <!--end section -->
@@ -34,8 +131,7 @@
             <!--end section -->
             <div class="clearfix"></div>
 
-            <div class="contacto-pop colorBM"><a href="#" data-toggle="modal" data-target="#MainMenu-BM-contacto"><i class="fa fa-envelope"></i> Contáctanos</a></div>
-            <a href="#" class="scrollup colorBM"></a><!-- end scroll to top of the page--> 
+            <div th:replace="~{public/fragments/commons :: contact}"></div>
         </div>
 
         <div th:replace="~{public/fragments/commons :: modals}"></div>

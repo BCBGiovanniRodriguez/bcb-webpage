@@ -1,11 +1,27 @@
 package com.bcb.webpage.controllers;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.bcb.webpage.model.webpage.entity.FinantialStatementEntity;
+import com.bcb.webpage.model.webpage.repository.FinantialStatementRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 @Controller
 public class IndexController {
+
+    @Autowired
+    private FinantialStatementRepository finantialStatementRepository;
     
     @GetMapping("/inicio-de-sesion")
     public String inicioSesion(Model model) {
@@ -37,8 +53,6 @@ public class IndexController {
         return "public/institutional-investments";
     }
 
-    //
-
     @GetMapping("/buro-de-entidades-financieras")
     public String finantialInstitutions(Model model) {
         return "public/finantial-institution";
@@ -56,6 +70,49 @@ public class IndexController {
 
     @GetMapping("/estados-financieros")
     public String finantialStatement(Model model) {
+        ObjectMapper mapper = new ObjectMapper();
+        Set<Integer> yearSet = new TreeSet<>();
+        List<Integer> yearList = new ArrayList<>();
+
+        List<FinantialStatementEntity> finantialStatementList = new ArrayList<>();
+        List<Object> yearlyResults = new ArrayList<>();
+        List<Object> quarterlyResults = new ArrayList<>();
+        String yearlyJsonData = "";
+        String quarterlyJsonData = "";
+
+        try {
+            finantialStatementList = finantialStatementRepository.findAll();
+
+            for (FinantialStatementEntity finantialStatementEntity : finantialStatementList) {
+                yearSet.add(finantialStatementEntity.getYear());
+                
+                Map<String, String> element = new HashMap<>();
+                element.put("year", finantialStatementEntity.getYear() + "");
+                element.put("type", finantialStatementEntity.getType() + "");
+                element.put("period", finantialStatementEntity.getPeriod() + "");
+                
+                if (finantialStatementEntity.getType() == FinantialStatementEntity.TYPE_YEARLY) {
+                    yearlyResults.add(element);
+                } else if(finantialStatementEntity.getType() == FinantialStatementEntity.TYPE_QUARTERLY) {
+                    element.put("periodAsString", finantialStatementEntity.getPeriodAsString());
+                    quarterlyResults.add(element);
+                }
+            }
+
+            yearlyJsonData = mapper.writeValueAsString(yearlyResults);
+            quarterlyJsonData = mapper.writeValueAsString(quarterlyResults);
+
+            yearList = yearSet.stream().sorted(Collections.reverseOrder()).toList();
+            
+        } catch (Exception e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+
+        model.addAttribute("yearSet", yearSet);
+        model.addAttribute("yearList", yearList);
+        model.addAttribute("yearlyJsonData", yearlyJsonData);
+        model.addAttribute("quarterlyJsonData", quarterlyJsonData);
+
         return "public/finantial-statement";
     }
 

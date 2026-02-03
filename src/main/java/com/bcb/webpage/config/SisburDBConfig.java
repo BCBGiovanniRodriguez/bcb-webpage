@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.lang.NonNull;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -46,14 +47,15 @@ public class SisburDBConfig {
     }
 
     @Bean(name = "sisburTransactionManager")
-    public PlatformTransactionManager transactionManager(
+    public PlatformTransactionManager transactionManager(@NonNull
         @Qualifier("sisburEntityManagerFactory") EntityManagerFactory entityManagerFactory) {
             return new JpaTransactionManager(entityManagerFactory);
     }
     
     @Bean(name = "sisburJdbcTemplate")
     @DependsOn("sisburDatasource")
-    public JdbcTemplate sisburJdbcTemplate(@Qualifier("sisburDatasource") DataSource sisburDataSource) {
+    public JdbcTemplate sisburJdbcTemplate(@NonNull
+        @Qualifier("sisburDatasource") DataSource sisburDataSource) {
         return new JdbcTemplate(sisburDataSource);
     }
 

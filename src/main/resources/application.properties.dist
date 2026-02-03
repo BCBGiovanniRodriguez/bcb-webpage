@@ -12,6 +12,3 @@ spring.jpa.open-in-view=false
 spring.jpa.show-sql=false
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MariaDBDialect
-
-# 1 - TEST, 2 - QA, 3 - PRD
-webpage.environment=1

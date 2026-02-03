@@ -9,53 +9,45 @@
             <aside th:replace="~{customer/fragments/common :: aside}"></aside>
 
             <main class="app-main">
-                <div class="app-content-header">
-                    <div class="container-fluid">
+                <section>
+                    <div class="header-inner">
+                        <div class="inner text-center">
+                            <h3 class="text-white uppercase"><strong>MOVIMIENTOS CONSULTA</strong></h3>
+                        </div>
+                        <div class="overlay bg-opacity-5"></div>
                     </div>
-                </div>
+                </section>
+                <!-- end section -->
 
                 <div class="app-content">
                     <div class="container-fluid">
+                        <br>
                         <form th:action="@{/portal-clientes/movimientos}" method="post" enctype="application/x-www-form-urlencoded">
-                            
-                            <div class="card card-info card-outline collapsed">
-                                <div class="card-header">
-                                    <h5 class="card-title text-primary">
-                                        <strong>CONSULTA DE MOVIMIENTOS</strong>
-                                    </h5>
+                            <div class="row">
+                                <div class="col-3">
+                                    <label for="startDate" class="form-label"><strong>Fecha Inicial</strong></label>
+                                    <input type="date" id="startDate" th:name="startDate" th:value="${startDate}" th:max="${today}" data-date-format="dd/mm/yyyy" class="form-control" required>
                                 </div>
-                                
-                                <div class="card-body">                                
-                                    <div class="row">
-                                        <div class="col-3">
-                                            <label for="startDate" class="form-label"><strong>Fecha Inicial</strong></label>
-                                            <input type="date" id="startDate" th:name="startDate" th:value="${startDate}" th:max="${today}" data-date-format="dd/mm/yyyy" class="form-control" required>
-                                        </div>
 
-                                        <div class="col-3">
-                                            <label for="endDate" class="form-label"><strong>Fecha Final</strong></label>
-                                            <input type="date" id="endDate" th:name="endDate" th:value="${endDate}" data-date-format="dd/mm/yyyy" class="form-control" required>
-                                        </div>
-
-                                        <div class="col-3">
-                                            <label for="form-label text-white"></label>
-                                            
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card-footer text-center">
-                                    <button class="btn btn-sm btn-primary" type="submit">
-                                        <i class="fa fa-search"></i> Consultar
-                                    </button>
+                                <div class="col-3">
+                                    <label for="endDate" class="form-label"><strong>Fecha Final</strong></label>
+                                    <input type="date" id="endDate" th:name="endDate" th:value="${endDate}" th:max="${today}" data-date-format="dd/mm/yyyy" class="form-control" required>
                                 </div>
                             </div>
-                        </form>
-                        <br />
+                            <br>
 
-                        <div th:if="${movementReportList != null}" class="table-responsive">
-                            <div th:if="${movementReportList.size() > 0}" class="card card-primary card-outline">
+                            <div class="text-center">
+                                <button class="btn btn-sm btn-primary" type="submit">
+                                    <i class="fa fa-search"></i> Consultar
+                                </button>
+                            </div>
+                        </form>
+                        <hr />
+
+                        <div th:if="${movementReportList != null}" class="table-responsive card">
+                            <div th:if="${movementReportList.size() > 0}">
                                 <div class="card-header">
-                                    <h5 class="card-title text-primary">
+                                    <h5 class="card-title text-center"> 
                                         Movimientos del <strong><span th:text="${startDate}"></span></strong> al <strong><span th:text="${endDate}"></span></strong>
                                     </h5>
 
@@ -108,7 +100,7 @@
                                 </div>
                             </div>
                             <div th:unless="${movementReportList.size() > 0}" class="text-center">
-                                <h5 class="text-primary">No se encontraron movimientos</h5>
+                                <h3>NO SE ENCONTRARON MOVIMIENTOS</h3>
                             </div>
                         </div>
                         

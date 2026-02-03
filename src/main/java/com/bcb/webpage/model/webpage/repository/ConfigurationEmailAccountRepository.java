@@ -10,6 +10,8 @@ import com.bcb.webpage.model.webpage.entity.ConfigurationEmailAccountEntity;
 @Repository
 public interface ConfigurationEmailAccountRepository extends JpaRepository<ConfigurationEmailAccountEntity, Long>  {
 
+    Optional<ConfigurationEmailAccountEntity> findOneByTypeAndMode(int type, int mode);
+
     Optional<ConfigurationEmailAccountEntity> findOneByTypeAndTargetAndMode(int type, int target, int mode);
     
 }

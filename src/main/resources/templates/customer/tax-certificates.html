@@ -9,62 +9,47 @@
             <aside th:replace="~{customer/fragments/common :: aside}"></aside>
 
             <main class="app-main">
-                <div class="app-content-header">
-                    <div class="container-fluid">
+                <section>
+                    <div class="header-inner">
+                        <div class="inner text-center">
+                            <h3 class="text-white uppercase"><strong>CONSTANCIAS FISCALES</strong></h3>
+                        </div>
+                        <div class="overlay bg-opacity-5"></div>
                     </div>
-                </div>
+                </section>
+                <!-- end section -->
+                 <br>
 
                 <div class="app-content">
                     <div class="container-fluid">
                         <div th:if="${yearSet.size() == 0}">
-                            <h3>Usted aun no posee Constancias Fiscales</h3>
+                            <h3>Usted aun no posee aún Constancias Fiscales</h3>
                         </div>
                         <div th:unless="${yearSet.size() == 0}">
                             <form th:action="@{/portal-clientes/constancia-fiscal}" method="post" enctype="application/x-www-form-urlencoded">
-                                <div class="card card-info card-outline">
-                                    <div class="card-header">
-                                        <h5 class="card-title text-primary">
-                                            <strong>CONSTANCIAS FISCALES</strong>
-                                        </h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-3">
-                                                <label for="year" class="form-label"><strong>Año</strong></label>
-                                                <!--<input type="date" id="startDate" th:name="startDate" th:value="${startDate}" th:max="${today}" data-date-format="dd/mm/yyyy" class="form-control" required> -->
-                                                <select name="year" id="year" class="form-select">
-                                                    <option value="0" selected disabled>Seleccione Opción</option>
-                                                    <option th:each="year : ${yearSet}" th:value="${year}" th:text="${year}"></option>
-                                                </select>
-                                            </div>
-                                        </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <label for="year" class="form-label"><strong>Año</strong></label>
+                                        <select name="year" id="year" class="form-select">
+                                            <option value="0" selected disabled>Seleccione Opción</option>
+                                            <option th:each="year : ${yearSet}" th:value="${year}" th:text="${year}"></option>
+                                        </select>
                                     </div>
                                 </div>
                             </form>
                             <br />
-
-                            <div th:if="${taxCertificatesList.size() > 0}" class="card card-primary card-outline">
-                                <div class="card card-primary card-outline">
-                                    <div class="card-header">
-                                        <h5 class="card-title text-primary">
-                                            <strong>CONSTANCIAS FISCALES</strong>
-                                        </h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="table-responsive">
-                                            <table class="table table-condensed table-striped table-bordered" id="taxCertificatesTable">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Tipo Constancia</th>
-                                                        <th class="text-center" colspan="2">PDF</th>
-                                                        <th class="text-center">XML</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody></tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div th:if="${taxCertificatesList.size() > 0}">
+                                <table class="table table-condensed table-striped table-bordered" id="taxCertificatesTable">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 25%;">TIPO CONSTANCIA</th>
+                                            <th style="width: 25%;">PROPIETARIO</th>
+                                            <th style="width: 25%;" class="text-center" colspan="2">PDF</th>
+                                            <th style="width: 25%;" class="text-center">XML</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
                             </div>
                             <div th:unless="${taxCertificatesList.size() > 0}" class="text-center">
                                 <h5 class="text-primary">No se encontraron constancias fiscales</h5>
@@ -74,42 +59,43 @@
                 </div>
             </main>
 
-            <a href="" target="_blank"></a>
             <footer th:replace="~{customer/fragments/common :: footer}"></footer>
         </div>
 
         <div th:replace="~{customer/fragments/common :: jsDependencies}"></div>
         <script th:inline="javascript">
             $(document).ready(function() {
-                //let taxCertificatesStr = [[${taxCertificatesJson}]];
                 let taxCertificatesJson = JSON.parse([[${taxCertificatesJson}]]);
-                let taxCertificatesArray = ["Factura", "Intereses", "Dividendos2013", "Dividendos2014", "DividendosSIC", "Enajenación", "Fibras", "Derivados"];
+                let taxCertificatesArray = ["Factura", "Dividendos 2014", "Dividendos 2013", "Dividendos SIC", "Derivados", "Enajenación", "Fibras", "Intereses"];
                 let commonUrl = "/portal-clientes/constancia-fiscal/";
                 
                 $("#year").on("change", function() {
                     let year = $(this).val();
 
                     $("#taxCertificatesTable").find("tbody").empty();
-
+                    let ownership, text;
                     $.each(taxCertificatesJson, function(index, element) {
                         if(year == element.Periodo) {
+                            text = element.Cotitular === "0" ? "Titular" : "CoTitular";
+
                             let tr = $("<tr>");
+                            let tdOwner = $("<td>", {"text" : text});
                             let tdPeriodo = $("<td>", { "text": element.Periodo + " - " + taxCertificatesArray[element.Tipo] });
                             let tdPdfView = $("<td>", {"class": "text-center"});
                             let tdPdfDownload = $("<td>", {"class": "text-center"});
                             let tdXml = $("<td>", {"class": "text-center"});
                             
-                            let searchPdfUrl = commonUrl + "consultar?year=" + year + "&type=" + element.Tipo;
+                            let searchPdfUrl = commonUrl + "consultar?year=" + year + "&type=" + element.Tipo + "&owner=" + element.Cotitular;
                             let buttonSearchPdf = $("<a>", {"class": "btn btn-primary", "href": searchPdfUrl, "target": "_blank", "text": "Consulta "});
                             
-                            let downloadPdfUrl = commonUrl + "descargar?year=" + year + "&type=" + element.Tipo + "&fileType=1";
+                            let downloadPdfUrl = commonUrl + "descargar?year=" + year + "&type=" + element.Tipo + "&owner=" + element.Cotitular + "&fileType=1";
                             let buttonDownloadPdf = $("<a>", {"class": "btn btn-success", "href": downloadPdfUrl, "text": "Descarga "});
                             let iSearchPdf = $("<i>", {"class": "fa fa-search"});
                             let iDownloadPdf = $("<i>", {"class": "fa fa-download"});
                             buttonSearchPdf.append(iSearchPdf);
                             buttonDownloadPdf.append(iDownloadPdf);
 
-                            let downloadXmlUrl = commonUrl + "descargar?year=" + year + "&type=" + element.Tipo + "&fileType=2";
+                            let downloadXmlUrl = commonUrl + "descargar?year=" + year + "&type=" + element.Tipo + "&owner=" + element.Cotitular + "&fileType=2";
                             let buttonDownloadXml = $("<a>", {"class": "btn btn-success", "href": downloadXmlUrl, "text": "Descarga "});
                             let iDownloadXml = $("<i>", {"class": "fa fa-download"});
                             buttonDownloadXml.append(iDownloadXml);
@@ -119,11 +105,13 @@
                             tdXml.append(buttonDownloadXml);
 
                             tr.append(tdPeriodo)
-                            .append(tdPdfView)
-                            .append(tdPdfDownload)
-                            .append(tdXml);
+                                .append(tdOwner)
+                                .append(tdPdfView)
+                                .append(tdPdfDownload)
+                                .append(tdXml);
                             
                             $("#taxCertificatesTable").find("tbody").append(tr);
+                            text = "";
                         }
                     });
                 });

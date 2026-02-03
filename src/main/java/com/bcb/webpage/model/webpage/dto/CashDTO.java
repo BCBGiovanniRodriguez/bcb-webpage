@@ -3,7 +3,7 @@ package com.bcb.webpage.model.webpage.dto;
 import com.bcb.webpage.model.webpage.dto.interfaces.PositionInterface;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class CashDTO implements PositionInterface{
+public class CashDTO implements PositionInterface {
 
     @JsonProperty("moneda")
     private String currencyName;
@@ -13,6 +13,9 @@ public class CashDTO implements PositionInterface{
 
     @JsonProperty("saldoActual")
     private Double currentBalance;
+
+    @JsonProperty("SubTotal")
+    private Double subTotal;
 
     public CashDTO() {
     }
@@ -29,16 +32,30 @@ public class CashDTO implements PositionInterface{
         return pendingBalance;
     }
 
-    public void setPendingBalance(Double subtotal) {
-        this.pendingBalance = subtotal;
+    public void setPendingBalance(Double pendingBalance) {
+        this.pendingBalance = pendingBalance;
     }
 
     public Double getCurrentBalance() {
         return currentBalance;
     }
 
-    public void setCurrentBalance(Double total) {
-        this.currentBalance = total;
+    public void setCurrentBalance(Double currentBalance) {
+        this.currentBalance = currentBalance;
+    }
+
+    public Double getSubTotal() {
+        return subTotal;
+    }
+
+    public void setSubTotal(Double subTotal) {
+        this.subTotal = subTotal;
+    }
+
+    @Override
+    public String toString() {
+        return "CashDTO [currencyName=" + currencyName + ", pendingBalance=" + pendingBalance + ", currentBalance="
+                + currentBalance + ", subTotal=" + subTotal + "]";
     }
 
 }

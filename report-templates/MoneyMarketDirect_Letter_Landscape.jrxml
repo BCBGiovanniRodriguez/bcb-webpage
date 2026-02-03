@@ -1,0 +1,139 @@
+<!-- Created with Jaspersoft Studio version 7.0.2.final using JasperReports Library version 7.0.2-31532122640f516c6d17238ae0e41a08113d5ac0  -->
+<jasperReport name="MoneyMarket_Letter_Landscape" language="java" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3a35090a-98a9-41d1-a367-bc070e33511b">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.jrdax"/>
+	<parameter name="P_SEARCH_DATE" class="java.lang.String"/>
+	<parameter name="P_CUSTOMER_NAME" class="java.lang.String"/>
+	<parameter name="P_CUSTOMER_CONTRACT_NUMBER" class="java.lang.String"/>
+	<query language="sql"><![CDATA[]]></query>
+	<field name="emisora" class="java.lang.String"/>
+	<field name="serie" class="java.lang.String"/>
+	<field name="plazo" class="java.math.BigDecimal"/>
+	<field name="tasa" class="java.math.BigDecimal"/>
+	<field name="titulos" class="java.math.BigDecimal"/>
+	<field name="precio" class="java.math.BigDecimal"/>
+	<field name="costoPromedio" class="java.math.BigDecimal"/>
+	<field name="valorACosto" class="java.math.BigDecimal"/>
+	<field name="valor" class="java.math.BigDecimal"/>
+	<field name="plusMinusValia" class="java.math.BigDecimal"/>
+	<variable name="amountTotal" calculation="Sum" class="java.lang.Double">
+		<expression><![CDATA[$F{valor}]]></expression>
+		<initialValueExpression><![CDATA[0.0]]></initialValueExpression>
+	</variable>
+	<variable name="capitalGainLossTotal" calculation="Sum" class="java.lang.Double">
+		<expression><![CDATA[$F{plusMinusValia}]]></expression>
+		<initialValueExpression><![CDATA[0.0]]></initialValueExpression>
+	</variable>
+	<background splitType="Stretch"/>
+	<title height="90" splitType="Stretch">
+		<element kind="image" uuid="c9467117-610e-4520-91e6-a05b417a10d9" x="0" y="0" width="251" height="50">
+			<expression><![CDATA["BCB-logo-blue.svg"]]></expression>
+		</element>
+		<element kind="staticText" uuid="ad221f22-fcf6-4d2d-8726-7ded3144c201" x="392" y="0" width="348" height="40" forecolor="#003B72" fontSize="25.0" hTextAlign="Right">
+			<text><![CDATA[REPORTE DE POSICIÓN]]></text>
+		</element>
+		<element kind="staticText" uuid="87d34989-b90c-4c46-a2e4-fa0b75769c5e" x="392" y="73" width="126" height="14" forecolor="#003B72" bold="true">
+			<text><![CDATA[FECHA CONSULTA]]></text>
+		</element>
+		<element kind="textField" uuid="bebf6f53-6168-462c-9724-94e555190289" x="560" y="72" width="180" height="16" hTextAlign="Right">
+			<expression><![CDATA[$P{P_SEARCH_DATE}]]></expression>
+		</element>
+		<element kind="staticText" uuid="de870c85-bf64-46ee-997b-275c8ae2e333" x="392" y="41" width="64" height="14" forecolor="#003B72" bold="true">
+			<text><![CDATA[CLIENTE]]></text>
+		</element>
+		<element kind="staticText" uuid="28774125-309b-40c9-ba7a-f5dbf21d4ffd" x="392" y="57" width="64" height="14" forecolor="#003B72" bold="true">
+			<text><![CDATA[CONTRATO]]></text>
+		</element>
+		<element kind="textField" uuid="bd0deb65-26ca-452e-ada0-302a825e4cac" x="456" y="40" width="284" height="16" hTextAlign="Right">
+			<expression><![CDATA[$P{P_CUSTOMER_NAME}]]></expression>
+		</element>
+		<element kind="textField" uuid="a160450b-89a5-4d7a-b021-8ad4a55003aa" x="500" y="56" width="240" height="16" hTextAlign="Right">
+			<expression><![CDATA[$P{P_CUSTOMER_CONTRACT_NUMBER}]]></expression>
+		</element>
+		<property name="com.jaspersoft.studio.unit.height" value="px"/>
+	</title>
+	<pageHeader height="32" splitType="Stretch">
+		<element kind="staticText" uuid="220e65bb-f011-4b34-9367-1ac86320c265" x="234" y="5" width="285" height="22" forecolor="#003B72" fontSize="13.0" bold="true" italic="false" hTextAlign="Center">
+			<text><![CDATA[MERCADO DE DINERO EN DIRECTO]]></text>
+		</element>
+	</pageHeader>
+	<columnHeader height="15" splitType="Stretch">
+		<element kind="staticText" uuid="58910d0f-bb8a-4544-bf0f-6ee6bfeb1646" x="20" y="0" width="90" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[EMISORA - SERIE]]></text>
+		</element>
+		<element kind="staticText" uuid="692fc29b-dca7-41e3-910f-e1412d15b9ec" x="110" y="0" width="90" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[PLAZO]]></text>
+		</element>
+		<element kind="staticText" uuid="68d6ef4f-225b-4215-8e14-a1a94547c1ad" x="200" y="0" width="90" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Right">
+			<text><![CDATA[TASA (Cupón)]]></text>
+		</element>
+		<element kind="staticText" uuid="f55a634a-c00e-4bc9-a580-89032965ae92" x="290" y="0" width="90" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Right">
+			<text><![CDATA[TÍTULOS]]></text>
+		</element>
+		<element kind="staticText" uuid="51b59c80-22c8-4e28-93c2-de95388fc713" x="380" y="0" width="90" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Right">
+			<text><![CDATA[COSTO PROMEDIO]]></text>
+		</element>
+		<element kind="staticText" uuid="314c963d-f8bd-4e20-9d9c-d6c88c27bad8" x="470" y="0" width="90" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Right">
+			<text><![CDATA[PRECIO MERCADO]]></text>
+		</element>
+		<element kind="staticText" uuid="94eb7665-67a2-418b-a75c-1053aa5ab668" x="560" y="0" width="90" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Right">
+			<text><![CDATA[VALOR MERCADO]]></text>
+		</element>
+		<element kind="staticText" uuid="43845205-e88b-462f-8049-60db15ecc235" x="650" y="0" width="90" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Right">
+			<text><![CDATA[PLUS/MINUS VALÍA]]></text>
+		</element>
+		<property name="com.jaspersoft.studio.unit.height" value="px"/>
+	</columnHeader>
+	<detail>
+		<band height="17">
+			<element kind="textField" uuid="3b06dc75-bf63-4b2d-b4b4-89cc79e82107" x="20" y="0" width="90" height="16" fontSize="8.0">
+				<expression><![CDATA[$F{emisora} + " " + $F{serie}]]></expression>
+			</element>
+			<element kind="textField" uuid="2d23b5b4-ece5-476d-936c-800be77fec37" x="110" y="0" width="90" height="16" fontSize="8.0" pattern="#,##0;-#,##0" hTextAlign="Center">
+				<expression><![CDATA[$F{plazo}]]></expression>
+			</element>
+			<element kind="textField" uuid="c19a809d-2af3-47e2-af9a-4ea1d9b10e96" x="200" y="0" width="90" height="16" fontSize="8.0" pattern="#,##0.00;-#,##0.00" hTextAlign="Right">
+				<expression><![CDATA[$F{tasa}]]></expression>
+			</element>
+			<element kind="textField" uuid="fe342811-e4f0-4268-adab-ff39df2d57e0" x="290" y="0" width="90" height="16" fontSize="8.0" pattern="#,##0;-#,##0" hTextAlign="Right">
+				<expression><![CDATA[$F{titulos}]]></expression>
+			</element>
+			<element kind="textField" uuid="9bccdcb6-3ef0-4917-ac91-1d1f49f4f745" x="380" y="0" width="90" height="16" fontSize="8.0" pattern=" #,##0.000000;-#,##0.000000" hTextAlign="Right">
+				<expression><![CDATA[$F{costoPromedio}]]></expression>
+			</element>
+			<element kind="textField" uuid="4e05c415-5248-4520-af55-5ac8189cf739" x="470" y="0" width="90" height="16" fontSize="8.0" pattern=" #,##0.000000;-#,##0.000000" hTextAlign="Right">
+				<expression><![CDATA[$F{precio}]]></expression>
+			</element>
+			<element kind="textField" uuid="6bcc70a4-fc67-4fde-b972-c1c607982369" x="560" y="0" width="90" height="16" fontSize="8.0" pattern="#,##0.00;-#,##0.00" hTextAlign="Right">
+				<expression><![CDATA[$F{valor}]]></expression>
+			</element>
+			<element kind="textField" uuid="95bcbae6-7edf-4c08-b02c-7c71344b726e" x="650" y="0" width="90" height="16" fontSize="8.0" pattern="#,##0.00;-#,##0.00" hTextAlign="Right">
+				<expression><![CDATA[$F{plusMinusValia}]]></expression>
+			</element>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		</band>
+	</detail>
+	<pageFooter height="76" splitType="Stretch">
+		<element kind="staticText" uuid="880d06a7-758b-46d8-bcd7-1cd8e060b48e" x="20" y="30" width="480" height="18" fontSize="8.0">
+			<text><![CDATA[La información presentada en este documento es para fines informativos, por lo que no tiene validez oficial.  ]]></text>
+		</element>
+		<element kind="staticText" uuid="098f2bec-8a3a-4c59-99d9-a291e3eb39d7" x="20" y="40" width="720" height="30" fontSize="8.0">
+			<text><![CDATA[Para cualquier duda, aclaración o para obtener información oficial, deberá contactar a: Bursamétrica Casa de Bolsa, S.A. de C.V., con domicilio en Insurgentes Sur 1605, Piso 17, San José Insurgentes, Alcaldía Benito Juárez, Ciudad de México, C.P. 03900, Tel. 55 1328 3930, www.bcbcasadebolsa.com]]></text>
+		</element>
+		<element kind="textField" uuid="caa54d62-a966-4737-9f04-84af697b622f" x="598" y="63" width="100" height="13" fontName="SansSerif" fontSize="8.0" hTextAlign="Right">
+			<expression><![CDATA["Página " + $V{PAGE_NUMBER}]]></expression>
+		</element>
+		<element kind="textField" uuid="824c2837-7490-4453-a549-e6f8356f633f" x="698" y="63" width="42" height="13" fontName="SansSerif" fontSize="8.0" evaluationTime="Report" hTextAlign="Left">
+			<expression><![CDATA[" de " + $V{PAGE_NUMBER}]]></expression>
+		</element>
+		<element kind="textField" uuid="8f0263ba-4c31-4aa0-84cf-2734074f25cb" x="560" y="0" width="90" height="16" fontSize="8.0" pattern="#,##0.##;-#,##0.##" bold="true" hTextAlign="Right">
+			<expression><![CDATA[$V{amountTotal}]]></expression>
+		</element>
+		<element kind="textField" uuid="c91f04f3-558d-4d73-9723-10abcf15b1b7" x="650" y="0" width="90" height="16" fontSize="8.0" pattern="#,##0.##;-#,##0.##" bold="true" hTextAlign="Right">
+			<expression><![CDATA[$V{capitalGainLossTotal}]]></expression>
+		</element>
+		<element kind="staticText" uuid="5da62eb3-f4a1-4655-ace9-389308556af4" x="470" y="0" width="90" height="16" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Right">
+			<text><![CDATA[TOTALES]]></text>
+		</element>
+		<property name="com.jaspersoft.studio.unit.height" value="px"/>
+	</pageFooter>
+</jasperReport>

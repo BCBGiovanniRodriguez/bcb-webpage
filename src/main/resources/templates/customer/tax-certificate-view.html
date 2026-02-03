@@ -9,28 +9,23 @@
             <aside th:replace="~{customer/fragments/common :: aside}"></aside>
 
             <main class="app-main">
-                <div class="app-content-header">
-                    <div class="container-fluid">
+                <section>
+                    <div class="header-inner">
+                        <div class="inner text-center">
+                            <h3 class="text-white uppercase"><strong>CONSTANCIAS FISCALES CONSULTA</strong></h3>
+                        </div>
+                        <div class="overlay bg-opacity-5"></div>
                     </div>
-                </div>
+                </section>
+                <!-- end section -->
+                 <br>
 
                 <div class="app-content">
                     <div class="container-fluid">
                         <div class="row">
-                            <div class="card card-primary card-outline">
-                                <div class="card-header">
-                                    <h5 class="card-title text-primary">
-                                        <strong>Consulta Constancia Fiscal</strong>
-                                    </h5>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-12 text-center">
-                                            <iframe th:src="@{/portal-clientes/constancia-fiscal/ver-pdf/} + ${customerTaxCertificateId}" frameborder="1" width="100%" height="800">
-                                            </iframe>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="col-12 text-center">
+                                <iframe th:src="@{/portal-clientes/constancia-fiscal/ver-pdf/} + ${customerTaxCertificateId}" frameborder="1" width="100%" height="800">
+                                </iframe>
                             </div>
                         </div>
                     </div>

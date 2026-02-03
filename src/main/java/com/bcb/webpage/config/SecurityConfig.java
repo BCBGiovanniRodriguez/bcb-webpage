@@ -1,5 +1,7 @@
 package com.bcb.webpage.config;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +14,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.bcb.webpage.model.webpage.repository.OneTimeTokenRepository;
 import com.bcb.webpage.service.CustomOneTimeTokenSuccessHandler;
@@ -49,13 +54,16 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity, 
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity,
         JpaOneTimeTokenService jpaOneTimeTokenService,
         EmailGeneratedOneTimeTokenHandler ottSuccessHandler) throws Exception {
         return httpSecurity
+            .requiresChannel(channel -> channel.anyRequest().requiresSecure())
             .headers(h -> h.frameOptions(f -> f.sameOrigin()))
-            .csrf(Customizer.withDefaults())
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests( auth -> {
+                auth.requestMatchers("/api/send-email").permitAll();
                 auth.requestMatchers("/**", "/login", "/login/**", "/ml/**", "/ott/sent", "/logout", "/public/**").permitAll();
                 auth.requestMatchers("/portal-clientes", "/portal-clientes/**").authenticated();
             })
@@ -105,48 +113,50 @@ public class SecurityConfig {
         return new CustomOneTimeTokenSuccessHandler("/portal-clientes/dashboard");
     }
 
-    /*
     @Bean
-    CorsConfigurationSource corsConfigurationSource() {
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:20000"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "OPTIONS", "DELETE"));
-        configuration.setAllowedHeaders(List.of("*"));
+        
+        // Orígenes permitidos
+        configuration.setAllowedOrigins(Arrays.asList(
+            "http://localhost:443",
+            "http://10.20.50.132:443",
+            "http://10.10.50.114:443",
+            "https://webqa.bcbcasadebolsa.com",
+            "https://bcbcasadebolsa.com"
+        ));
+        
+        // Métodos HTTP permitidos
+        configuration.setAllowedMethods(Arrays.asList(
+            "GET", "POST", "PUT", "DELETE", "PATCH"
+        ));
+        
+        // Headers permitidos
+        configuration.setAllowedHeaders(Arrays.asList(
+            "Authorization",
+            "Content-Type",
+            "X-Requested-With",
+            "Accept",
+            "Origin",
+            "Access-Control-Request-Method",
+            "Access-Control-Request-Headers"
+        ));
+        
+        // Headers expuestos al cliente
+        configuration.setExposedHeaders(Arrays.asList(
+            "Authorization",
+            "Content-Disposition"
+        ));
+        
+        // Permitir credenciales (cookies, headers de autenticación)
         configuration.setAllowCredentials(true);
+        
+        // Tiempo de cache de la configuración preflight
+        configuration.setMaxAge(3600L);
+        
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
-
+        
         return source;
-    }*/
-
-    /*
-    @Bean
-    public SessionRegistry sessionRegistry() {
-        return new SessionRegistryImpl();
     }
-    */
-
-    /*
-    public AuthenticationSuccessHandler successHandler() {
-        return (
-            (request, response, authentication) -> {
-                response.sendRedirect("/inicio-de-sesion");
-                //response.sendRedirect("/management/login");
-            }
-        );
-    }
-    */
-
-    /*
-    @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails user = User.withDefaultPasswordEncoder()
-            .username("user")
-            .password("password")
-            .roles("user")
-            .build();
-
-            return new InMemoryUserDetailsManager(user);
-    }
-    */
 }

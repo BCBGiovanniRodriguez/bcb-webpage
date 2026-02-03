@@ -3,6 +3,7 @@
     <head th:fragment="head">
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+        <title>BCB Casa de Bolsa</title>
         <link rel="shortcut icon" th:href="@{/public/img/favicon.ico}">
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic,700,700italic,800,800italic" rel="stylesheet" type="text/css" />
         <link href="https://fonts.googleapis.com/css?family=Lato:400,700,900&display=swap" rel="stylesheet" />
@@ -64,30 +65,30 @@
                     <div class="col-md-12">
                         <ul class="Reguladores-logo-list">
                             <li>
-                                <a href="https://www.bmv.com.mx/" target="_blank">
+                                <a class="external-link" href="#" data-toggle="modal" data-target="#MainMenu-BM-salir" data-link="https://www.bmv.com.mx/">
                                     <img src="public/images/reguladores/BMV-logo.svg" alt=""/></a>
                                 </li>
                             <li>
-                                <a href="https://www.gob.mx/cnbv" target="_blank">
+                                <a class="external-link" href="#" data-toggle="modal" data-target="#MainMenu-BM-salir" data-link="https://www.gob.mx/cnbv">
                                     <img src="public/images/reguladores/CNBV-logo.svg" alt=""/></a>
                                 </li>
                             <li>
-                                <a href="http://www.amib.com.mx/" target="_blank">
+                                <a class="external-link" href="#" data-toggle="modal" data-target="#MainMenu-BM-salir" data-link="http://www.amib.com.mx/">
                                     <img src="public/images/reguladores/AMIB-logo.svg" alt=""/>
                                 </a>
                             </li>
                             <li>
-                                <a href="https://www.gob.mx/condusef" target="_blank">
+                                <a class="external-link" href="#" data-toggle="modal" data-target="#MainMenu-BM-salir" data-link="https://www.gob.mx/condusef">
                                     <img src="public/images/reguladores/CONDUSEF-logo.png" alt=""/>
                                 </a>
                             </li>
                             <li>
-                                <a href="https://www.biva.mx/es/web/portal-biva/home" target="_blank">
+                                <a class="external-link" href="#" data-toggle="modal" data-target="#MainMenu-BM-salir" data-link="https://www.biva.mx/">
                                     <img src="public/images/reguladores/BIVA-logo.png" alt=""/>
                                 </a>
                             </li>
                             <li>
-                                <a href="https://www.banxico.org.mx/" target="_blank">
+                                <a class="external-link" href="#" data-toggle="modal" data-target="#MainMenu-BM-salir" data-link="https://www.banxico.org.mx/">
                                     <img src="public/images/reguladores/Banxico-logo.png" alt=""/>
                                 </a>
                             </li>
@@ -173,7 +174,7 @@
                                     <i class="fa fa-angle-right"></i> MAPA DEL SITIO
                                 </a>
                             </li>
-                            <li>
+                            <li class="hidden" hidden>
                                 <a th:href="@{/economia-y-mercados}">
                                     <i class="fa fa-angle-right"></i> NOTICIAS
                                 </a>
@@ -224,12 +225,17 @@
             <div class="container">
                 <div class="row">
                     <div class="col-12 text-center">
-                        <span class="text-nowrap">Copyright © 2025 | Bursamétrica Casa de Bolsa S.A. de C.V.* se encuentra en trámite de autorización por parte de las autoridades competentes para cambiar su denominación social a BCB Casa de Bolsa S.A. de C.V.</span>
+                        <span>Copyright © 2025 | Bursamétrica Casa de Bolsa S.A. de C.V.* se encuentra en trámite de autorización por parte de las autoridades competentes para cambiar su denominación social a BCB Casa de Bolsa S.A. de C.V.</span>
                     </div>
                 </div>
             </div>
         </section>
         <!--end section-->
+
+        <div th:fragment="contact">
+            <div class="contacto-pop colorBM"><a href="#" class="btn-send-email" data-toggle="modal" data-target="#MainMenu-BM-contacto" data-origin="2"><i class="fa fa-envelope"></i> Contáctanos</a></div>
+            <a href="#" class="scrollup colorBM"></a><!-- end scroll to top of the page--> 
+        </div>
         
         <div th:fragment="modals">
             <!-- Modal Menu -->
@@ -245,7 +251,6 @@
                             <a th:href="@{/}" class="button-BM-Main" >Inicio</a>
                             <a th:href="@{/acerca-de-nosotros}" class="button-BM-Main" >Acerca de Nosotros</a>
                             <a th:href="@{/productos-y-servicios}" class="button-BM-Main" >Productos y Servicios</a>
-                            <!--<a th:href="@{/economia-mercados}" class="button-BM-Main" >Economía y Mercados</a>-->
                             <a th:href="@{/personas-y-familias}" class="button-BM-Main" >Personas y Familias</a>
                             <a th:href="@{/inversionista-institucional}" class="button-BM-Main" >Inversionista Institucional</a>
                         </div>
@@ -285,6 +290,49 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Modal Link Externo -->
+            <div class="modal fade" id="MainMenu-BM-salir" tabindex="-1" role="dialog" aria-labelledby="MainMenu-BM-modal-salir" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content dark02">
+                        <div class="modal-header">
+                            <h5 class="text-white text-center">Visitar Página Externa</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <p class="text-white">Estás a punto de visitar una página web fuera del dominio de bcbcasadebolsa.com</p>
+                            <p class="text-white"><strong>¿Estás seguro de esta acción?</strong></p>
+                            <br>
+
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-md-12" style="display: inline;">
+                                        <div class="input-group mb-3" style="display: inline;">
+                                            <div class="input-group-append" style="display: inline;">
+                                                <a class="btn btn-border white" type="button" data-dismiss="modal">
+                                                    Cancelar
+                                                </a>
+
+
+                                                <a id="outer-link" href="#" target="_blank" class="btn btn-border white">
+                                                    Abrir Link
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                            <div class="modal-footer text-center">
+                            <p class="text-center">
+                                <img th:src="@{public/images/logo/BCB-logo-white.svg}" width="160px" height="auto" alt="Logo Bursamétrica"/>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
 	
             <!-- Modal Contacto -->
             <div class="modal fade" id="MainMenu-BM-contacto" tabindex="-1" role="dialog" aria-labelledby="MainMenu-BM-modal-contacto" aria-hidden="true">
@@ -299,8 +347,13 @@
                         <div class="modal-body text-center">
                             <div class="col-md-8 col-centered">
                                 <div class="smart-forms bmargin">
-                                    <form method="post" action="" id="smart-form">
+                                    <div id="smart-form">
                                         <div>
+                                            <div class="section">
+                                                <input type="text" name="sendertype" id="sendertype" hidden value="">
+                                            </div>
+                                            <!-- end section -->
+
                                             <div class="section">
                                                 <label class="field prepend-icon">
                                                     <input type="text" name="sendername" id="sendername" class="gui-input" placeholder="Nombre">
@@ -321,7 +374,7 @@
                                             
                                             <div class="section colm colm6">
                                                 <label class="field prepend-icon">
-                                                    <input type="tel" name="telephone" id="telephone" class="gui-input" placeholder="Teléfono">
+                                                    <input type="tel" name="telephone" id="telephone" class="gui-input" placeholder="Teléfono" maxlength="10">
                                                     <span class="field-icon"><i class="fa fa-phone-square"></i></span>
                                                 </label>
                                             </div>
@@ -329,15 +382,14 @@
                                             
                                             <div class="section">
                                                 <div class="dropdown">
-                                                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
-                                                        Estoy interesado en <span class="caret"></span>
-                                                    </button>
-                                                    <ul class="dropdown-menu">
-                                                        <li><a href="#">Información de producto</a></li>
-                                                        <li><a href="#">Que me contacte un asesor</a></li>
-                                                    </ul>
+                                                    <select name="senderinterest" id="senderinterest" class="btn btn-primary">
+                                                        <option class="text-start" value="0">Estoy interesado en...</option>
+                                                        <option class="text-start" value="1">Información de producto</option>
+                                                        <option class="text-start" value="2">Que me contacte un asesor</option>
+                                                        <option class="text-start" value="3">Otros</option>
+                                                    </select>
                                                 </div>
-                                            </div>
+                                            </div> 
                                             <!-- end section -->
                                             
                                             <div class="section">
@@ -351,23 +403,26 @@
                                             <div class="section colm colm6">
                                                 <label class="field prepend-icon">
                                                     <span class="text-white">
-                                                        <input type="checkbox"> He leído y acepto el 
-                                                        <a th:href="@{/aviso-privacidad}" target="_blank" class="btn-privacy">Aviso de Privacidad</a>
+                                                        <input id="privacy-notice" type="checkbox"> He leído y acepto el 
+                                                        <a th:href="@{/aviso-de-privacidad}" target="_blank" class="btn-privacy">Aviso de Privacidad</a>
                                                     </span>
                                                 </label>
                                             </div>
                                             <!-- end section -->
+
+                                            <div id="errorDetails" class="section hidden">
+                                            </div>
                                         </div>
                                         <!-- end .form-body section -->
                                         <div class="form-footer">
-                                            <button type="submit" class="button btn-primary">Enviar</button>
+                                            <button id="btnSendEmail" type="button" class="hidden button btn-primary">Enviar</button>
                                         </div>
                                         <!-- end .form-footer section -->
-                                    </form>
+                                    </div>
                                 </div>
                             </div>
                             
-                            <div class="col-md-8 col-centered">
+                            <div id="successNotification" class="col-md-8 col-centered hidden">
                                 <h5 class="text-white text-center">¡GRACIAS!</h5>
                                 <h6 class="text-white text-center">Hemos recibido tu mensaje, en breve te contactaremos.</h6>
                             </div>
@@ -392,22 +447,25 @@
             <script th:src="@{public/js/mainmenu/customeUI.js}"></script> 
             <script th:src="@{public/js/mainmenu/jquery.sticky.js}"></script> 
             <script th:src="@{public/js/scrolltotop/totop.js}"></script>
-            <script th:src="@{public/js/owl-carousel/owl.carousel.js}"></script> 
+            <script th:src="@{public/js/owl-carousel/owl.carousel.js}"></script>
             <script th:src="@{public/js/owl-carousel/custom.js}"></script> 
             <script th:src="@{public/js/scripts/functions.js}" type="text/javascript"></script>
-            <script th:src="@{public/js/login.js}" type="text/javascript"></script>
+            <script th:src="@{public/js/module/public/common/email.js}" type="text/javascript"></script>
+            <script th:src="@{/public/js/icons.js}" type="text/javascript"></script>
+            <script th:src="@{/public/js/module/public/common/links.js}" type="text/javascript"></script>
+            
             <script type="text/javascript">
-            var a = $("#header").offset().top;
+                var a = $("#header").offset().top;
 
-            $(document).scroll(function(){
-                if($(this).scrollTop() > a)
-                {   
-                $('#header').css({"background":"rgba(0,59,114,0.95)"});
-                    
-                } else {
-                $('#header').css({"background":"rgba(0,59,114,1.00)"});
-                }
-            });
+                $(document).scroll(function(){
+                    if($(this).scrollTop() > a)
+                    {   
+                    $('#header').css({"background":"rgba(0,59,114,0.95)"});
+                        
+                    } else {
+                    $('#header').css({"background":"rgba(0,59,114,1.00)"});
+                    }
+                });
             </script>
         </div>
     </body>

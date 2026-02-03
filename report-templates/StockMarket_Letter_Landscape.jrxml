@@ -12,6 +12,22 @@
 	<field name="costoPromedio" class="java.math.BigDecimal"/>
 	<field name="valor" class="java.math.BigDecimal"/>
 	<field name="plusMinusValia" class="java.math.BigDecimal"/>
+	<variable name="averageAmountTotal" calculation="Sum" class="java.lang.Double">
+		<expression><![CDATA[$F{costoPromedio}]]></expression>
+		<initialValueExpression><![CDATA[0.0]]></initialValueExpression>
+	</variable>
+	<variable name="priceTotal" calculation="Sum" class="java.lang.Double">
+		<expression><![CDATA[$F{precio}]]></expression>
+		<initialValueExpression><![CDATA[0.0]]></initialValueExpression>
+	</variable>
+	<variable name="valueTotal" calculation="Sum" class="java.lang.Double">
+		<expression><![CDATA[$F{valor}]]></expression>
+		<initialValueExpression><![CDATA[0.0]]></initialValueExpression>
+	</variable>
+	<variable name="capitalGainLossTotal" calculation="Sum" class="java.lang.Double">
+		<expression><![CDATA[$F{plusMinusValia}]]></expression>
+		<initialValueExpression><![CDATA[0.0]]></initialValueExpression>
+	</variable>
 	<background splitType="Stretch"/>
 	<title height="90" splitType="Stretch">
 		<element kind="image" uuid="c9467117-610e-4520-91e6-a05b417a10d9" x="0" y="0" width="251" height="50">
@@ -40,9 +56,9 @@
 		</element>
 		<property name="com.jaspersoft.studio.unit.height" value="px"/>
 	</title>
-	<pageHeader height="31" splitType="Stretch">
-		<element kind="staticText" uuid="220e65bb-f011-4b34-9367-1ac86320c265" x="255" y="9" width="242" height="22" forecolor="#003B72" fontSize="13.0" bold="true" italic="false" hTextAlign="Right">
-			<text><![CDATA[RUBRO: MERCADO DE CAPITALES]]></text>
+	<pageHeader height="32" splitType="Stretch">
+		<element kind="staticText" uuid="220e65bb-f011-4b34-9367-1ac86320c265" x="259" y="6" width="242" height="22" forecolor="#003B72" fontSize="13.0" bold="true" italic="false" hTextAlign="Center">
+			<text><![CDATA[MERCADO DE CAPITALES]]></text>
 		</element>
 	</pageHeader>
 	<columnHeader height="30" splitType="Stretch">
@@ -88,11 +104,27 @@
 		</band>
 	</detail>
 	<pageFooter height="70" splitType="Stretch">
-		<element kind="staticText" uuid="880d06a7-758b-46d8-bcd7-1cd8e060b48e" x="20" y="12" width="480" height="18">
+		<element kind="staticText" uuid="880d06a7-758b-46d8-bcd7-1cd8e060b48e" x="20" y="20" width="480" height="18" fontSize="8.0">
 			<text><![CDATA[La información presentada en este documento es para fines informativos, por lo que no tiene validez oficial.  ]]></text>
 		</element>
-		<element kind="staticText" uuid="098f2bec-8a3a-4c59-99d9-a291e3eb39d7" x="20" y="30" width="720" height="30">
+		<element kind="staticText" uuid="098f2bec-8a3a-4c59-99d9-a291e3eb39d7" x="20" y="30" width="720" height="30" fontSize="8.0">
 			<text><![CDATA[Para cualquier duda, aclaración o para obtener información oficial, deberá contactar a: Bursamétrica Casa de Bolsa, S.A. de C.V., con domicilio en Insurgentes Sur 1605, Piso 17, San José Insurgentes, Alcaldía Benito Juárez, Ciudad de México, C.P. 03900, Tel. 55 1328 3930, www.bcbcasadebolsa.com]]></text>
 		</element>
+		<element kind="textField" uuid="9002d7ea-062e-4092-b381-77f6cb701bdc" x="598" y="53" width="100" height="13" fontName="SansSerif" fontSize="8.0" hTextAlign="Right">
+			<expression><![CDATA["Página " + $V{PAGE_NUMBER}]]></expression>
+		</element>
+		<element kind="textField" uuid="02d2ba2e-988f-4217-9088-ef831b068f82" x="698" y="53" width="42" height="13" fontName="SansSerif" fontSize="8.0" evaluationTime="Report" hTextAlign="Left">
+			<expression><![CDATA[" de " + $V{PAGE_NUMBER}]]></expression>
+		</element>
+		<element kind="textField" uuid="16133c7d-22b4-4d1c-8f89-97bf842d73aa" x="560" y="0" width="90" height="20" fontSize="8.0" pattern="#,##0.##;-#,##0.##" bold="true" hTextAlign="Right">
+			<expression><![CDATA[$V{valueTotal}]]></expression>
+		</element>
+		<element kind="textField" uuid="80e4555f-a806-4a75-a2f0-8764a261c195" x="650" y="0" width="90" height="20" fontSize="8.0" pattern="#,##0.##;-#,##0.##" bold="true" hTextAlign="Right">
+			<expression><![CDATA[$V{capitalGainLossTotal}]]></expression>
+		</element>
+		<element kind="staticText" uuid="7d5f291a-4e94-4030-ba79-e48313cf0bd8" x="470" y="0" width="90" height="20" bold="true" hTextAlign="Right">
+			<text><![CDATA[TOTALES]]></text>
+		</element>
+		<property name="com.jaspersoft.studio.unit.height" value="px"/>
 	</pageFooter>
 </jasperReport>

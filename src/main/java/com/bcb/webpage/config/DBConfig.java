@@ -13,12 +13,14 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.lang.NonNull;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import jakarta.persistence.EntityManagerFactory;
+
 @Configuration
 @EnableTransactionManagement
 @EnableConfigurationProperties
@@ -51,7 +53,7 @@ public class DBConfig {
 
     @Primary
     @Bean(name = "webpageTransactionManager")
-    public PlatformTransactionManager transactionManager(
+    public PlatformTransactionManager transactionManager(@NonNull
         @Qualifier("webpageEntityManagerFactory") EntityManagerFactory webpageEntityManagerFactory) {
             return new JpaTransactionManager(webpageEntityManagerFactory);
     }
@@ -59,7 +61,8 @@ public class DBConfig {
     @Primary
     @Bean(name = "webpageNamedParameterJdbcTemplate")
     @DependsOn("webpageDatasource")
-    public NamedParameterJdbcTemplate webpageNamedParameterJdbcTemplate(@Qualifier("webpageDatasource") DataSource webpageDataSource) {
+    public NamedParameterJdbcTemplate webpageNamedParameterJdbcTemplate(@NonNull
+        @Qualifier("webpageDatasource") DataSource webpageDataSource) {
         return new NamedParameterJdbcTemplate(webpageDataSource);
     }
 }

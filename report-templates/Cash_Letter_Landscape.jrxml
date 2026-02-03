@@ -1,0 +1,85 @@
+<!-- Created with Jaspersoft Studio version 7.0.2.final using JasperReports Library version 7.0.2-31532122640f516c6d17238ae0e41a08113d5ac0  -->
+<jasperReport name="StockMarket_Letter_Landscape" language="java" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3a35090a-98a9-41d1-a367-bc070e33511b">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<parameter name="P_SEARCH_DATE" class="java.lang.String"/>
+	<parameter name="P_CUSTOMER_NAME" class="java.lang.String"/>
+	<parameter name="P_CUSTOMER_CONTRACT_NUMBER" class="java.lang.String"/>
+	<query language="sql"><![CDATA[]]></query>
+	<field name="moneda" class="java.lang.String"/>
+	<field name="saldoPorLiquidar" class="java.math.BigDecimal"/>
+	<field name="saldoActual" class="java.math.BigDecimal"/>
+	<field name="subtotal" class="java.math.BigDecimal"/>
+	<background splitType="Stretch"/>
+	<title height="90" splitType="Stretch">
+		<element kind="image" uuid="c9467117-610e-4520-91e6-a05b417a10d9" x="0" y="0" width="251" height="50">
+			<expression><![CDATA["BCB-logo-blue.svg"]]></expression>
+		</element>
+		<element kind="staticText" uuid="ad221f22-fcf6-4d2d-8726-7ded3144c201" x="392" y="0" width="348" height="40" forecolor="#003B72" fontSize="25.0" hTextAlign="Right">
+			<text><![CDATA[REPORTE DE POSICIÓN]]></text>
+		</element>
+		<element kind="staticText" uuid="87d34989-b90c-4c46-a2e4-fa0b75769c5e" x="392" y="73" width="126" height="14" forecolor="#003B72" bold="true">
+			<text><![CDATA[FECHA CONSULTA]]></text>
+		</element>
+		<element kind="textField" uuid="bebf6f53-6168-462c-9724-94e555190289" x="560" y="72" width="180" height="16" hTextAlign="Right">
+			<expression><![CDATA[$P{P_SEARCH_DATE}]]></expression>
+		</element>
+		<element kind="staticText" uuid="de870c85-bf64-46ee-997b-275c8ae2e333" x="392" y="41" width="64" height="14" forecolor="#003B72" bold="true">
+			<text><![CDATA[CLIENTE]]></text>
+		</element>
+		<element kind="staticText" uuid="28774125-309b-40c9-ba7a-f5dbf21d4ffd" x="392" y="57" width="64" height="14" forecolor="#003B72" bold="true">
+			<text><![CDATA[CONTRATO]]></text>
+		</element>
+		<element kind="textField" uuid="bd0deb65-26ca-452e-ada0-302a825e4cac" x="456" y="40" width="284" height="16" hTextAlign="Right">
+			<expression><![CDATA[$P{P_CUSTOMER_NAME}]]></expression>
+		</element>
+		<element kind="textField" uuid="a160450b-89a5-4d7a-b021-8ad4a55003aa" x="500" y="56" width="240" height="16" hTextAlign="Right">
+			<expression><![CDATA[$P{P_CUSTOMER_CONTRACT_NUMBER}]]></expression>
+		</element>
+		<property name="com.jaspersoft.studio.unit.height" value="px"/>
+	</title>
+	<pageHeader height="31" splitType="Stretch">
+		<element kind="staticText" uuid="220e65bb-f011-4b34-9367-1ac86320c265" x="255" y="9" width="242" height="22" forecolor="#003B72" fontSize="13.0" bold="true" italic="false" hTextAlign="Center">
+			<text><![CDATA[RUBRO: SALDO MN]]></text>
+		</element>
+	</pageHeader>
+	<columnHeader height="34" splitType="Stretch">
+		<element kind="staticText" uuid="314c963d-f8bd-4e20-9d9c-d6c88c27bad8" x="470" y="15" width="90" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Left">
+			<text><![CDATA[MONEDA]]></text>
+		</element>
+		<element kind="staticText" uuid="94eb7665-67a2-418b-a75c-1053aa5ab668" x="560" y="15" width="90" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Right">
+			<text><![CDATA[SALDO POR LIQUIDAR]]></text>
+		</element>
+		<element kind="staticText" uuid="43845205-e88b-462f-8049-60db15ecc235" x="650" y="15" width="90" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Right">
+			<text><![CDATA[SALDO ACTUAL]]></text>
+		</element>
+	</columnHeader>
+	<detail>
+		<band height="21">
+			<element kind="textField" uuid="4e05c415-5248-4520-af55-5ac8189cf739" x="470" y="0" width="90" height="16" fontSize="8.0" pattern=" #,##0.000000;-#,##0.000000" hTextAlign="Left">
+				<expression><![CDATA[$F{moneda}]]></expression>
+			</element>
+			<element kind="textField" uuid="6bcc70a4-fc67-4fde-b972-c1c607982369" x="560" y="0" width="90" height="16" fontSize="8.0" pattern="#,##0.00;-#,##0.00" hTextAlign="Right">
+				<expression><![CDATA[$F{saldoPorLiquidar}]]></expression>
+			</element>
+			<element kind="textField" uuid="95bcbae6-7edf-4c08-b02c-7c71344b726e" x="650" y="0" width="90" height="16" fontSize="8.0" pattern="#,##0.00;-#,##0.00" hTextAlign="Right">
+				<expression><![CDATA[$F{saldoActual}]]></expression>
+			</element>
+		</band>
+	</detail>
+	<columnFooter height="50">
+		<element kind="staticText" uuid="37e6eb1c-ba05-4d8d-b27f-28de5c4e51b3" x="560" y="0" width="90" height="14" forecolor="#003B72" fontSize="8.0" bold="true" hTextAlign="Left">
+			<text><![CDATA[SUBTOTAL]]></text>
+		</element>
+		<element kind="textField" uuid="2585fa57-ef86-4107-8254-400a9301b32c" x="650" y="-1" width="90" height="16" fontSize="8.0" pattern="#,##0.00;-#,##0.00" hTextAlign="Right">
+			<expression><![CDATA[$F{subtotal}]]></expression>
+		</element>
+	</columnFooter>
+	<pageFooter height="70" splitType="Stretch">
+		<element kind="staticText" uuid="880d06a7-758b-46d8-bcd7-1cd8e060b48e" x="20" y="12" width="480" height="18">
+			<text><![CDATA[La información presentada en este documento es para fines informativos, por lo que no tiene validez oficial.  ]]></text>
+		</element>
+		<element kind="staticText" uuid="098f2bec-8a3a-4c59-99d9-a291e3eb39d7" x="20" y="30" width="720" height="30">
+			<text><![CDATA[Para cualquier duda, aclaración o para obtener información oficial, deberá contactar a: Bursamétrica Casa de Bolsa, S.A. de C.V., con domicilio en Insurgentes Sur 1605, Piso 17, San José Insurgentes, Alcaldía Benito Juárez, Ciudad de México, C.P. 03900, Tel. 55 1328 3930, www.bcbcasadebolsa.com]]></text>
+		</element>
+	</pageFooter>
+</jasperReport>

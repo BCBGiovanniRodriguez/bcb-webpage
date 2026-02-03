@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
@@ -39,7 +38,12 @@ import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.json.data.JsonDataSource;
+import net.sf.jasperreports.pdf.JRPdfExporter;
+
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 @Slf4j
 @Service
@@ -65,7 +69,7 @@ public class CustomerReportService {
 
     public static final String[] types = {"", "General", "Efectivo", "Capitales", "Dinero", "FondosInversion"};
 
-    public static final String[] typeFiles = {"", "GeneralPosition_Letter_Landscape.jrxml", "Cash_Letter_Landscape.jrxml", "StockMarket_Letter_Landscape.jrxml", "MoneyMarket_Letter_Landscape.jrxml", "FondosInversion"};
+    public static final String[] positionFiles = {"", "GeneralPosition_Letter_Landscape.jrxml", "Cash_Letter_Landscape.jrxml", "StockMarket_Letter_Landscape.jrxml", "MoneyMarket_Letter_Landscape.jrxml", "FondosInversion"};
 
     private DateTimeFormatter filedateFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
@@ -79,8 +83,9 @@ public class CustomerReportService {
 
     private List<MovementDTO> movementDataList = new ArrayList<>();
 
-    public void getOutputStreamReport(CustomerCustomer customer, List<PositionInterface> data, Integer type, OutputStream outputStream) {
+    public void getOutputStreamReport(CustomerCustomer customer, Integer type, OutputStream outputStream, String jsonData, String jsonData1) {
         ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
         
         // Always generate info from current contract
         CustomerContract currentContract = null;
@@ -95,29 +100,56 @@ public class CustomerReportService {
             if (currentContract == null) {
                 throw new Exception("Contrato no seleccionado");
             } else {
-                File reportTemplate = ResourceUtils.getFile("classpath:reports/" + typeFiles[type]);
-                JasperReport jasperReport = JasperCompileManager.compileReport(reportTemplate.getPath());
-                
                 Map<String, Object> parameters = new HashMap<>();
                 parameters.put("P_SEARCH_DATE", now.format(mexFormatter));
                 parameters.put("P_CUSTOMER_NAME", customer.getCustomerFullName());
                 parameters.put("P_CUSTOMER_CONTRACT_NUMBER", currentContract.getContractNumber());
-                
-                String jsonData = mapper.writeValueAsString(data);
 
                 ByteArrayInputStream jsonDataInputStream = new ByteArrayInputStream(jsonData.getBytes());
                 JsonDataSource jsonDataSource = new JsonDataSource(jsonDataInputStream);
 
-                JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, jsonDataSource);
-                JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
+                if (CustomerReportService.TYPE_MONEY_MARKET == type) {
+                    System.out.println("Directo: " + jsonData);
+                    System.out.println("Reporto: " + jsonData1);
+                    File moneyMarketDirectReportTemplate = ResourceUtils.getFile("report-templates/MoneyMarketDirect_Letter_Landscape.jrxml");
+                    File moneyMarketReportReportTemplate = ResourceUtils.getFile("report-templates/MoneyMarketReport_Letter_Landscape.jrxml");
+
+                    JasperReport moneyMarketDirectJasperReport = JasperCompileManager.compileReport(moneyMarketDirectReportTemplate.getPath());
+                    JasperReport moneyMarketReportJasperReport = JasperCompileManager.compileReport(moneyMarketReportReportTemplate.getPath());
+
+                    ByteArrayInputStream jsonData1InputStream = new ByteArrayInputStream(jsonData1.getBytes());
+                    JsonDataSource jsonData1Source = new JsonDataSource(jsonData1InputStream);
+
+                    JasperPrint moneyMarketDirectJasperPrint = JasperFillManager.fillReport(moneyMarketDirectJasperReport, parameters, jsonDataSource);
+                    JasperPrint moneyMarketReportReportJasperPrint = JasperFillManager.fillReport(moneyMarketReportJasperReport, parameters, jsonData1Source);
+
+                    List<JasperPrint> jasperPrints = new ArrayList<JasperPrint>();
+                    jasperPrints.add(moneyMarketDirectJasperPrint);
+                    jasperPrints.add(moneyMarketReportReportJasperPrint);
+
+                    JRPdfExporter jrPdfExporter = new JRPdfExporter();
+                    jrPdfExporter.setExporterInput(SimpleExporterInput.getInstance(jasperPrints));
+                    jrPdfExporter.setExporterOutput(new SimpleOutputStreamExporterOutput(outputStream));
+                    
+                    jrPdfExporter.exportReport();
+                } else {
+                    System.out.println("Report: " + positionFiles[type]);
+                    File reportTemplate = ResourceUtils.getFile("report-templates/" + positionFiles[type]); 
+                    JasperReport jasperReport = JasperCompileManager.compileReport(reportTemplate.getPath());
+
+                    JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, jsonDataSource);
+                    JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
+                }
             }
         } catch (Exception e) {
-            System.out.println("[ReportService][generateReport][" + e.getLocalizedMessage() + "]");
+            System.out.println("[ReportService][getOutputStreamReport][" + e.getLocalizedMessage() + "]");
         }
     }
 
     public void generateReport(CustomerCustomer customer, List<PositionInterface> data, Integer type) {
         ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+
         String outputPath = rootOutputPath;
         String typeAsString;
         String fileName = "";
@@ -136,7 +168,7 @@ public class CustomerReportService {
                 throw new Exception("Contrato no seleccionado");
             } else {
                 typeAsString = getTypeAsString(type);
-                File reportTemplate = ResourceUtils.getFile("classpath:reports/" + typeFiles[type]);
+                File reportTemplate = ResourceUtils.getFile("report-templates/" + positionFiles[type]);
                 JasperReport jasperReport = JasperCompileManager.compileReport(reportTemplate.getAbsolutePath());
 
                 outputPath += currentContract.getContractNumber() + "/position_reports";
@@ -207,11 +239,11 @@ public class CustomerReportService {
             cashGeneralDTO.setMarket("SaldoMN");
             cashGeneralDTO.setEmmiter("");
             cashGeneralDTO.setSerie("");
-            cashGeneralDTO.setSecurities("0");
+            cashGeneralDTO.setSecurities(0D);
             cashGeneralDTO.setAverageAmount(0D);
-            cashGeneralDTO.setPrice(0D);
-            cashGeneralDTO.setValue(cashTotalBalance);
-            cashGeneralDTO.setPercentage(cashPercentage);
+            cashGeneralDTO.setMarketPrice(0D);
+            cashGeneralDTO.setMarketValue(cashTotalBalance);
+            //cashGeneralDTO.setPercentage(cashPercentage);
             cashGeneralDTO.setCapitalGainLoss(0D);
             generalList.add(cashGeneralDTO);
         
@@ -227,7 +259,7 @@ public class CustomerReportService {
                 stockGeneralDto.setMarket("Capitales");
                 stockGeneralDto.setEmmiter(posicionTmp.getEmisora());
                 stockGeneralDto.setSerie(posicionTmp.getSerie());
-                stockGeneralDto.setSecurities(posicionTmp.getTitulos());
+                stockGeneralDto.setSecurities(Double.parseDouble(posicionTmp.getTitulos()));
 
                 averageAmount = getDoubleValue(posicionTmp.getCostoPromedio());
                 price = getDoubleValue(posicionTmp.getCostoXTitulos());
@@ -235,8 +267,8 @@ public class CustomerReportService {
                 capitalGainLoss = getDoubleValue(posicionTmp.getPlusMinusvalia());
                 
                 stockGeneralDto.setAverageAmount(averageAmount);
-                stockGeneralDto.setPrice(price);
-                stockGeneralDto.setValue(value);
+                stockGeneralDto.setMarketPrice(price);
+                stockGeneralDto.setMarketValue(value);
                 percentage = (100 * value) / grandTotal;
                 if (capitalGainLoss > 0D) {
                     cssStyle = "text-success";
@@ -244,12 +276,12 @@ public class CustomerReportService {
                     cssStyle = "text-danger";
                 }
 
-                stockGeneralDto.setPercentage(percentage);
+                //stockGeneralDto.setPercentage(percentage);
                 stockGeneralDto.setCapitalGainLoss(capitalGainLoss);
                 stockGeneralDto.setCssStyle(cssStyle);
 
-                generalList.add(stockGeneralDto);
                 stockMarketReportList.add(stockGeneralDto);
+                generalList.add(stockGeneralDto);
             }
 
             for (Posicion posicionTmp : positionMoneyList) {
@@ -257,7 +289,7 @@ public class CustomerReportService {
                 moneyGeneralDto.setMarket("Dinero");
                 moneyGeneralDto.setEmmiter(posicionTmp.getEmisora());
                 moneyGeneralDto.setSerie(posicionTmp.getSerie());
-                moneyGeneralDto.setSecurities(posicionTmp.getTitulos());
+                moneyGeneralDto.setSecurities(Double.parseDouble(posicionTmp.getTitulos()));
                 moneyGeneralDto.setRate(posicionTmp.getTasa());
                 moneyGeneralDto.setPeriod(posicionTmp.getPlazo());
 
@@ -267,12 +299,12 @@ public class CustomerReportService {
                 capitalGainLoss = getDoubleValue(posicionTmp.getPlusMinusvalia());
                 
                 moneyGeneralDto.setAverageAmount(averageAmount);
-                moneyGeneralDto.setPrice(price);
-                moneyGeneralDto.setValue(value);
+                moneyGeneralDto.setMarketPrice(price);
+                moneyGeneralDto.setMarketValue(value);
 
                 percentage = (100 * value) / grandTotal;
 
-                moneyGeneralDto.setPercentage(percentage);
+                //moneyGeneralDto.setPercentage(percentage);
                 moneyGeneralDto.setCapitalGainLoss(capitalGainLoss);
                 
                 cssStyle = "";
@@ -282,8 +314,8 @@ public class CustomerReportService {
                     cssStyle = "text-danger";
                 }
                 moneyGeneralDto.setCssStyle(cssStyle);
-                generalList.add(moneyGeneralDto);
                 moneyMarketReportList.add(moneyGeneralDto);
+                generalList.add(moneyGeneralDto);
             }
 
             // Generate reports
@@ -291,17 +323,16 @@ public class CustomerReportService {
             this.generateReport(customer, stockMarketReportList, CustomerReportService.TYPE_STOCK_MARKET);
             this.generateReport(customer, generalList, CustomerReportService.TYPE_GENERAL);
             this.generateReport(customer, cashReportList, CustomerReportService.TYPE_CASH);
-
-
             
         } catch (Exception e) {
-            System.out.println("" + e.getLocalizedMessage());
+            System.out.println("[ReportService][generatePositionReports][" + e.getLocalizedMessage() + "]");
         }
 
     }
 
     public void getOutputStreamMovementsReport(CustomerCustomer customer, List<MovementDTO> movementDataList, LocalDate startDate, LocalDate endDate, OutputStream outputStream) {
         ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
         
         // Always generate info from current contract
         CustomerContract currentContract = null;
@@ -315,7 +346,7 @@ public class CustomerReportService {
             if (currentContract == null) {
                 throw new Exception("Contrato no seleccionado");
             } else {
-                File reportTemplate = ResourceUtils.getFile("classpath:reports/Movements_Letter_Landscape.jrxml");
+                File reportTemplate = ResourceUtils.getFile("report-templates/Movements_Letter_Landscape.jrxml");
                 JasperReport jasperReport = JasperCompileManager.compileReport(reportTemplate.getPath());
                 
                 Map<String, Object> parameters = new HashMap<>();
@@ -334,12 +365,14 @@ public class CustomerReportService {
             }
             
         } catch (Exception e) {
-            System.out.println("[ReportService][generateMovementsReport][" + e.getLocalizedMessage() + "]");
+            System.out.println("[ReportService][getOutputStreamMovementsReport][" + e.getLocalizedMessage() + "]");
         }
     }
 
     public void generateMovementsReport(CustomerCustomer customer, LocalDate startDate, LocalDate endDate) {
         ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        
         String outputPath = rootOutputPath;
         String fileName = "";
         // Always generate info from current contract
@@ -355,8 +388,8 @@ public class CustomerReportService {
                 throw new Exception("Contrato no seleccionado");
             } else {
                 movementDataList = this.getDataList(customer, startDate, endDate);
-                //File reportTemplate = ResourceUtils.getFile("classpath:reports/Movements_Letter_Landscape.jrxml");
-                File reportTemplate = new ClassPathResource("Movements_Letter_Landscape.jrxml").getFile();
+                File reportTemplate = ResourceUtils.getFile("report-templates/Movements_Letter_Landscape.jrxml");
+                
                 JasperReport jasperReport = JasperCompileManager.compileReport(reportTemplate.getPath());
 
                 outputPath += currentContract.getContractNumber() + "/movement_reports";
@@ -470,7 +503,7 @@ public class CustomerReportService {
                 data.add(movementDTO);
             }
         } catch (Exception e) {
-            System.out.println("" + e.getLocalizedMessage());
+            System.out.println("[ReportService][getDataList][" + e.getLocalizedMessage() + "]");
         }
 
         return data;

@@ -1,38 +1,41 @@
 # Puerto en producción
-server.port=8443
+server.port=${SERVER_PORT}
+app.allowed.domain=${SERVER_HOSTNAME}
+
 # TLS Configuration
-server.ssl.enabled=true
-server.ssl.key-store=classpath:keystore.p12
-server.ssl.key-store-type=PKCS12
+server.ssl.enabled=${SERVER_SSL_ENABLED}
+server.ssl.key-store=${SERVER_SSL_KEY_STORE}
+server.ssl.key-store-type=${SERVER_SSL_KEY_STORE_TYPE}
+server.ssl.key-alias=${SERVER_SSL_KEY_ALIAS}
 server.ssl.key-store-password=${SSL_KEYSTORE_PASSWORD}
-server.ssl.key-alias=webpage-crt
 server.ssl.protocol=TLS
 server.ssl.enabled-protocols=TLSv1.2,TLSv1.3
+server.ssl.ciphers=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256
+# Client Authentication (opcional)
+server.ssl.client-auth=none
 
-# WEBPAGE Base de datos MariaDB (producción)
-spring.datasource.webpage.jdbc-url=jdbc:mariadb://webpagedb:3306/webpage
-spring.datasource.webpage.username=testuser
-spring.datasource.webpage.password=password
+# Base de datos MariaDB (producción)
+spring.datasource.webpage.jdbc-url=${DATABASE_JDBC_URL}
+spring.datasource.webpage.username=${DATABASE_USER}
+spring.datasource.webpage.password=${DATABASE_PASSWORD}
 spring.datasource.webpage.driver-class-name=org.mariadb.jdbc.Driver
 spring.datasource.webpage.hibernate.dialect=org.hibernate.dialect.MariaDBDialect
-# WEBPAGE HikariCP
-spring.datasource.webpage.hikari.minimum-idle=5
-spring.datasource.webpage.hikari.maximum-pool-size=20
-spring.datasource.webpage.hikari.idle-timeout=300000
-spring.datasource.webpage.hikari.max-lifetime=1740000
+spring.datasource.webpage.hikari.minimum-idle=10
+spring.datasource.webpage.hikari.maximum-pool-size=10
 spring.datasource.webpage.hikari.connection-timeout=30000
+spring.datasource.webpage.hikari.idle-timeout=600000
+spring.datasource.webpage.hikari.max-lifetime=1800000
 spring.datasource.webpage.hikari.pool-name=MariaDBHikariCP
 spring.datasource.webpage.hikari.validation-timeout=5000
 spring.datasource.webpage.hikari.connection-test-query=SELECT 1
 
-# SISBUR Oracle DB (Producción)
-spring.datasource.sisbur.jdbc-url=jdbc:oracle:thin:@10.10.50.16:1525/BMTKSIS
-spring.datasource.sisbur.username=sisbur
-spring.datasource.sisbur.password=sisbur
+# Oracle DB (Producción)
+spring.datasource.sisbur.jdbc-url=${SISBUR_JDBC_URL}
+spring.datasource.sisbur.username=${SISBUR_USERNAME}
+spring.datasource.sisbur.password=${SISBUR_PASSWORD}
 spring.datasource.sisbur.driver-class-name=oracle.jdbc.OracleDriver
-# SISBUR HikariCP
-spring.datasource.sisbur.hikari.minimum-idle=5
-spring.datasource.sisbur.hikari.maximum-pool-size=20
+spring.datasource.sisbur.hikari.minimum-idle=10
+spring.datasource.sisbur.hikari.maximum-pool-size=10
 spring.datasource.sisbur.hikari.connection-timeout=30000
 spring.datasource.sisbur.hikari.idle-timeout=600000
 spring.datasource.sisbur.hikari.max-lifetime=1800000
@@ -41,13 +44,12 @@ spring.datasource.sisbur.hikari.validation-timeout=5000
 spring.datasource.sisbur.hikari.connection-test-query=SELECT 1 FROM DUAL
 
 # SISFISCAL Oracle DB (Producción)
-spring.datasource.sisfiscal.jdbc-url=jdbc:oracle:thin:@10.10.50.62:1525/BMTKMDIN
-spring.datasource.sisfiscal.username=EDOCTA_APP
-spring.datasource.sisfiscal.password=Ed0cta#4pp
+spring.datasource.sisfiscal.jdbc-url=${SISFISCAL_JDBC_URL}
+spring.datasource.sisfiscal.username=${SISFISCAL_USERNAME}
+spring.datasource.sisfiscal.password=${SISFISCAL_PASSWORD}
 spring.datasource.sisfiscal.driver-class-name=oracle.jdbc.OracleDriver
-# SISFISCAL HikariCP
-spring.datasource.sisfiscal.hikari.minimum-idle=5
-spring.datasource.sisfiscal.hikari.maximum-pool-size=20
+spring.datasource.sisfiscal.hikari.minimum-idle=10
+spring.datasource.sisfiscal.hikari.maximum-pool-size=10
 spring.datasource.sisfiscal.hikari.connection-timeout=30000
 spring.datasource.sisfiscal.hikari.idle-timeout=600000
 spring.datasource.sisfiscal.hikari.max-lifetime=1800000

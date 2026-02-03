@@ -1,7 +1,0 @@
-version: "3.9"
-
-services:
-  webpage:
-    volumes:
-      - ./src/main/resources:/app/src/main/resources
-      - ./contracts:/app/contracts

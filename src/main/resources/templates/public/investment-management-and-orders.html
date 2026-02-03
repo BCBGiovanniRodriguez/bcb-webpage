@@ -37,7 +37,7 @@
                             <br/>
                             <p>Nuestra área de gestión de inversiones se caracteriza por estar conformada por un equipo especializado con más de 25 años de experiencia diseñando y administrando estrategias con un enfoque alineado a los intereses de nuestros clientes, fundamentado en las mejores prácticas bursátiles y política de mejor ejecución.</p>
                             <p>Este conocimiento y experiencia nos permite entregar soluciones innovadoras, procurando el mejor rendimiento ajustado por riesgo posible, conforme a los parámetros y lineamientos de inversión prestablecidos para el cliente, así como el servicio de manejo discrecional cuando el cliente lo desee.</p>
-                            <p>Los servicios que ofrecemos van desde diseño de estrategias en directo a la medida para todo tipo de inversionista, estrategias modelo y mandatos.</p>
+                            <p>Los servicios que ofrecemos van desde diseño de estrategias en directo a la medida para todo tipo de inversionista, estrategias preestablecidas denominadas "Selectivas" y mandatos.</p>
                         </div>
                     </div>
                 </div>
@@ -49,7 +49,8 @@
                     <div class="row">
                         <div class="clearfix"></div>
                         <div class="col-md-4 col-sm-4 col-sm-push-2">
-                            <div class="feature-box7 text-center bmargin"> <img th:src="@{public/images/iconos/logo-bursametrica-estrategias-selectivas-a.svg}" alt=""/><br/>
+                            <div class="feature-box7 text-center bmargin">
+                                <img th:src="@{public/images/iconos/logo-bursametrica-estrategias-selectivas-a.svg}" alt=""/><br/>
                                 <br/>
                                 <h4>Estrategias Selectivas </h4>
                                 <br/>
@@ -59,7 +60,9 @@
                         <!--end item-->
                         
                         <div class="col-md-4 col-sm-4 col-sm-push-2">
-                            <div class="feature-box7 text-center bmargin"> <img th:src="@{public/images/iconos/logo-bursametrica-mandatos-0.svg}" alt=""/><br/>
+                            <div class="feature-box7 text-center bmargin orders">
+                                <img th:src="@{public/images/iconos/logo-bursametrica-mandatos-a.svg}" alt=""/>
+                                <br/>
                                 <br/>
                                 <h4>Mandatos</h4>
                                 <br/>
@@ -112,7 +115,9 @@
             <section class="sec-moreless-padding section-colorBM-2">
                 <div class="container">
                     <div class="row">
-                        <div class="col-md-12 text-center"> <a class="btn btn-border white-2 btn-large btn-round" href="#">Contacto Gestión de Inversiones</a></div>
+                        <div class="col-md-12 text-center">
+                            <a class="btn btn-border white-2 btn-large btn-round btn-send-email" href="#" data-toggle="modal" data-target="#MainMenu-BM-contacto" data-origin="2">Contacto Gestión de Inversiones</a>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -136,8 +141,7 @@
             <!--end section -->
             <div class="clearfix"></div>
 
-            <div class="contacto-pop colorBM"><a href="#" data-toggle="modal" data-target="#MainMenu-BM-contacto"><i class="fa fa-envelope"></i> Contáctanos</a></div>
-            <a href="#" class="scrollup colorBM"></a><!-- end scroll to top of the page--> 
+            <div th:replace="~{public/fragments/commons :: contact}"></div>
         </div>
 
         <div th:replace="~{public/fragments/commons :: modals}"></div>

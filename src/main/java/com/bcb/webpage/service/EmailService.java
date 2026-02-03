@@ -72,7 +72,6 @@ public class EmailService {
     }
 
     public void sendRecoverPasswordMessage(JavaMailSender sender, String template, Map<String, String> params) throws MessagingException {
-        
         MimeMessage mimeMessage = sender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
 
@@ -93,6 +92,30 @@ public class EmailService {
         vars.put("username", username);
         vars.put("expirationTime", params.get("expirationTime"));
         vars.put("resetPasswordLink", resetPasswordLink);
+
+        Context context = new Context();
+        context.setVariables(vars);
+
+        String processedContent = templateEngine.process(template, context);
+        mimeMessage.setContent(processedContent, "text/html; charset=utf-8");
+
+        sender.send(mimeMessage);
+    }
+
+    public void sendPublicCustomerMessage(JavaMailSender sender, String template, Map<String, String> params) throws IOException, MessagingException {
+        MimeMessage mimeMessage = sender.createMimeMessage();
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
+
+        mimeMessageHelper.setReplyTo("servicioaclientes@bcbcasadebolsa.com");
+        mimeMessageHelper.setFrom(params.get("from"));
+        mimeMessageHelper.setTo(params.get("to"));
+        mimeMessageHelper.setSubject(params.get("subject"));
+
+        Map<String, Object> vars = new HashMap<String, Object>();
+        vars.put("customer_name", params.get("customer_name"));
+        vars.put("customer_phone", params.get("customer_phone"));
+        vars.put("customer_email", params.get("customer_email"));
+        vars.put("customer_message", params.get("customer_message"));
 
         Context context = new Context();
         context.setVariables(vars);

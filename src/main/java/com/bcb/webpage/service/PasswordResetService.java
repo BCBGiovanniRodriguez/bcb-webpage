@@ -68,7 +68,7 @@ public class PasswordResetService {
             } else {
                 Optional<ConfigurationEmailAccountEntity> configurationEmailAccountOptional = emailAccountRepository.findOneByTypeAndTargetAndMode(EmailInterface.TYPE_SYSTEM_NOTIFICATION, EmailInterface.TARGET_SYSTEM_NOTIFICATION, EmailInterface.MODE_SHIPMENT);
                 if (!configurationEmailAccountOptional.isPresent()) {
-                    throw new Exception("Cuenta de correo de envió no encontrada");
+                    throw new Exception("Cuenta de correo de envío no configurada");
                 } else {
                     String token = UUID.randomUUID().toString();
             
@@ -98,7 +98,7 @@ public class PasswordResetService {
         Map<String, String> params = new HashMap<>();
         params.put("from", systemEmail.getName());
         params.put("to", customerContract.getCustomer().getEmail());
-        params.put("subject", "Solicitud de Reestablecimiento de Contraseña - BCB Casa de Bolsa");
+        params.put("subject", "Solicitud de Restablecimiento de Contraseña - BCB Casa de Bolsa");
         params.put("username", customerContract.getCustomer().getCustomerFullName());
         params.put("expirationTime", "10 minutos");
         params.put("resetPasswordLink", link);
@@ -118,13 +118,17 @@ public class PasswordResetService {
 
             if (!passwordResetToken.isExpired()) {
                 CustomerContract customerContract = passwordResetToken.getCustomerContract();
-                CustomerCustomer customerCustomer = customerContract.getCustomer();
                 //!! -> Update on backend side
-                sisBurService.updateCustomerContractPassword(customerCustomer.getCustomerKey(), customerContract.getContractNumber(), password);
+                sisBurService.updateCustomerContractPassword(customerContract.getCustomer().getCustomerKey(), customerContract.getContractNumber(), password, customerContract.isInitial());
                 //!! -> Update on frontend side
                 String newPassword = this.passwordEncoder.encode(password);
-                customerCustomer.setPassword(newPassword);
-                customerRepository.saveAndFlush(customerCustomer);
+                customerContract.setPassword(newPassword);
+
+                if (customerContract.isInitial()) {
+                    customerContract.setInitial(0);
+                }
+                
+                contractRepository.saveAndFlush(customerContract);
             }
             
             passwordResetToken.setProcessedDate(LocalDateTime.now());

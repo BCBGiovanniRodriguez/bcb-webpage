@@ -2,18 +2,29 @@ package com.bcb.webpage.service.sisbur;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import com.bcb.webpage.model.webpage.dto.CashDTO;
 import com.bcb.webpage.model.webpage.dto.GeneralDTO;
+import com.bcb.webpage.model.webpage.dto.customer.CustomerAttorney;
+import com.bcb.webpage.model.webpage.dto.customer.CustomerBankAccount;
+import com.bcb.webpage.model.webpage.dto.customer.CustomerBeneficiary;
 import com.bcb.webpage.model.webpage.dto.interfaces.PositionInterface;
+import com.bcb.webpage.model.webpage.entity.SisburEmmissionPrice;
+import com.bcb.webpage.model.webpage.entity.SisburEmmission;
+import com.bcb.webpage.model.webpage.repository.SisburEmmissionPriceRepository;
+import com.bcb.webpage.model.webpage.repository.SisburEmmissionRepository;
 import com.bcb.webpage.service.sisbur.model.CustomerCashBalance;
 
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +37,13 @@ public class SisBurService {
     @Qualifier("sisburJdbcTemplate")
     private JdbcTemplate jdbcTemplate;
 
-    private DateTimeFormatter isoFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    @Autowired
+    private SisburEmmissionRepository sisburEmmissionRepository;
+
+    @Autowired
+    private SisburEmmissionPriceRepository sisburEmmissionPriceRepository;
+    
+    private DateTimeFormatter isoShortFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public static final String CURRENCY_TYPE_MXN = "MXN";
 
@@ -40,9 +57,61 @@ public class SisBurService {
 
     private static final String[] marketTypes = {"", "Mercado de Capitales", "Mercado de Dinero", "Fondos de Inversión"};
 
-    private static final String dailyPositionTable = "PosicionDiaV";
+    public List<CashDTO> getCashBalance(String contractNumber) {
+        List<CashDTO> cashList = new ArrayList<>();
+        CustomerCashBalance customerCashBalance = null;
+        Double unassignedMovementMoneyMarketBalance = 0D;
+        Double unassignedMovementMoneyMarketSoldBalance = 0D;
+        Double pendingBalanceFromMovements = 0D;
+        List<String> pendingMovementFolioList = new ArrayList<>();
 
-    public Double getPendingBalance(Integer contractNumber) {
+        try {
+            customerCashBalance = this.getContractBalanceByCurrency(contractNumber, CURRENCY_TYPE_MXN);
+            pendingMovementFolioList = this.getPendingMovementFolioList(contractNumber);
+
+            unassignedMovementMoneyMarketBalance = this.getUnassignedMovementMoneyMarketBalance(contractNumber, pendingMovementFolioList);
+            unassignedMovementMoneyMarketBalance = (unassignedMovementMoneyMarketBalance != null) ? unassignedMovementMoneyMarketBalance : 0D;
+
+            unassignedMovementMoneyMarketSoldBalance = this.getUnassignedMovementMoneyMarketSoldBalance(contractNumber, pendingMovementFolioList);
+            unassignedMovementMoneyMarketSoldBalance = (unassignedMovementMoneyMarketSoldBalance != null) ? unassignedMovementMoneyMarketSoldBalance : 0D;
+
+            pendingBalanceFromMovements = this.getPendingBalanceFromMovements(contractNumber);
+            pendingBalanceFromMovements = (pendingBalanceFromMovements != null) ? pendingBalanceFromMovements : 0D;
+
+            CashDTO mxnCash = new CashDTO();
+            Double mxnPendingBalance = 0D;
+            CashDTO moneyMarketCash = new CashDTO();
+            CashDTO indevalCash = new CashDTO();
+
+            mxnCash.setCurrencyName(SisBurService.CURRENCY_TYPE_MXN);
+            mxnCash.setCurrentBalance(customerCashBalance.getBalanceToday());
+            mxnPendingBalance = customerCashBalance.getBalance120() + customerCashBalance.getBalance96() + customerCashBalance.getBalance72() + customerCashBalance.getBalance48() + customerCashBalance.getBalance24();
+            mxnCash.setPendingBalance(mxnPendingBalance);
+            mxnCash.setSubTotal(mxnPendingBalance + pendingBalanceFromMovements + unassignedMovementMoneyMarketBalance - unassignedMovementMoneyMarketSoldBalance);
+
+            moneyMarketCash.setCurrencyName("Por Asignar MD");
+            moneyMarketCash.setCurrentBalance(unassignedMovementMoneyMarketBalance - unassignedMovementMoneyMarketSoldBalance);
+            moneyMarketCash.setPendingBalance(0D);
+            moneyMarketCash.setSubTotal(0D);
+
+            indevalCash.setCurrencyName("Por Asignar Indeval");
+            indevalCash.setCurrentBalance(pendingBalanceFromMovements);
+            indevalCash.setPendingBalance(0D);
+            indevalCash.setSubTotal(0D);
+
+            cashList.add(mxnCash);
+            cashList.add(moneyMarketCash);
+            cashList.add(indevalCash);
+
+        } catch (Exception e) {
+            log.error("SisBurService::getCashBalance", e);
+        }
+
+        return cashList;
+    }
+
+    // Saldo Indeval
+    private Double getPendingBalanceFromMovements(String contractNumber) {
         String sqlQuery;
         Double pendingBalance = 0D;
 
@@ -58,7 +127,7 @@ public class SisBurService {
         return pendingBalance;
     }
 
-    public Double getSoldBalance(Integer contractNumber, List<String> unnassignedMovementFolioList) {
+    private Double getUnassignedMovementMoneyMarketSoldBalance(String contractNumber, List<String> unnassignedMovementFolioList) {
         String sqlQuery;
         Double soldBalance = 0D;
 
@@ -80,7 +149,7 @@ public class SisBurService {
         return soldBalance;
     }
 
-    public Double getAssignedMovementBalance(Integer contractNumber, List<String> unnassignedMovementFolioList) {
+    private Double getUnassignedMovementMoneyMarketBalance(String contractNumber, List<String> unnassignedMovementFolioList) {
         String sqlQuery;
         Double assignedMovementBalance = 0D;
 
@@ -103,7 +172,7 @@ public class SisBurService {
         return assignedMovementBalance;
     }
 
-    public List<String> getPendingMovementFolioList(Integer contractNumber) {
+    private List<String> getPendingMovementFolioList(String contractNumber) {
         String sqlQuery;
         List<String> folioList = new ArrayList<>();
 
@@ -145,7 +214,7 @@ public class SisBurService {
         try {
             sqlQuery = "SELECT * FROM SaldosEfectivo ";
             sqlQuery += "WHERE CveDivisa = '" + currencyType + "' ";
-            sqlQuery += "AND Contrato '" + contractNumber + "' ";
+            sqlQuery += "AND Contrato = '" + contractNumber + "' ";
 
             resultList = jdbcTemplate.queryForList(sqlQuery);
 
@@ -162,11 +231,11 @@ public class SisBurService {
                 customerCashBalance.setBalance72(Double.parseDouble(result.get("SALDO7").toString()));
                 customerCashBalance.setBalance96(Double.parseDouble(result.get("SALDO9").toString()));
                 customerCashBalance.setBalance120(Double.parseDouble(result.get("SALDO1").toString()));
-                customerCashBalance.setHoldBalance(Double.parseDouble(result.get("HOLD").toString()));
+                customerCashBalance.setHoldBalance(Double.parseDouble(result.get("SALDOHOLD").toString()));
             }
 
         } catch (Exception e) {
-            log.error("SisBurService", e);
+            log.error("SisBurService::getContractBalanceByCurrency", e);
         }
 
         return customerCashBalance;
@@ -179,56 +248,147 @@ public class SisBurService {
 
         if (marketType == null || marketType < 0 || marketType > marketTypes.length) {
             log.error("SisBurService", new Exception("Tipo de Valor de Mercado no permitido"));
-        }
+        } else {
+            try {
+                sqlQuery = "SELECT * FROM PosicionDiaV WHERE Titulos <> '0' AND ";
+                sqlQuery += "Contrato = '" + contractNumber + "' AND Mercado = '" + marketType + "' ";
+                sqlQuery += "ORDER BY EMISORA, SERIE, Tenencia, Folioid, Folio2";
+                resultList = jdbcTemplate.queryForList(sqlQuery);
 
-        try {
-            sqlQuery = "SELECT * FROM " + dailyPositionTable + " WHERE ";
-            sqlQuery += "Titulos <> '0' AND Contrato = '" + contractNumber + "' AND Mercado = '" + marketType + "' ";  
-            sqlQuery += "ORDER BY Tenencia, Folioid, Folio2";
+                Double capitalGainLoss = 0D;
+                Double securities = 0D;
+                Double dirtyPrice = 0D;
+                Double dirtyPrice24 = 0D;
+                Double dirtyCost = 0D;
+                Double marketValue = 0D;
+                Double averageCost = 0D;
+                LocalDate averageDate;
 
-            resultList = jdbcTemplate.queryForList(sqlQuery);
-            Double plusMinusValia = 0D;
-            Double titulos = 0D;
-            Double costoXTitulos = 0D;
-            Double costoPromedio = 0D;
-            
-            for (Map<String,Object> map : resultList) {
-                GeneralDTO posicion= new GeneralDTO();
+                String valueType;
+                String emmiter;
+                String serie;
+                Optional<SisburEmmission> sisburEmmisionOptional = null;
+                Optional<SisburEmmissionPrice> sisburEmmisionPriceOptional = null;
+                SisburEmmissionPrice sisburEmmisionPriceLast = null;
 
-                posicion.setEmmiter(map.get("EMISORA").toString());
-                posicion.setSerie(map.get("SERIE").toString());
-                posicion.setPeriod(map.get("PLAZO").toString());
-                posicion.setRate(map.get("TASAINTE").toString());
-                posicion.setSecurities(map.get("TITULOS").toString());
-                //posicion.setCostoXTitulos(map.get("PRECIOSUCIO").toString());
-                posicion.setAverageAmount(Double.parseDouble(map.get("COSTOSUCIO").toString()));
-                titulos = Double.parseDouble(posicion.getSecurities());
-                costoXTitulos = titulos * Double.parseDouble(map.get("PRECIOSUCIO24").toString());
-                costoPromedio = titulos * Double.parseDouble(map.get("COSTOSUCIO").toString());
-                plusMinusValia = costoXTitulos - costoPromedio;
-                //posicion.setValorMercado(costoXTitulos + "");
-                posicion.setPrice(costoPromedio);
-                posicion.setCapitalGainLoss(plusMinusValia);
-                posicion.setMarket(marketTypes[marketType]);
+                // Pruebas!
+                String cssStyle = null;
+                String str = "2025-11-19 15:29:53";
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                
+                //LocalDateTime dateTime = LocalDateTime.parse(str, formatter);
+                LocalDateTime dateTime = LocalDateTime.now();
+                LocalDateTime delayedTime = dateTime.minusMinutes(20L);
 
-                posicionList.add(posicion);
-                plusMinusValia = 0D;
+                SisburEmmission sisburEmmission = null;
+                SisburEmmissionPrice sisburEmmissionPrice = null;
+                
+                for (Map<String,Object> map : resultList) {
+                    GeneralDTO marketPosition= new GeneralDTO();
+
+                    valueType = map.get("TIPOVALOR").toString();
+                    emmiter = map.get("EMISORA").toString();
+                    serie = map.get("SERIE").toString();
+                    securities = Double.parseDouble(map.get("TITULOS").toString());
+                    dirtyCost = Double.parseDouble(map.get("COSTOSUCIO").toString());
+                    
+                    marketPosition.setEmmiter(emmiter);
+                    marketPosition.setSerie(serie);
+                    marketPosition.setPeriod(map.get("PLAZO").toString());
+                    marketPosition.setRate(map.get("TASAINTE").toString()); // Este parámetro es el que hay que establecer bien
+                    marketPosition.setHolding(map.get("TENENCIA").toString());
+                    marketPosition.setAmount(Double.parseDouble(map.get("MONTO").toString()));
+                    marketPosition.setAward(Double.parseDouble(map.get("PREMIO").toString()));
+                    marketPosition.setAverageDate("");
+
+                    dirtyPrice = Double.parseDouble(map.get("PRECIOSUCIO").toString());
+                    dirtyPrice24 = Double.parseDouble(map.get("PRECIOSUCIO24").toString());
+                    
+                    if (SisBurService.MARKET_TYPE_STOCK_MARKET == marketType) {
+                        // Find emmision
+                        sisburEmmisionOptional = sisburEmmissionRepository.findOneByValueTypeAndEmmiterAndSerie(valueType, emmiter, serie);
+                        if (sisburEmmisionOptional.isPresent()) {
+                            sisburEmmission = sisburEmmisionOptional.get();
+                            sisburEmmisionPriceOptional = sisburEmmissionPriceRepository.findFirstByEmmissionIdAndCreatedLessThanEqualOrderByCreatedDesc(sisburEmmission, delayedTime);
+
+                            System.out.println("Emmision: " + sisburEmmission.getEmmissionId());
+                            System.out.println("DelayedTime" + delayedTime.format(formatter));
+    
+                            if (sisburEmmisionPriceOptional.isPresent()) {
+                                sisburEmmisionPriceLast = sisburEmmisionPriceOptional.get();
+                                System.out.println("Ultimo precio encontrado emmissionPriceId: " + sisburEmmisionPriceLast.getEmmisionPriceId());
+                                dirtyPrice = sisburEmmisionPriceLast.getDirtyPrice();
+                                dirtyPrice24 = sisburEmmisionPriceLast.getDirtyPrice24();
+                                
+                                System.out.println("CostoSucio TR:" + Double.parseDouble(map.get("COSTOSUCIO").toString()));
+                                System.out.println("CostoSucio Delayed:" + sisburEmmisionPriceLast.getDirtyPrice());
+                            } else {
+                                System.out.println("No se encontró precio para emmision para: " + valueType + " " + emmiter + " " + serie);
+                            }
+                        } else {
+                            System.out.println("No se encontró emmision para: " + valueType + " " + emmiter + " " + serie);
+                        }
+                    }
+                    
+                    marketValue = securities * dirtyPrice24;
+                    /*if (SisBurService.MARKET_TYPE_STOCK_MARKET == marketType) {
+                        marketValue = securities * dirtyPrice24;
+                    }*/ 
+                    if(SisBurService.MARKET_TYPE_MONEY_MARKET == marketType && marketPosition.getHolding().equals("REP") && !marketPosition.getEmmiter().equals("REPORTO")) {
+                        marketValue = marketPosition.getAward() + marketPosition.getAmount();
+                        marketPosition.setAverageDate(map.get("FECHAPROMEDIO").toString().substring(0, 10));
+                    }
+
+                    averageCost = securities * dirtyCost;
+                    capitalGainLoss = marketValue - averageCost;
+                    
+                    marketPosition.setSecurities(securities);
+                    marketPosition.setAverageAmount(dirtyCost);
+                    marketPosition.setMarketPrice(dirtyPrice24); // Precio de Mercado Actual
+                    marketPosition.setMarketValue(marketValue); // Valor de Mercado Actual
+                    marketPosition.setCapitalGainLoss(capitalGainLoss); // PlusMinusvalia
+                    marketPosition.setMarket(marketTypes[marketType]);
+                    marketPosition.setDirtyPrice(dirtyPrice);
+                    marketPosition.setDirtyPrice24(dirtyPrice24);
+                    marketPosition.setDirtyCost(dirtyCost);
+
+                    if (capitalGainLoss > 0D) {
+                        cssStyle = "text-success";
+                    } else if(capitalGainLoss < 0D) {
+                        cssStyle = "text-danger";
+                    }
+
+                    marketPosition.setCssStyle(cssStyle);
+
+                    if (SisBurService.MARKET_TYPE_STOCK_MARKET == marketType) {
+                        System.out.println(marketPosition.toString());
+                    }
+    
+                    posicionList.add(marketPosition);
+                    capitalGainLoss = 0D;
+                    marketValue = 0D;
+                    averageCost = 0D;
+                    averageDate = null;
+                }
+            } catch (Exception e) {
+                log.error("SisBurService[getMoneyMarketPosition]", e);
             }
-
-
-        } catch (Exception e) {
-            log.error("SisBurService[getMoneyMarketPosition]", e);
         }
 
         return posicionList;
     }
 
-    public void updateCustomerContractPassword(String customerNumber, String contractNumber, String newPassword) {
+    public void updateCustomerContractPassword(String customerNumber, String contractNumber, String newPassword, Boolean isInitial) {
         String sqlQuery;
 
         try {
-            sqlQuery = "UPDATE CONTRATOS SET PASSWORD = '"+ newPassword + "' WHERE ";
-            sqlQuery += "CVECLIENTE = '" + customerNumber + "' AND CONTRATO = '" + contractNumber + "'";
+            sqlQuery = "UPDATE CONTRATOS SET PASSWORD = '"+ newPassword + "'  ";
+
+            if (isInitial) {
+                sqlQuery += ", INICIAL = '0' ";
+            }
+            
+            sqlQuery += "WHERE CVECLIENTE = '" + customerNumber + "' AND CONTRATO = '" + contractNumber + "'";
 
             jdbcTemplate.execute(sqlQuery);
 
@@ -242,7 +402,7 @@ public class SisBurService {
         List<Map<String, Object>> periodList = new ArrayList<>();
 
         try {
-            sqlQuery = "SELECT c.PERIODO, c.TIPO, c.COTITULAR FROM CONSTANCIAS c WHERE c.CONTRATO = '" + contractNumber + "' ORDER BY c.PERIODO";
+            sqlQuery = "SELECT c.PERIODO, c.TIPO, c.COTITULAR FROM CONSTANCIAS c WHERE c.CONTRATO = '" + contractNumber + "' ORDER BY c.PERIODO, c.COTITULAR, c.TIPO";
 
             periodList = jdbcTemplate.queryForList(sqlQuery);
 
@@ -253,12 +413,12 @@ public class SisBurService {
         return periodList;
     }
 
-    public byte[] getTaxCertificateFile(String contractNumber, String year, Integer type, Integer fileType) {
+    public byte[] getTaxCertificateFile(String contractNumber, String year, Integer type, Integer owner, Integer fileType) {
         String sqlQuery;
         String field = fileType == 1 ? "PDF" : "XML";
 
         sqlQuery = "SELECT c." + field + " FROM CONSTANCIAS c WHERE c.CONTRATO = '" + contractNumber + "' ";
-        sqlQuery += "AND c.PERIODO = '" + year + "' AND c.TIPO = '" + type + "'";
+        sqlQuery += "AND c.PERIODO = '" + year + "' AND c.TIPO = '" + type + "' AND COTITULAR='" + owner + "'";
 
         return jdbcTemplate.queryForObject(sqlQuery, (rs, rowNum) -> extractBytes(rs, field));
     }
@@ -271,5 +431,107 @@ public class SisBurService {
         }
         return null;
     }
+
+    public List<CustomerBeneficiary> getBeneficiaries(String contractNumber) {
+        String sqlQuery;
+        List<Map<String, Object>> resultList = new ArrayList<>();
+        List<CustomerBeneficiary> beneficiaryList = new ArrayList<>();
+        String fullName = null;
+
+        try {
+            sqlQuery = "SELECT * FROM CONBEN c WHERE c.FOLIO = '" + contractNumber + "'";
+            resultList = jdbcTemplate.queryForList(sqlQuery);
+
+            for (Map<String, Object> element : resultList) {
+                fullName = element.get("NOMBRE").toString() + " " + element.get("APEPAT").toString() + " " + element.get("APEMAT").toString();
+
+                CustomerBeneficiary customerBeneficiary = new CustomerBeneficiary();
+                customerBeneficiary.setFullName(fullName);
+                beneficiaryList.add(customerBeneficiary);
+            }
+
+        } catch (Exception e) {
+            log.error("SisburService::getBeneficiaries", e);
+        }
+
+        return beneficiaryList;
+    }
+
+    public List<CustomerAttorney> getAttorneys(String contractNumber) {
+        String sqlQuery;
+        List<Map<String, Object>> resultList = new ArrayList<>();
+        List<CustomerAttorney> attorneyList = new ArrayList<>();
+        String fullName = null;
+
+        try {
+            sqlQuery = "SELECT * FROM CONAPO c WHERE c.COA = 'A' AND c.FOLIO = '" + contractNumber + "'";
+            resultList = jdbcTemplate.queryForList(sqlQuery);
+
+            for (Map<String, Object> element : resultList) {
+                fullName = element.get("NOMBRE").toString() + " " + element.get("APEPAT").toString() + " " + element.get("APEMAT").toString();
+                
+
+                CustomerAttorney attorney = new CustomerAttorney();
+                attorney.setFullName(fullName);
+                attorney.setOperationAuthorized(Integer.parseInt(element.get("AUTOOPE").toString()));
+
+                attorneyList.add(attorney);
+            }
+        } catch (Exception e) {
+            log.error("SisburService::getAttorneys", e);
+        }
+
+        return attorneyList;
+    }
+
+    public void getJointHolders(String contractNumber) {
+        String sqlQuery;
+        List<Map<String, Object>> resultList = new ArrayList<>();
+        List<CustomerAttorney> attorneyList = new ArrayList<>();
+        String fullName = null;
+
+        try {
+            sqlQuery = "SELECT * FROM CONAPO c WHERE c.COA = 'C' AND c.FOLIO = '" + contractNumber + "'";
+            resultList = jdbcTemplate.queryForList(sqlQuery);
+
+            for (Map<String, Object> element : resultList) {
+                fullName = element.get("NOMBRE").toString() + " " + element.get("APEPAT").toString() + " " + element.get("APEMAT").toString();
+
+                CustomerAttorney attorney = new CustomerAttorney();
+                attorney.setFullName(fullName);
+
+                attorneyList.add(attorney);
+            }
+        } catch (Exception e) {
+            log.error("SisburService::getJointHolders", e);
+        }
+    }
+
+    public List<CustomerBankAccount> getBankAccounts(String contractNumber) {
+        String sqlQuery;
+        List<Map<String, Object>> resultList = new ArrayList<>();
+        List<CustomerBankAccount> bankAccountList = new ArrayList<>();
+
+        try {
+            sqlQuery = "SELECT CLABE, CVEINSTITUCION, (select nombanco from catbancos where cvebanco = Cveinstitucion) as BANCO FROM CONCHE c WHERE c.FOLIO = '" + contractNumber + "'";
+            resultList = jdbcTemplate.queryForList(sqlQuery);
+
+            for (Map<String, Object> element : resultList) {
+
+                CustomerBankAccount bankAccount = new CustomerBankAccount();
+                bankAccount.setAccountNumber(element.get("CLABE").toString());
+                bankAccount.setInstitutionKey(element.get("CVEINSTITUCION").toString());
+                bankAccount.setInstitutionName(element.get("BANCO").toString());
+
+                bankAccountList.add(bankAccount);
+            }
+        } catch (Exception e) {
+            log.error("SisburService::getBankAccounts", e);
+        }
+
+        return bankAccountList;
+    }
+
+
 
 }

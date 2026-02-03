@@ -31,9 +31,15 @@ public class CustomerContract extends CommonEntity {
 
     private String contractNumber;
 
+    private String password;
+
     private Integer current;
 
     private Integer status;
+
+    private Integer initial;
+
+    private Integer locked;
 
     @Column(nullable = false, columnDefinition = "timestamp default current_timestamp")
     private LocalDateTime created;
@@ -43,6 +49,8 @@ public class CustomerContract extends CommonEntity {
 
     @OneToMany(mappedBy = "customerContract")
     private List<PasswordResetToken> passwordResetTokens;
+
+    public static final Integer INITIAL_TRUE = 1;
 
     public static final Integer STATUS_ENABLED = 1;
 
@@ -111,4 +119,31 @@ public class CustomerContract extends CommonEntity {
         return CustomerContract.CURRENT_TRUE == this.current;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Integer getInitial() {
+        return initial;
+    }
+
+    public void setInitial(Integer initial) {
+        this.initial = initial;
+    }
+
+    public boolean isInitial() {
+        return CustomerContract.INITIAL_TRUE == this.initial;
+    }
+
+    public Integer getLocked() {
+        return locked;
+    }
+
+    public void setLocked(Integer locked) {
+        this.locked = locked;
+    }
 }

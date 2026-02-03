@@ -25,6 +25,8 @@ public interface EmailInterface {
 
     public static final String ROUTE_TEMPLATE_RECOVER_PASSWORD = "email/template/recover-password.html";
 
+    public static final String ROUTE_TEMPLATE_PUBLIC_CUSTOMER = "email/template/customer_message.html";
+
     public boolean isShipmentMode();
 
     public boolean isReceptionMode();

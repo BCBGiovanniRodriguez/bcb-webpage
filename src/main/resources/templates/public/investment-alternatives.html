@@ -35,7 +35,14 @@
             <section class="sec-moreless-padding">
                 <div class="container">
                     <div class="row">
-                        <div class="col-sm-2 col-sm-push-5 col-xs-6 col-xs-push-3"> <img th:src="@{public/images/iconos/logo-bursametrica-alternativas-inversion-0.svg}" alt=""/> </div>
+                        <div class="col-sm-2 col-sm-push-5 col-xs-6 col-xs-push-3"> 
+                            <img th:src="@{public/images/iconos/logo-bursametrica-alternativas-inversion-0.svg}" alt=""/>
+                        </div>
+                        <div class="col-xs-12 text-center">
+                            <h4>"Amplitud de opciones para toda necesidad financiera"</h4>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-xs-12 text-left">
                             <p>Tenemos a su disposición una robusta oferta de servicios favoreciendo rendimientos competitivos con respecto a las inversiones tradicionales, mediante el acceso a la inversión en el mercado de valores.</p>
                             <p>Lo anterior, considerando características particulares de cada instrumento y valor conforme al mercado donde son negociados, congruentes en todo momento con sus objetivos específicos de inversión, posición financiera, experiencia y conocimientos en materia financiera:</p>
@@ -100,7 +107,7 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-md-12 text-center">
-                            <a class="btn btn-border white-2 btn-large btn-round" href="#" data-toggle="modal" data-target="#MainMenu-BM-contacto">Contacto Alternativas Inversión</a>
+                            <a class="btn btn-border white-2 btn-large btn-round btn-send-email" href="#" data-toggle="modal" data-target="#MainMenu-BM-contacto" data-origin="2">Contacto Alternativas Inversión</a>
                         </div>
                     </div>
                 </div>
@@ -125,8 +132,7 @@
             <!--end section -->
             <div class="clearfix"></div>
 
-            <div class="contacto-pop colorBM"><a href="#" data-toggle="modal" data-target="#MainMenu-BM-contacto"><i class="fa fa-envelope"></i> Contáctanos</a></div>
-            <a href="#" class="scrollup colorBM"></a><!-- end scroll to top of the page--> 
+            <div th:replace="~{public/fragments/commons :: contact}"></div>
         </div>
 
         <div th:replace="~{public/fragments/commons :: modals}"></div>

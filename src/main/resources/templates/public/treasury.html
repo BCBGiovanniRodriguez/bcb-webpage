@@ -55,7 +55,9 @@
                 <div class="row">
                     <div class="clearfix"></div>
                     <div class="col-md-4 col-sm-4">
-                        <div class="feature-box7 text-center bmargin"> <img th:src="@{public/images/iconos/alternativas-inversion-a.svg}" alt=""/><br/>
+                        <div class="feature-box7 text-center bmargin alternativas-inversion">
+                            <img th:src="@{public/images/iconos/alternativas-inversion-a.svg}" alt=""/>
+                            <br/>
                             <br/>
                             <h4>Alternativas de Inversión</h4>
                             <br/>
@@ -65,7 +67,9 @@
                     <!--end item-->
                     
                     <div class="col-md-4 col-sm-4">
-                        <div class="feature-box7 text-center bmargin"> <img th:src="@{public/images/iconos/divisas-a.svg}" alt=""/><br/>
+                        <div class="feature-box7 text-center bmargin divisas">
+                            <img th:src="@{public/images/iconos/divisas-a.svg}" alt=""/>
+                            <br/>
                             <br/>
                             <h4>Divisas</h4>
                             <br/>
@@ -75,9 +79,9 @@
                     <!--end item-->
                     
                     <div class="col-md-4 col-sm-4">
-                        <div class="feature-box7 text-center bmargin"> 
+                        <div class="feature-box7 text-center bmargin fideicomiso-moral"> 
                             <img th:src="@{public/images/iconos/fideicomiso-moral-a.svg}" alt=""/>
-                            <img th:src="@{public/images/iconos/fideicomiso-moral-b.svg}" alt="" hidden/><br/>
+                            <br/>
                             <br/>
                             <h4>Fiduciario Personas Morales </h4>
                             <br/>
@@ -107,7 +111,7 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-md-12 text-center">
-                            <a class="btn btn-border white-2 btn-large btn-round" href="#">Contacto Tesorerías</a>
+                            <a class="btn btn-border white-2 btn-large btn-round btn-send-email" href="#" data-toggle="modal" data-target="#MainMenu-BM-contacto" data-origin="5">Contacto Tesorerías</a>
                         </div>
                     </div>
                 </div>
@@ -132,8 +136,7 @@
             <!--end section -->
             <div class="clearfix"></div>
 
-            <div class="contacto-pop colorBM"><a href="#" data-toggle="modal" data-target="#MainMenu-BM-contacto"><i class="fa fa-envelope"></i> Contáctanos</a></div>
-            <a href="#" class="scrollup colorBM"></a><!-- end scroll to top of the page--> 
+            <div th:replace="~{public/fragments/commons :: contact}"></div>
         </div>
 
         <div th:replace="~{public/fragments/commons :: modals}"></div>

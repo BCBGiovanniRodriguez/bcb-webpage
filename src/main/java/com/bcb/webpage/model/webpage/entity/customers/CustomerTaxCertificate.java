@@ -29,6 +29,8 @@ public class CustomerTaxCertificate {
 
     private Integer type;
 
+    private Integer owner;
+
     private Integer fileType;
 
     private String filename;
@@ -42,39 +44,45 @@ public class CustomerTaxCertificate {
     @JoinColumn(name = "SessionId", nullable = false)
     private CustomerSession session;
 
+    public static final String TAX_CERTIFICATE_OWNER_OWNER = "Titular";
+
+    public static final String TAX_CERTIFICATE_OWNER_COOWNER = "Cotitular";
+
+    public static final String[] ownership = {TAX_CERTIFICATE_OWNER_OWNER, TAX_CERTIFICATE_OWNER_COOWNER};
+
     public static final String TAX_CERTIFICATE_INVOICE_STRING = "Factura";
 
-    public static final String TAX_CERTIFICATE_INTEREST_STRING = "Intereses";
-    
-    public static final String TAX_CERTIFICATE_DIVIDENDS2013_STRING = "Dividendos2013";
-    
-    public static final String TAX_CERTIFICATE_DIVIDENDS2014_STRING = "Dividendos2014";
-    
-    public static final String TAX_CERTIFICATE_DIVIDENDSSIC_STRING = "DividendosSIC";
-    
-    public static final String TAX_CERTIFICATE_FORECLOSURE_STRING = "Enajenación";
-    
-    public static final String TAX_CERTIFICATE_FIBERS_STRING = "Fibras";
+    public static final String TAX_CERTIFICATE_DIVIDENDS2014_STRING = "Dividendos 2014";
+
+    public static final String TAX_CERTIFICATE_DIVIDENDS2013_STRING = "Dividendos 2013";
+
+    public static final String TAX_CERTIFICATE_DIVIDENDSSIC_STRING = "Dividendos SIC";
 
     public static final String TAX_CERTIFICATE_DERIVATIVES_STRING = "Derivados";
+    
+    public static final String TAX_CERTIFICATE_FORECLOSURE_STRING = "Enajenación";
+
+    public static final String TAX_CERTIFICATE_FIBERS_STRING = "Fibras";
+
+    public static final String TAX_CERTIFICATE_INTEREST_STRING = "Intereses";
 
     public static final int TAX_CERTIFICATE_INVOICE = 0;
 
-    public static final int TAX_CERTIFICATE_INTEREST = 1;
-
+    public static final int TAX_CERTIFICATE_DIVIDENDS2014 = 1;
+    
     public static final int TAX_CERTIFICATE_DIVIDENDS2013 = 2;
-
-    public static final int TAX_CERTIFICATE_DIVIDENDS2014 = 3;
-
-    public static final int TAX_CERTIFICATE_DIVIDENDSSIC = 4;
-
+    
+    public static final int TAX_CERTIFICATE_DIVIDENDSSIC = 3;
+    
+    public static final int TAX_CERTIFICATE_DERIVATIVES = 4;
+    
     public static final int TAX_CERTIFICATE_FORECLOSURE = 5;
-
+    
     public static final int TAX_CERTIFICATE_FIBERS = 6;
+    
+    public static final int TAX_CERTIFICATE_INTEREST = 7;
 
-    public static final int TAX_CERTIFICATE_DERIVATIVES = 7;
-
-    public static final String[] taxCertificateTypes = {"Factura", "Intereses", "Dividendos2013", "Dividendos2014", "DividendosSIC", "Enajenación", "Fibras", "Derivados"};
+    public static final String[] taxCertificateTypes = {"",  TAX_CERTIFICATE_DIVIDENDS2014_STRING, TAX_CERTIFICATE_DIVIDENDS2013_STRING, TAX_CERTIFICATE_DIVIDENDSSIC_STRING, TAX_CERTIFICATE_DERIVATIVES_STRING, TAX_CERTIFICATE_FORECLOSURE_STRING, TAX_CERTIFICATE_FIBERS_STRING, TAX_CERTIFICATE_INTEREST_STRING};
 
     public static final int FILE_TYPE_PDF = 1;
 
@@ -181,6 +189,14 @@ public class CustomerTaxCertificate {
 
     public void setSession(CustomerSession session) {
         this.session = session;
+    }
+
+    public Integer getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Integer owner) {
+        this.owner = owner;
     }
     
 }

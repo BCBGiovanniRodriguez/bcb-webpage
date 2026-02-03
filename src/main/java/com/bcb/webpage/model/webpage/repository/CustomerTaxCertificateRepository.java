@@ -13,6 +13,6 @@ public interface CustomerTaxCertificateRepository extends JpaRepository<Customer
 
     Optional<CustomerTaxCertificate> findByYearAndTypeAndCustomerContract(String year, Integer type, CustomerContract contract);
 
-    Optional<CustomerTaxCertificate> findOneByYearAndTypeAndFileTypeAndCustomerContract(String year, Integer type, Integer fileType, CustomerContract contract);
+    Optional<CustomerTaxCertificate> findOneByYearAndTypeAndOwnerAndFileTypeAndCustomerContract(String year, Integer type, Integer owner, Integer fileType, CustomerContract contract);
 
 }

@@ -53,7 +53,7 @@ public class StatementAccount {
     }
 
     public String getMesAsString() {
-        return meses[Integer.parseInt(mes) - 1];
+        return meses[Integer.parseInt(this.mes) - 1];
     }
 
 }

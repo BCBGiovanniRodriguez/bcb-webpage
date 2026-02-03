@@ -14,7 +14,7 @@
                         <div class="col-8 text-center">
                             <h4>ACCESO CON TOKEN</h4>
 
-                            <form th:action="@{/ml/submit}" method="post">
+                            <form id="ottForm" th:action="@{/ml/submit}" method="post">
                                 <div class="row g-3 align-items-center">
                                     <label for="token" class="col-form-label">TOKEN</label>
                                     <input type="text" id="token" name="token" th:value="${token}" class="form-control" required autofocus />
@@ -59,6 +59,12 @@
         <div th:replace="~{login/fragments/commons :: modals}"></div>
         
         <div th:replace="~{login/fragments/commons :: js-dependencies}"></div>
+
+        <script>
+            $(document).ready(function () {
+                $('#ottForm').trigger("submit");
+            });
+        </script>
     </body>
 </html>
 

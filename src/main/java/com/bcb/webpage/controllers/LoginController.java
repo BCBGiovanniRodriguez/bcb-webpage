@@ -29,7 +29,7 @@ public class LoginController {
             model.addAttribute("message", "Se ha enviado un mensaje al correo electrónico asociado al número de contrato proporcionado");
         } catch (Exception e) {
             System.out.println("" + e.getLocalizedMessage());
-            model.addAttribute("error", "No se encontró el número de contrato.");
+            model.addAttribute("error", e.getLocalizedMessage());
         }
 
         return "login/recover-password";
@@ -48,7 +48,7 @@ public class LoginController {
         
         try {
             passwordResetService.resetPassword(token, password);
-            model.addAttribute("mensaje", "Contraseña reestablecida exitosamente");
+            model.addAttribute("mensaje", "Contraseña restablecida exitosamente");
             
             return "public/login";
         } catch (Exception e) {
