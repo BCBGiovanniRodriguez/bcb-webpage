@@ -24,6 +24,8 @@ services:
       SISFISCAL_JDBC_URL: ${SISFISCAL_JDBC_URL}
       SISFISCAL_USERNAME: ${SISFISCAL_USERNAME}
       SISFISCAL_PASSWORD: ${SISFISCAL_PASSWORD}
+    volumes:
+      - ../uploads:/app/uploads
     networks:
       - network_webpage
 

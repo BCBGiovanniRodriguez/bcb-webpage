@@ -24,7 +24,6 @@ WORKDIR /app
 # Crear usuario no-root para seguridad
 RUN addgroup -S spring && adduser -S spring -G spring \
     && apk add --no-cache curl wget openssl tzdata \
-    && mkdir -p /app/uploads  \
     && chown -R spring:spring /app
 
 # Configurar timezone
@@ -45,4 +44,7 @@ USER spring
 EXPOSE 8443
 
 COPY --chown=spring:spring entrypoint.sh /app/
+
+RUN ["chmod", "+x", "/app/entrypoint.sh"]
+
 ENTRYPOINT ["/app/entrypoint.sh"]

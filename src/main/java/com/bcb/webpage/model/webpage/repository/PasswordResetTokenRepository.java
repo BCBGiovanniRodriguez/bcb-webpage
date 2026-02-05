@@ -1,5 +1,6 @@
 package com.bcb.webpage.model.webpage.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,5 +17,7 @@ public interface PasswordResetTokenRepository extends JpaRepository<PasswordRese
     Optional<PasswordResetToken> findOneByTokenAndStatus(String token, Integer status);
 
     Optional<PasswordResetToken> findOneByCustomerContractAndStatus(CustomerContract contract, Integer status);
+
+    List<PasswordResetToken> findAllByStatus(Integer status);
     
 }

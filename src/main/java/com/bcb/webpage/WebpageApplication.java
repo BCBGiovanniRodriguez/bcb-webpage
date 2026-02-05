@@ -19,6 +19,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import com.bcb.webpage.model.sisbur.service.LegacyService;
 import com.bcb.webpage.model.webpage.entity.customers.CustomerContract;
 import com.bcb.webpage.model.webpage.services.CustomerService;
+import com.bcb.webpage.service.PasswordResetService;
 
 @SpringBootApplication
 @EnableScheduling
@@ -29,6 +30,9 @@ public class WebpageApplication implements CommandLineRunner {
 
 	@Autowired
 	private CustomerService customerService;
+
+	@Autowired
+	private PasswordResetService passwordResetService;
 
 	public static void main(String[] args) {
 		// Mitigation for CVE-2025-10492: set a global deserialization filter that rejects
@@ -194,7 +198,14 @@ public class WebpageApplication implements CommandLineRunner {
 		}
 	}
 
-	public void bulkStockMarketPrices() {
-
+	@Scheduled(cron = "0 */10 * * * MON-FRI")
+	public void invalidateCustomerPasswordResetTokens() {
+		try {
+			System.out.println("Iniciando Proceso Invalidación de Tokens Expirados: " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+			passwordResetService.invalidateExpiredTokens();
+			System.out.println("Terminado Proceso Invalidación de Tokens Expirados");
+		} catch (Exception e) {
+			System.out.println("Error al invalidar tokens expirados: " + e.getLocalizedMessage());
+		}
 	}
 }

@@ -59,13 +59,26 @@ public class PasswordResetService {
             throw new Exception("Número de Contrato no encontrado");
         } else {
             CustomerContract customerContract = contractFoundResult.get();
+            Boolean isPresent = false, isExpired = false;
 
             // Search for requested tokens
             Optional<PasswordResetToken> passwordResetTokenOptional = passwordResetTokenRepository.findOneByCustomerContractAndStatus(customerContract, PasswordResetToken.STATUS_ENABLED);
 
-            if (passwordResetTokenOptional.isPresent()) {
-                throw new Exception("Tiene un token activo");
+            isPresent = passwordResetTokenOptional.isPresent();
+            if (isPresent) {
+                isExpired = passwordResetTokenOptional.get().isExpired();
+            }
+
+            if (isPresent && !isExpired) {
+                throw new Exception("Ya existe un token activo para este contrato, aun puede utilizarlo.");
             } else {
+                if (isExpired) {
+                    PasswordResetToken passwordResetToken = passwordResetTokenOptional.get();
+                    passwordResetToken.setStatus(PasswordResetToken.STATUS_DISABLED);
+                    passwordResetTokenRepository.saveAndFlush(passwordResetToken);
+                    System.out.println("Contrato: " + passwordResetToken.getCustomerContract().getContractNumber() + " - Token Expirado: " + passwordResetToken.getToken());
+                }
+
                 Optional<ConfigurationEmailAccountEntity> configurationEmailAccountOptional = emailAccountRepository.findOneByTypeAndTargetAndMode(EmailInterface.TYPE_SYSTEM_NOTIFICATION, EmailInterface.TARGET_SYSTEM_NOTIFICATION, EmailInterface.MODE_SHIPMENT);
                 if (!configurationEmailAccountOptional.isPresent()) {
                     throw new Exception("Cuenta de correo de envío no configurada");
@@ -144,4 +157,16 @@ public class PasswordResetService {
         }
     }
 
+    public void invalidateExpiredTokens() {
+        LocalDateTime now = LocalDateTime.now();
+        Iterable<PasswordResetToken> tokens = passwordResetTokenRepository.findAllByStatus(PasswordResetToken.STATUS_ENABLED);
+
+        for (PasswordResetToken token : tokens) {
+            if (token.getExpirationDate().isBefore(now)) {
+                token.setStatus(PasswordResetToken.STATUS_DISABLED);
+                passwordResetTokenRepository.saveAndFlush(token);
+                System.out.println("Token Expirado: " + token.getToken());
+            }
+        }
+    }
 }
