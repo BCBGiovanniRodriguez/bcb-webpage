@@ -236,6 +236,61 @@
             <div class="contacto-pop colorBM"><a href="#" class="btn-send-email" data-toggle="modal" data-target="#MainMenu-BM-contacto" data-origin="2"><i class="fa fa-envelope"></i> Contáctanos</a></div>
             <a href="#" class="scrollup colorBM"></a><!-- end scroll to top of the page--> 
         </div>
+
+        <div th:fragment="si-modal">
+            <div class="modal fade" id="si-Modal" tabindex="-1" role="dialog" aria-labelledby="siModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content white">
+                        <div class="modal-header">
+                            <h3 id="siModalLabel" class="modal-title text-dark">
+                                <img th:src="@{public/images/iconos/logo-toro-bursametrica.svg}" width="5%" height="5%" alt="Logo Bursamétrica"/>
+                                <strong>Bursamétrica Casa de Bolsa, te informa:</strong>
+                            </h3>
+
+                            <button type="button" class="close text-dark" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body text-left text-dark">
+                            <div class="row">
+                                <div class="col-md-1"></div>
+                                <div class="col-md-10">
+                                    <h5 class="text-dark">
+                                        <strong>En BCB,  protegemos tus datos, evita fraudes: </strong>
+                                    </h5>
+                                    <br>
+                                    <ul>
+                                        <li class="text-left">
+                                            Nosotros <strong>NO</strong> solicitamos datos confidenciales (tales como cuentas bancarias, contraseñas, NIP, tokens o códigos de verificación) a través de ligas, correos electrónicos, WhatsApp o redes sociales.
+                                        </li>
+                                        <br>
+                                        <li class="text-left">
+                                            <strong>Nunca</strong> te solicitaremos datos bancarios o ingresar a sitios / links para depositar dinero a través de redes sociales o WhatsApp.
+                                        </li>
+                                    </ul>
+                                    <br>
+                                    
+                                    <p class="text-left">
+                                        Para conocer de manera segura sobre nuestros productos y servicios,  contáctanos en nuestros medios oficiales: 
+                                    </p>
+                                    <p class="text-left">
+                                        <i class="fa fa-phone"></i> Conmutador: +52 55 1328 3930<br>
+                                        <i class="fa fa-envelope"></i> Correo electrónico: servicioaclientes@bursametrica.com<br>
+                                        <i class="fa fa-globe"></i> https://www.bcbcasadebolsa.com/
+                                    </p>
+                                </div>
+                                <div class="col-md-1"></div>
+                            </div>
+                        </div>
+                        <div class="modal-footer text-center">
+                            <p class="text-center">
+                                <img th:src="@{public/images/logo/BCB-logo-white.svg}" width="160px" height="auto" alt="Logo Bursamétrica"/>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         
         <div th:fragment="modals">
             <!-- Modal Menu -->

@@ -117,6 +117,8 @@
             <div th:replace="~{public/fragments/commons :: contact}"></div>
         </div>
         
+        <div th:replace="~{public/fragments/commons :: si-modal}"></div>
+
         <div th:replace="~{public/fragments/commons :: modals}"></div>
         
         <div th:replace="~{public/fragments/commons :: js-dependencies}"></div>
@@ -124,8 +126,11 @@
         <script>
             document.addEventListener("DOMContentLoaded", function() {
                 const video = document.getElementById("mainVideo");
-
                 video.play();
+            });
+            
+            $(document).ready(function() {
+                $('#si-Modal').modal('show');
             });
         </script>
     </body>
